@@ -25,7 +25,7 @@ export default function Home() {
                 {/* Card 1 */}
                 <TouchableOpacity onPress={handleJournalNavigation} style={{ flex: 1, marginRight: 10 }}>
                     <ImageBackground
-                        source={require('../../assets/images/main.png')}
+                        source={require('../../assets/images/journalimg.png')}
                         style={{
                             height: 200,
                             borderRadius: 15,
@@ -47,7 +47,7 @@ export default function Home() {
                 {/* Card 2 */}
                 <TouchableOpacity onPress={handleTrackerNavigation} style={{ flex: 1, marginLeft: 10 }}>
                     <ImageBackground
-                        source={require('../../assets/images/tracker.png')}
+                        source={require('../../assets/images/trackerimg.png')}
                         style={{
                             height: 200,
                             borderRadius: 15,
@@ -70,7 +70,7 @@ export default function Home() {
             {/* Full Width Card */}
             <TouchableOpacity onPress={handleGuideNavigation} style={{ marginBottom: 20 }}>
                 <ImageBackground
-                    source={require('../../assets/images/emergency.png')}
+                    source={require('../../assets/images/emergency1.png')}
                     style={{
                         height: 120,
                         borderRadius: 15,
@@ -94,7 +94,7 @@ export default function Home() {
 
             <TouchableOpacity onPress={handleGuideNavigation} style={{ marginBottom: 20 }}>
                 <ImageBackground
-                    source={require('../../assets/images/blog.png')}
+                    source={require('../../assets/images/blog1.png')}
                     style={{
                         height: 120,
                         borderRadius: 15,
