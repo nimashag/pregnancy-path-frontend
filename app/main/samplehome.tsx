@@ -150,11 +150,8 @@ const samplehome = () => {
                         resizeMode="cover"
                     >
                         <Text style={{ color: '#ffffff', fontWeight: 'bold', fontSize: 16 }}>
-                            Save Your Memories With Us
+                        Clinic Schedule
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#000', padding: 8, marginTop: 10, borderRadius: 5 }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Journal</Text>
-                        </TouchableOpacity>
                     </ImageBackground>
                 </TouchableOpacity>
 
@@ -172,15 +169,12 @@ const samplehome = () => {
                         resizeMode="cover"
                     >
                         <Text style={{ color: '#ffffff', fontWeight: 'bold', fontSize: 16 }}>
-                            Track Your Daily Habits
+                        Clinic Guide
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#8B0000', padding: 8, marginTop: 10, borderRadius: 5 }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Tracker</Text>
-                        </TouchableOpacity>
                     </ImageBackground>
                 </TouchableOpacity>
 
-                {/* Card 3 */}
+                {/* Card 3  */}
                 <TouchableOpacity onPress={handleTrackerNavigation} style={{ flex: 1, marginLeft: 10 }}>
                     <ImageBackground
                         source={require('../../assets/images/trackerimg.png')}
@@ -194,32 +188,63 @@ const samplehome = () => {
                         resizeMode="cover"
                     >
                         <Text style={{ color: '#ffffff', fontWeight: 'bold', fontSize: 16 }}>
-                            Track Your Daily Habits
+                        Contact Assistant
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#8B0000', padding: 8, marginTop: 10, borderRadius: 5 }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Tracker</Text>
-                        </TouchableOpacity>
                     </ImageBackground>
                 </TouchableOpacity>
             </View>
 
-      {/* Clinical Information */}
-      <View style={styles.clinicalSection}>
-        <TouchableOpacity style={styles.clinicalItem}>
-          <Text>Clinic Schedule</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.clinicalItem}>
-          <Text>Clinic Guide</Text>
-        </TouchableOpacity>
-      </View>
 
-      {/* Footer buttons */}
-      <TouchableOpacity style={styles.footerButton}>
-        <Text>Parental Appointments</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.footerButton}>
-        <Text>Pregnancy Guide</Text>
-      </TouchableOpacity>
+      {/* Yatama Kaaalla */}
+      {/* Full Width Card */}
+      <TouchableOpacity onPress={handleGuideNavigation} style={{ marginBottom: 20 }}>
+                <ImageBackground
+                    source={require('../../assets/images/emergency1.png')}
+                    style={{
+                        height: 120,
+                        borderRadius: 15,
+                        overflow: 'hidden',
+                        justifyContent: 'flex-end',
+                        padding: 16,
+                    }}
+                    resizeMode="cover"
+                >
+                    <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
+                      Parental Appoinments
+                    </Text>
+                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
+                      Easily manage your appointments and stay on top of your care.
+                    </Text>
+                    <TouchableOpacity style={{ backgroundColor: '#8B0000', padding: 8, borderRadius: 5 }}>
+                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Check Now</Text>
+                    </TouchableOpacity>
+                </ImageBackground>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={handleGuideNavigation} style={{ marginBottom: 20 }}>
+                <ImageBackground
+                    source={require('../../assets/images/blog1.png')}
+                    style={{
+                        height: 120,
+                        borderRadius: 15,
+                        overflow: 'hidden',
+                        justifyContent: 'flex-end',
+                        padding: 16,
+                    }}
+                    resizeMode="cover"
+                >
+                    <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
+                        Pregnancy Guide
+                    </Text>
+                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
+                        Navigate your pregnancy with ease using our comprehensive guide.
+                    </Text>
+                    <TouchableOpacity style={{ backgroundColor: '#8B0000', padding: 8, borderRadius: 5 }}>
+                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Check Now</Text>
+                    </TouchableOpacity>
+                </ImageBackground>
+            </TouchableOpacity>
+
     </ScrollView>
   );
 };
