@@ -29,7 +29,7 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({ route }) => {
       <Text style={styles.time}>{entry.time}</Text>
       {entry.image && (
         <Image
-          source={{ uri: `data:image/jpeg;base64,${entry.image}` }} // Ensure correct base64 format
+          source={{ uri: `${entry.image}` }} // Ensure correct base64 format
           style={styles.image}
         />
       )}

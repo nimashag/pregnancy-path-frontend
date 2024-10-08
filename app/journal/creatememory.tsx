@@ -91,7 +91,7 @@ const CreateEventScreen = () => {
     //     }
     //   );
     // const response = await axios.post("http://192.168.1.8:3000/memory",{
-    const response = await fetch('http://192.168.1.3:3000/memory', {
+    const response = await fetch('https://bcf6-112-134-141-184.ngrok-free.app/memory', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

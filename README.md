@@ -48,3 +48,11 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
+## [Optional] Setup ngrok and run expo in tunnel mode
+
+```
+npm install -g @expo/ngrok@4.1.0
+npx expo start --tunnel
+```

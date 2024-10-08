@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -34,12 +36,13 @@ const DailyJournal: React.FC = () => {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const router = useRouter();
 
   // Fetch memory data from backend
   useEffect(() => {
     const fetchMemories = async (): Promise<void> => {
       try {
-        const response = await fetch("http://192.168.1.3:3000/memory", {
+        const response = await fetch("https://bcf6-112-134-141-184.ngrok-free.app/memory", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -114,7 +117,13 @@ const DailyJournal: React.FC = () => {
     ]);
   };
 
+  // Navigate to JournalEntryDetail screen with selected entry
+  const handleJournalEntry = (entry: Memory) => {
+    
+  };
+
   const renderEntry = ({ item }: { item: Memory }) => (
+    <TouchableOpacity>
     <View style={styles.entryContainer}>
       <View style={styles.textContent}>
         <Text style={styles.entryText}>{item.name}</Text>
@@ -137,6 +146,7 @@ const DailyJournal: React.FC = () => {
         <FontAwesome name="star-o" size={20} color="black" />
       </TouchableOpacity>
     </View>
+    </TouchableOpacity>
   );
 
   if (loading) {
@@ -145,7 +155,13 @@ const DailyJournal: React.FC = () => {
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
-  }
+  };
+
+  const handleAddpost = () => {
+    router.push("/journal/creatememory");
+  };
+
+  
 
   return (
     <View className="flex-1 bg-gray-100 p-4">
@@ -187,7 +203,7 @@ const DailyJournal: React.FC = () => {
         {/* <TouchableOpacity style={styles.sortButton}>
           <Text className="text-black font-semibold">Sort</Text>
         </TouchableOpacity> */}
-        <TouchableOpacity className="bg-white p-2 rounded-lg ml-2">
+        <TouchableOpacity onPress={handleAddpost} className="bg-white p-2 rounded-lg ml-2">
           <Text className="text-black font-semibold ">+ Add Post</Text>
         </TouchableOpacity>
       </View>
