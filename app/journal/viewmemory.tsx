@@ -71,6 +71,13 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
     return `${year}-${month}-${day}`;
   };
 
+  const handleEdit = () => {
+    router.push({
+      pathname: "/journal/updatememory",
+      params: { entry }, // Pass the memory object to the update screen
+    });
+  };
+
   return (
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.card}>
@@ -110,6 +117,9 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
                 </View>
             )}
           </View>
+          <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
+            <FontAwesome name="edit" size={24} color="blue" />
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => confirmDelete(parsedEntry._id as string)} style={styles.deleteButton}>
             <FontAwesome name="trash" size={24} color="red" />
           </TouchableOpacity>
@@ -214,10 +224,18 @@ const styles = StyleSheet.create({
   deleteButton: {
     position: "absolute",
     right: 20,
-    bottom: 20,
+    bottom: 24,
     backgroundColor: "white",
     borderRadius: 50,
     padding: 10,
+  },
+  editButton: {
+    padding: 10,
+    borderRadius: 5,
+    position: "absolute",
+    right: 60,
+    bottom: 23,
+    backgroundColor: "white",
   },
 });
 
