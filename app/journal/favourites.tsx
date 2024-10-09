@@ -1,10 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, Animated, Image, TouchableOpacity, Dimensions, ScrollView, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import { styled } from 'nativewind';
 import { useRouter } from "expo-router";
-import { Memory } from "./IMemory"
+import { Memory } from "./IMemory";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -12,14 +11,11 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const StyledText = styled(Text);
 
 const JournalScreen = () => {
-  const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef<ScrollView>(null); // Correct type
-
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [journalEntries, setJournalEntries] = useState([]); // State to hold journal entries
+  const [journalEntries, setJournalEntries] = useState<Memory[]>([]); // State to hold journal entries
   const [loading, setLoading] = useState(true); // State for loading status
-
   const router = useRouter();
 
   // Function to fetch favorite memories from API
@@ -63,8 +59,12 @@ const JournalScreen = () => {
     fetchFavoriteMemories();
   }, []);
 
-  const handleEntryPress = (entryId: number) => {
-    // navigation.navigate('JournalEntryDetail', { entryId });
+  const handleEntryPress = (entry: Memory) => {
+    // Navigate to the 'viewmemory' screen and pass the 'entry' data
+    router.push({
+      pathname: "/journal/viewmemory", // Ensure the correct path
+      params: { entry: JSON.stringify(entry) }, // Pass the entry data as a JSON string
+    });
   };
 
   const handleBackPress = () => {
@@ -122,11 +122,11 @@ const JournalScreen = () => {
                 { useNativeDriver: false }
             )}
         >
-          {journalEntries.map((entry: Memory, index) => (
+          {journalEntries.map((entry: Memory) => (
               <TouchableOpacity
                   key={entry._id} // Use _id from the API response
                   className="mb-4 bg-white rounded-lg shadow-md border-2"
-                  // onPress={() => handleEntryPress(entry._id)}
+                  onPress={() => handleEntryPress(entry)} // Navigate on press
               >
                 {entry.image ? (
                     <Image
