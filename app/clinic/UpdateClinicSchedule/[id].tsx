@@ -1,6 +1,6 @@
 import {View, Text, FlatList, TouchableOpacity, TextInput, ScrollView} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import {Stack} from "expo-router";
+import {Stack, useLocalSearchParams, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
 import React, {useEffect, useState} from "react";
 import {useHeaderHeight} from "@react-navigation/elements";
@@ -8,32 +8,45 @@ import {Picker} from "@react-native-picker/picker";
 import axios from "axios";
 import ClinicType from "@/types/clinicType";
 import moment from 'moment';
+import clinicScheduleType from "@/types/clinicScheduleType";
 
-const CreateClinicSchedule = () => {
+const UpdateClinicSchedule = () => {
 
     const headerHeight = useHeaderHeight();
     const [clinics, setClinics] = useState<ClinicType[]>([]);
+    const { id } = useLocalSearchParams();
+  const router = useRouter();
 
-    const [user, setUser] = useState("");
     const [clinic, setClinic] = useState<ClinicType | undefined>(undefined);
-    const [date, setDate] = useState(new Date());
+    const [previousDate, setPreviousDate] = useState('');
+    const [date, setDate] = useState<Date | null>(null);
     const [time, setTime] = useState(new Date());
     const [dbTime, setDbTime] = useState('');
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [location, setLocation] = useState("");
+    //const id = "67060dc91a93bdfab50ea80e"
 
     useEffect(() => {
-        const fetchClinics = async () => {
+        const getSchedule = async () => {
             try {
-                setUser('66dd6bf95be4a8cf0d58bf1f')
                 const response = await axios.get('http://192.168.8.127:3000/clinic/all-clinic');
                 setClinics(response.data);
+
+                console.log(id);
+                const schedule: clinicScheduleType = await axios.get(`http://192.168.8.127:3000/clinic-schedule/get-one-clinic-schedule/${id}`)
+                setClinic(schedule.data.clinic);
+                setPreviousDate(schedule.data.date);
+                setDbTime(schedule.data.time);
+                setLocation(schedule.data.location);
+                console.log(clinic?.clinicTitle)
+
+
             } catch (error) {
                 console.error(error);
             }
         };
-        fetchClinics();
+        getSchedule();
     }, []);
 
     const onDateChange = (event: any, selectedDate?: Date | undefined) => {
@@ -51,23 +64,16 @@ const CreateClinicSchedule = () => {
             setDbTime(formatted);
         }
     };
-    const handleAdd = async () => {
-        try {
 
-            const response= await axios.post('http://192.168.8.127:3000/clinic-schedule/create-clinic-schedule',{
-                user,
+    const handleUpdate = async () => {
+        try {
+            const response= await axios.put(`http://192.168.8.127:3000/clinic-schedule/update-clinic-schedule/${id}`,{
                 clinic,
                 date,
                 time: dbTime,
                 location
             })
-
-            console.log('Schedule created successfully:', response.data);
-
-            console.log(time);
-
-        }
-        catch (error) {
+        } catch (error) {
             console.log(error);
         }
     }
@@ -77,7 +83,7 @@ const CreateClinicSchedule = () => {
             <Stack.Screen
                 options={{
                     headerTransparent: true,
-                    headerTitle: "Add Clinic Schedule",
+                    headerTitle: "Update Clinic Schedule",
                     headerTitleAlign: "center",
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => {}}>
@@ -106,63 +112,63 @@ const CreateClinicSchedule = () => {
                     </View>
 
 
-                {/*select date*/}
-                <View className="pt-5">
-                    <Text className="font-semibold text-base pb-3">Select the Date</Text>
-                    <View className="bg-white py-4 rounded-lg">
-                        <TouchableOpacity
-                            className="pl-3"
-                            onPress={() => setShowDatePicker(true)}
-                        >
-                            <Text>{date.toLocaleDateString()}</Text>
-                        </TouchableOpacity>
-                        {showDatePicker && (
-                            <DateTimePicker
-                                value={date}
-                                mode="date"
-                                display="default"
-                                onChange={onDateChange}
-                                minimumDate={new Date()}
-                            />
-                        )}
+                    {/*select date*/}
+                    <View className="pt-5">
+                        <Text className="font-semibold text-base pb-3">Select the Date</Text>
+                        <View className="bg-white py-4 rounded-lg">
+                            <TouchableOpacity
+                                className="pl-3"
+                                onPress={() => setShowDatePicker(true)}
+                            >
+                                <Text>{date === null ? previousDate : date.toDateString()}</Text>
+                            </TouchableOpacity>
+                            {showDatePicker && (
+                                <DateTimePicker
+                                    value={date || new Date()}
+                                    mode="date"
+                                    display="default"
+                                    onChange={onDateChange}
+                                    minimumDate={new Date()}
+                                />
+                            )}
+                        </View>
+                    </View>
+
+                    {/*select time*/}
+                    <View className="pt-5">
+                        <Text className="font-semibold text-base pb-3">Select the Time</Text>
+                        <View className="bg-white py-4 rounded-lg">
+                            <TouchableOpacity
+                                className="pl-3"
+                                onPress={() => setShowTimePicker(true)}
+                            >
+                                <Text>{dbTime}</Text>
+                            </TouchableOpacity>
+                            {showTimePicker && (
+                                <DateTimePicker
+                                    value={time}
+                                    mode="time"
+                                    display="default"
+                                    onChange={onTimeChange}
+                                />
+                            )}
+                        </View>
+                    </View>
+
+                    <View className="pt-5">
+                        <Text className="font-semibold text-base pb-3">Location</Text>
+                        <TextInput className="bg-white py-4 rounded-lg pl-2" value={location} onChangeText={setLocation}/>
                     </View>
                 </View>
-
-                {/*select time*/}
-                <View className="pt-5">
-                    <Text className="font-semibold text-base pb-3">Select the Time</Text>
-                    <View className="bg-white py-4 rounded-lg">
-                        <TouchableOpacity
-                            className="pl-3"
-                            onPress={() => setShowTimePicker(true)}
-                        >
-                            <Text>{moment(time).format('HH.mm')}</Text>
-                        </TouchableOpacity>
-                        {showTimePicker && (
-                            <DateTimePicker
-                                value={time}
-                                mode="time"
-                                display="default"
-                                onChange={onTimeChange}
-                            />
-                        )}
-                    </View>
-                </View>
-
-                <View className="pt-5">
-                    <Text className="font-semibold text-base pb-3">Location</Text>
-                    <TextInput className="bg-white py-4 rounded-lg pl-2"  placeholder="Enter event name here..." value={location} onChangeText={setLocation}/>
-                </View>
-            </View>
             </View>
             {/*Footer*/}
             <View className="absolute bottom-0 mx-4 pb-8 flex-row">
                 <TouchableOpacity
-                    className="bg-green-600 items-center py-5 px-16 rounded-xl flex-grow mr-4"
-                    onPress={handleAdd}
+                    className="bg-yellow-400 items-center py-5 px-16 rounded-xl flex-grow mr-4"
+                    onPress={handleUpdate}
                 >
                     <View className="flex-row items-center">
-                        <Text className="text-white text-lg uppercase pr-1">Add</Text>
+                        <Text className="text-white text-lg uppercase pr-1">update</Text>
                         <Ionicons name="add-circle-outline" size={20} color="white" />
                     </View>
                 </TouchableOpacity>
@@ -179,4 +185,4 @@ const CreateClinicSchedule = () => {
     );
 };
 
-export default CreateClinicSchedule;
+export default UpdateClinicSchedule;
