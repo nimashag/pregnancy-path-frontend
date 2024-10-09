@@ -1,7 +1,7 @@
 // JournalEntryDetail.tsx
 import React from "react";
 import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
-
+import { useLocalSearchParams } from "expo-router";
 const { width } = Dimensions.get("window");
 
 interface JournalEntryDetailProps {
@@ -19,23 +19,24 @@ interface JournalEntryDetailProps {
   };
 }
 
-const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({ route }) => {
-  const { entry } = route.params; // Accessing the entry
+const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
+  const { entry } = useLocalSearchParams();  // Access the passed entry
+  const parsedEntry = JSON.parse(entry as string);  // Parse the JSON string
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{entry.name}</Text>
-      <Text style={styles.date}>{entry.date}</Text>
-      <Text style={styles.time}>{entry.time}</Text>
-      {entry.image && (
+      <Text style={styles.title}>{parsedEntry.name}</Text>
+      <Text style={styles.date}>{parsedEntry.date}</Text>
+      <Text style={styles.time}>{parsedEntry.time}</Text>
+      {parsedEntry.image && (
         <Image
-          source={{ uri: `${entry.image}` }} // Ensure correct base64 format
+          source={{ uri: `${parsedEntry.image}` }} // Ensure correct base64 format
           style={styles.image}
         />
       )}
-      <Text style={styles.description}>{entry.description}</Text>
-      {entry.feelings && (
-        <Text style={styles.feelings}>Feelings: {entry.feelings}</Text>
+      <Text style={styles.description}>{parsedEntry.description}</Text>
+      {parsedEntry.feelings && (
+        <Text style={styles.feelings}>Feelings: {parsedEntry.feelings}</Text>
       )}
     </View>
   );

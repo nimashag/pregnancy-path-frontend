@@ -121,7 +121,11 @@ const DailyJournal: React.FC = () => {
 
   // Navigate to JournalEntryDetail screen with selected entry
   const handleJournalEntry = (entry: Memory) => {
-    // navigation.navigate('JournalEntryDetail', { entry });
+    // Navigate to the 'viewmemory' screen and pass the 'entry' data
+    router.push({
+      pathname: "/journal/viewmemory",  // Ensure the correct path
+      params: { entry: JSON.stringify(entry) },  // Pass the entry data as a JSON string
+    });
   };
 
   const renderEntry = ({ item }: { item: Memory }) => (
@@ -159,7 +163,7 @@ const DailyJournal: React.FC = () => {
     );
   };
 
-  const handleAddpost = () => {
+  const handleAddPost = () => {
     router.push("/journal/creatememory");
   };
 
@@ -211,7 +215,7 @@ const DailyJournal: React.FC = () => {
         {/* <TouchableOpacity style={styles.sortButton}>
           <Text className="text-black font-semibold">Sort</Text>
         </TouchableOpacity> */}
-        <TouchableOpacity onPress={handleAddpost} className="bg-white p-2 rounded-lg ml-2 border-2">
+        <TouchableOpacity onPress={handleAddPost} className="bg-white p-2 rounded-lg ml-2 border-2">
           <Text className="text-black font-semibold ">+ Add Post</Text>
         </TouchableOpacity>
       </View>
