@@ -28,6 +28,7 @@ interface Memory {
   date: string;
   image?: string;
   feelings?: string;
+  isFavorite: boolean
 }
 
 interface MemoryResponse {
@@ -129,6 +130,46 @@ const DailyJournal: React.FC = () => {
     });
   };
 
+  const toggleFavorite = async (id: string, currentStatus: boolean) => {
+    try {
+      // Send the update request to the backend
+      const response = await fetch(`${config.backend_url}/memory/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isFavorite: !currentStatus, // Send the opposite of the current status
+        }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(
+            `Failed to update memory: ${response.status} - ${errorMessage}`
+        );
+      }
+
+      // Optimistically update local state
+      setMemories((prevMemories) =>
+          prevMemories.map((memory) =>
+              memory._id === id ? { ...memory, isFavorite: !currentStatus } : memory
+          )
+      );
+
+      // No need to do anything here as the local state is already updated
+      console.log("Favorite status updated successfully");
+    } catch (error) {
+      console.error("Error updating favorite status:", (error as Error).message);
+      // Revert the local state if the update fails
+      setMemories((prevMemories) =>
+          prevMemories.map((memory) =>
+              memory._id === id ? { ...memory, isFavorite: currentStatus } : memory
+          )
+      );
+    }
+  };
+
   const renderEntry = ({ item }: { item: Memory }) => (
     <TouchableOpacity onPress={() => handleJournalEntry(item)}>
     <View style={styles.entryContainer}>
@@ -146,11 +187,15 @@ const DailyJournal: React.FC = () => {
           style={styles.entryImage}
         />
       )}
-      <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDelete(item._id)}>
-        <FontAwesome name="trash" size={20} color="red" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.starIcon}>
-        <FontAwesome name="star-o" size={20} color="black" />
+      <TouchableOpacity
+          style={styles.starIcon}
+          onPress={() => toggleFavorite(item._id, item.isFavorite)} // Toggle favorite on press
+      >
+        <FontAwesome
+            name={item.isFavorite ? "star" : "star-o"}
+            size={20}
+            color="black"
+        />
       </TouchableOpacity>
     </View>
     </TouchableOpacity>
