@@ -114,7 +114,7 @@ const VaccinationSchedule = () => {
       <Text style={styles.subHeader}>Set Reminder</Text>
       <TouchableOpacity  style={{ marginBottom: 20 }}>
                 <ImageBackground
-                    source={require('../../assets/images/vaccination/vaccicard5.png')}
+                    source={require('../../assets/images/vaccination/vaccimonthimg.png')}
                     style={{
                         height: 120,
                         borderRadius: 15,
@@ -124,12 +124,12 @@ const VaccinationSchedule = () => {
                     }}
                     resizeMode="cover"
                 >
-                    <Text style={{ color: '#000000', fontSize: 14, marginBottom: 10 }}>
+                    <Text style={{ color: '#000000', fontSize: 14, marginBottom: 10 , width: '70%'}}>
                     Set an reminder for the dates and time of the schedule the clinic assistant gave!
                     </Text>
-                    <TouchableOpacity style={{ backgroundColor: '#FFFFFF', padding: 8, width: '30%', borderRadius: 5 }}>
+                    <TouchableOpacity style={{ backgroundColor: '#0E6EC5', padding: 8, width: '30%', borderRadius: 5 }}>
                     <Link href="/vaccination/createvaccineschedule" style={{ width: '100%' }}>
-                        <Text style={{ color: '#0E6EC5', fontWeight: 'bold' , textAlign: 'center' }}>Create</Text>
+                        <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center' }}>Create</Text>
                     </Link>
                     </TouchableOpacity>
                     
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F14321',
   },
   inactiveButton: {
-    backgroundColor: '#EFEFEF',
+    backgroundColor: '#1E1E1E',
   },
   buttonText: {
     fontSize: 16,
