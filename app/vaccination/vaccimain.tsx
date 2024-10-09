@@ -9,30 +9,48 @@ type Vaccine = {
   vaccineName: string;
   vaccineDescription: string;
   vaccineImage: string;
-  vaccineMonth: number[];
+  vaccineMonth: number[]; 
   vaccineStatus: string;
 };
 
 type MonthData = {
   month: string;
+  monthNumber: number;
   vaccines: Vaccine[];
 };
 
 const VaccinationSchedule = () => {
   const [vaccineData, setVaccineData] = useState<MonthData[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<number | null>(null); // Selected month state
-  
+  const [selectedMonth, setSelectedMonth] = useState<number>(0); 
+
   useEffect(() => {
     const fetchVaccines = async () => {
       try {
         const response = await axios.get('http://192.168.1.5:3000/vaccine'); // Replace with your actual API
         const data: Vaccine[] = response.data.data;
 
+        console.log('Fetched Vaccine Data:', data);
+
         // Organizing data by month
         const organizedData: MonthData[] = Array.from({ length: 9 }, (_, index) => ({
           month: `Month - ${index + 1}`,
-          vaccines: data.filter(vaccine => vaccine.vaccineMonth.includes(index + 1)),
+          monthNumber: index + 1,
+          vaccines: data.filter(vaccine => {
+            console.log(`Checking vaccine ${vaccine.vaccineName} for month ${index + 1}`);
+            
+            // Check if vaccine.vaccineMonth is an array and includes the current month number
+            if (Array.isArray(vaccine.vaccineMonth)) {
+              const isIncluded = vaccine.vaccineMonth.includes(index + 1);
+              console.log(`Is vaccine included? ${isIncluded}`);
+              return isIncluded;
+            } else {
+              console.log('vaccine.vaccineMonth is not an array');
+              return false;
+            }
+          }),
         }));
+
+        console.log('Organized Data by Month:', organizedData);
 
         setVaccineData(organizedData);
       } catch (error) {
@@ -44,9 +62,15 @@ const VaccinationSchedule = () => {
   }, []);
 
   // Filtered vaccine data based on selected month
-  const filteredVaccines = selectedMonth
-    ? vaccineData.filter(data => parseInt(data.month.split(' - ')[1]) === selectedMonth)
+  const filteredVaccines = selectedMonth > 0
+    ? vaccineData.filter(data => {
+        console.log(`Filtering data for month ${selectedMonth}`);
+        return data.monthNumber === selectedMonth;
+      })
     : vaccineData;
+
+  console.log('Selected Month:', selectedMonth);
+  console.log('Filtered Vaccines:', filteredVaccines);
 
   return (
     <ScrollView style={styles.container}>
@@ -63,9 +87,9 @@ const VaccinationSchedule = () => {
           style={styles.picker}
           onValueChange={(itemValue) => setSelectedMonth(itemValue)}
         >
-          <Picker.Item label="All Months" value={null} />
-          {vaccineData.map((item, index) => (
-            <Picker.Item key={index} label={item.month} value={index + 1} />
+          <Picker.Item label="All Months" value={0} />
+          {vaccineData.map((item) => (
+            <Picker.Item key={item.monthNumber} label={item.month} value={item.monthNumber} />
           ))}
         </Picker>
       </View>
@@ -84,18 +108,22 @@ const VaccinationSchedule = () => {
 
       {/* Vaccines List */}
       {filteredVaccines.length > 0 ? (
-        filteredVaccines.map((item, index) => (
-          <View key={index} style={styles.monthContainer}>
+        filteredVaccines.map((item) => (
+          <View key={item.monthNumber} style={styles.monthContainer}>
             <Text style={styles.monthTitle}>{item.month}</Text>
-            {item.vaccines.map((vaccine, idx) => (
-              <View key={idx} style={styles.vaccineContainer}>
-                <Text style={styles.vaccineText}>{vaccine.vaccineName}</Text>
-              </View>
-            ))}
+            {item.vaccines.length > 0 ? (
+              item.vaccines.map((vaccine) => (
+                <View key={vaccine._id} style={styles.vaccineContainer}>
+                  <Text style={styles.vaccineText}>{vaccine.vaccineName}</Text>
+                </View>
+              ))
+            ) : (
+              <Text style={styles.noVaccinesText}>No vaccines available for this month</Text>
+            )}
           </View>
         ))
       ) : (
-        <Text style={styles.noVaccinesText}>No vaccines available for this month</Text>
+        <Text style={styles.noVaccinesText}>No vaccines available.</Text>
       )}
       
       {/* Example of additional cards (you can adjust this as per your need) */}
@@ -207,6 +235,7 @@ const styles = StyleSheet.create({
     width: 150,
     backgroundColor: '#F1F1F1',
     borderRadius: 12,
+    height: 40, // Adjust height as needed
   },
   card: {
     backgroundColor: '#FFF',
@@ -215,19 +244,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 5,
+    elevation: 3,
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#3A3A3A',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   cardDescription: {
     fontSize: 14,
-    color: '#6B6B6B',
-    marginBottom: 15,
+    color: '#555',
+    marginBottom: 16,
   },
   image: {
     width: '100%',
@@ -235,9 +263,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   noVaccinesText: {
+    color: '#999',
     fontSize: 16,
-    color: '#6B6B6B',
+    marginVertical: 10,
     textAlign: 'center',
-    marginTop: 20,
   },
 });
