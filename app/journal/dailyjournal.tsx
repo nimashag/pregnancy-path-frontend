@@ -16,6 +16,7 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import moment from "moment"; // For formatting date
+import config from "../../constants/config";
 
 const { width } = Dimensions.get("window");
 
@@ -44,7 +45,7 @@ const DailyJournal: React.FC = () => {
   useEffect(() => {
     const fetchMemories = async (): Promise<void> => {
       try {
-        const response = await fetch("https://8763-2402-4000-b281-332e-472-87ff-fe25-6c33.ngrok-free.app/memory?userId=66dd6bf95be4a8cf0d58bf1f", {
+        const response = await fetch(`${config.backend_url}/memory?userId=66dd6bf95be4a8cf0d58bf1f`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -92,7 +93,7 @@ const DailyJournal: React.FC = () => {
   // Delete function
   const deleteEntry = async (id: string) => {
     try {
-      const response = await fetch(`https://8763-2402-4000-b281-332e-472-87ff-fe25-6c33.ngrok-free.app/memory/${id}`, {
+      const response = await fetch(`${config.backend_url}/memory/${id}`, {
         method: "DELETE",
       });
 

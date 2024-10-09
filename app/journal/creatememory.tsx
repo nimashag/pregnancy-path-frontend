@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
+import config from "../../constants/config";
 
 const CreateEventScreen = () => {
   const [eventName, setEventName] = useState("");
@@ -101,7 +102,7 @@ const CreateEventScreen = () => {
     try {
 
       const response = await fetch(
-        "https://8763-2402-4000-b281-332e-472-87ff-fe25-6c33.ngrok-free.app/memory",
+        `${config.backend_url}/memory`,
         {
           method: "POST",
           headers: {
