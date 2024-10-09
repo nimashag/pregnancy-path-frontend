@@ -34,6 +34,7 @@ export default function RootLayout() {
         <Stack.Screen name="/index" options={{ headerShown: false }} />
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
         <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
+        <Stack.Screen name="main/home" options={{ headerShown: false }} />
         <Stack.Screen name="journal/creatememory" options={{ headerShown: false }} />
         <Stack.Screen name="journal/dailyjournal" options={{ headerShown: false }} />
         <Stack.Screen name="journal/journalEntryDetail" options={{ headerShown: false }} />
