@@ -14,6 +14,7 @@ import {
   Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import Icon from 'react-native-vector-icons/Ionicons'; 
 import moment from "moment"; // For formatting date
 
 const { width } = Dimensions.get("window");
@@ -37,12 +38,13 @@ const DailyJournal: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
+  const navigation = useNavigation();
 
   // Fetch memory data from backend
   useEffect(() => {
     const fetchMemories = async (): Promise<void> => {
       try {
-        const response = await fetch("https://bcf6-112-134-141-184.ngrok-free.app/memory", {
+        const response = await fetch("https://8763-2402-4000-b281-332e-472-87ff-fe25-6c33.ngrok-free.app/memory?userId=66dd6bf95be4a8cf0d58bf1f", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -90,7 +92,7 @@ const DailyJournal: React.FC = () => {
   // Delete function
   const deleteEntry = async (id: string) => {
     try {
-      const response = await fetch(`http://192.168.1.3:3000/memory/${id}`, {
+      const response = await fetch(`https://8763-2402-4000-b281-332e-472-87ff-fe25-6c33.ngrok-free.app/memory/${id}`, {
         method: "DELETE",
       });
 
@@ -119,11 +121,11 @@ const DailyJournal: React.FC = () => {
 
   // Navigate to JournalEntryDetail screen with selected entry
   const handleJournalEntry = (entry: Memory) => {
-    
+    // navigation.navigate('JournalEntryDetail', { entry });
   };
 
   const renderEntry = ({ item }: { item: Memory }) => (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => handleJournalEntry(item)}>
     <View style={styles.entryContainer}>
       <View style={styles.textContent}>
         <Text style={styles.entryText}>{item.name}</Text>
@@ -161,16 +163,22 @@ const DailyJournal: React.FC = () => {
     router.push("/journal/creatememory");
   };
 
-  
+  const handleBackPress = () => {
+    router.push('/_sitemap'); 
+  };
+
+  const handlefavourites = () => {
+    router.push("/journal/favourites");
+  };
 
   return (
-    <View className="flex-1 bg-gray-100 p-4">
+    <View className="flex-1 bg-gray-100 p-4 ">
       {/* Header Section */}
-      <View className="flex-row items-center justify-between mb-4">
-        <TouchableOpacity>
-          <Text className="text-xl text-purple-950 font-bold">{"<"}</Text>
+      <View className="flex-row items-center justify-between mb-4 mt-8">
+        <TouchableOpacity onPress={handleBackPress} className="ml-2">
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
         </TouchableOpacity>
-        <Text className="text-2xl text-center text-purple-950 font-bold">
+        <Text className="text-2xl text-center text-indigo-950 font-bold">
           Pregnant Journal
         </Text>
         <View />
@@ -178,13 +186,13 @@ const DailyJournal: React.FC = () => {
 
       {/* Journal Type Selection */}
       <View className="flex-row justify-around rounded-lg shadow p-2 mb-4">
-        <TouchableOpacity className="flex-1 py-2 rounded-lg bg-gray-300 ">
-          <Text className="text-center text-black font-semibold">
+        <TouchableOpacity className="flex-1 py-3  bg-black rounded-l-lg ">
+          <Text className="text-center text-white font-semibold">
             Daily Journal
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity className="flex-1 py-2 rounded-lg bg-black">
-          <Text className="text-center text-white font-semibold">
+        <TouchableOpacity onPress={handlefavourites} className="flex-1 py-3 rounded-r-lg bg-gray-300">
+          <Text className="text-center text-black font-semibold">
             Memory Lane
           </Text>
         </TouchableOpacity>
@@ -203,7 +211,7 @@ const DailyJournal: React.FC = () => {
         {/* <TouchableOpacity style={styles.sortButton}>
           <Text className="text-black font-semibold">Sort</Text>
         </TouchableOpacity> */}
-        <TouchableOpacity onPress={handleAddpost} className="bg-white p-2 rounded-lg ml-2">
+        <TouchableOpacity onPress={handleAddpost} className="bg-white p-2 rounded-lg ml-2 border-2">
           <Text className="text-black font-semibold ">+ Add Post</Text>
         </TouchableOpacity>
       </View>
@@ -297,7 +305,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#AFAFAF",
     borderRadius: 8,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     color: "#000",
     backgroundColor: "#FFFFFF",
     flex: 1,

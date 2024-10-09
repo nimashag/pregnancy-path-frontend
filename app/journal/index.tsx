@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DailyJournal from './dailyjournal';
+import JournalEntryDetail from './jounalEntryDetail';
 
 
 const Stack = createNativeStackNavigator();
@@ -10,7 +11,8 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Journal" component={DailyJournal} />
+        <Stack.Screen name="dailyjournal" component={DailyJournal} />
+        {/* <Stack.Screen name="journalEntryDetail" component={JournalEntryDetail} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

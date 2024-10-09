@@ -20,7 +20,7 @@ interface JournalEntryDetailProps {
 }
 
 const JournalEntryDetail: React.FC<JournalEntryDetailProps> = ({ route }) => {
-  const { entry } = route.params;
+  const { entry } = route.params; // Accessing the entry
 
   return (
     <View style={styles.container}>
