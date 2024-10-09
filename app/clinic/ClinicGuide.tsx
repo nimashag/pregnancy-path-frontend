@@ -2,7 +2,7 @@ import {View, Text, FlatList, TouchableOpacity, TextInput, ScrollView, ListRende
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ClinicType from '../../types/clinicType';
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import {useHeaderHeight} from "@react-navigation/elements";
 
@@ -11,6 +11,7 @@ const CreateClinicSchedule = () => {
     const [clinics, setClinics] = useState<ClinicType[]>([]);
     const [loading, setLoading] = useState(true);
     const headerHeight = useHeaderHeight();
+    const router = useRouter();
 
     const imageMap = {
         'ParentalCheck.jpg' :  require('../../assets/images/Clinic/ParentalCheck.jpg'),
@@ -62,7 +63,7 @@ const CreateClinicSchedule = () => {
                     headerTitle: "Clinic Guide",
                     headerTitleAlign: "center",
                     headerLeft: () => (
-                        <TouchableOpacity onPress={() => {}}>
+                        <TouchableOpacity onPress={() => {router.push('/_sitemap');}}>
                             <View>
                                 <Ionicons name="chevron-back-outline" size={24} color="black" />
                             </View>

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, Stack } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import clinicScheduleType from "../../types/clinicScheduleType";
@@ -19,6 +19,7 @@ import { format } from "date-fns";
 const CreateClinicSchedule = () => {
   const [schedules, setSchedules] = useState<clinicScheduleType[]>([]);
   const headerHeight = useHeaderHeight();
+  const router = useRouter();
 
   const imageMap = {
     "ParentalCheck.jpg": require("../../assets/images/Clinic/ParentalCheck.jpg"),
@@ -86,7 +87,7 @@ const CreateClinicSchedule = () => {
           headerTitle: "Clinic Schedule",
           headerTitleAlign: "center",
           headerLeft: () => (
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => {router.push('/_sitemap');}}>
               <View>
                 <Ionicons name="chevron-back-outline" size={24} color="black" />
               </View>

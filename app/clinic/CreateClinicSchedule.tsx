@@ -1,6 +1,6 @@
 import {View, Text, FlatList, TouchableOpacity, TextInput, ScrollView} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import {Stack} from "expo-router";
+import {Stack, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
 import React, {useEffect, useState} from "react";
 import {useHeaderHeight} from "@react-navigation/elements";
@@ -13,6 +13,7 @@ const CreateClinicSchedule = () => {
 
     const headerHeight = useHeaderHeight();
     const [clinics, setClinics] = useState<ClinicType[]>([]);
+    const router = useRouter();
 
     const [user, setUser] = useState("");
     const [clinic, setClinic] = useState<ClinicType | undefined>(undefined);
@@ -80,7 +81,7 @@ const CreateClinicSchedule = () => {
                     headerTitle: "Add Clinic Schedule",
                     headerTitleAlign: "center",
                     headerLeft: () => (
-                        <TouchableOpacity onPress={() => {}}>
+                        <TouchableOpacity onPress={() => {router.back();}}>
                             <View>
                                 <Ionicons name="chevron-back-outline" size={24} color="black" />
                             </View>

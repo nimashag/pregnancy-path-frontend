@@ -52,7 +52,7 @@ const ViewClinicSchedule = () => {
           headerTitle: "",
           headerTitleAlign: "center",
           headerLeft: () => (
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => {router.back();}}>
               <View>
                 <Ionicons name="chevron-back-outline" size={24} color="black" />
               </View>

@@ -15,7 +15,7 @@ const UpdateClinicSchedule = () => {
     const headerHeight = useHeaderHeight();
     const [clinics, setClinics] = useState<ClinicType[]>([]);
     const { id } = useLocalSearchParams();
-  const router = useRouter();
+    const router = useRouter();
 
     const [clinic, setClinic] = useState<ClinicType | undefined>(undefined);
     const [previousDate, setPreviousDate] = useState('');
@@ -86,7 +86,7 @@ const UpdateClinicSchedule = () => {
                     headerTitle: "Update Clinic Schedule",
                     headerTitleAlign: "center",
                     headerLeft: () => (
-                        <TouchableOpacity onPress={() => {}}>
+                        <TouchableOpacity onPress={() => {router.back();}}>
                             <View>
                                 <Ionicons name="chevron-back-outline" size={24} color="black" />
                             </View>
