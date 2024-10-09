@@ -1,9 +1,7 @@
 // viewvaccineschedule.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
-import Icon from 'react-native-vector-icons/Ionicons'; 
-import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
 interface Reminder {
@@ -39,6 +37,22 @@ const ViewVaccinesSchedule = () => {
     fetchReminders();
   }, []);
 
+  const handleUpdate = (id: string) => {
+    // Handle the update logic here, for example, navigate to the update screen
+    //router.push(`/vaccination/updatevaccineschedule/${id}`);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`http://192.168.1.5:3000/vaccination/${id}`);
+      setReminders(reminders.filter(reminder => reminder._id !== id));
+      Alert.alert('Success', 'Reminder deleted successfully.');
+    } catch (err) {
+      console.error('Error deleting reminder:', err);
+      Alert.alert('Error', 'Failed to delete reminder. Please try again.');
+    }
+  };
+
   const renderReminder = ({ item }: { item: Reminder }) => (
     <View style={styles.reminderCard}>
       <Text style={styles.textTitle}>Vaccine Name: <Text style={styles.textValue}>{item.vaccineName}</Text></Text>
@@ -48,6 +62,24 @@ const ViewVaccinesSchedule = () => {
       <Text style={styles.textTitle}>Notify Days: <Text style={styles.textValue}>{item.notificationReminderDays}</Text></Text>
       <Text style={styles.textTitle}>Status: <Text style={styles.textValue}>{item.status}</Text></Text>
       <Text style={styles.textTitle}>Notes: <Text style={styles.textValue}>{item.notes}</Text></Text>
+
+      {/* Update and Delete Buttons with Images */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => handleUpdate(item._id)}>
+          <Image 
+            source={require('../../assets/images/buttons/updatebtn.png')} 
+            style={styles.imageButton} 
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => handleDelete(item._id)}>
+          <Image 
+            source={require('../../assets/images/buttons/deletebtn.png')} 
+            style={styles.imageButton}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -60,52 +92,56 @@ const ViewVaccinesSchedule = () => {
     return <View style={styles.errorContainer}><Text>{error}</Text></View>;
   }
 
-  const handleBackPress = () => {
-    router.push('/_sitemap'); 
-  };
-
   // Handle empty data response
   return (
-    <View style={styles.container}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-      {reminders.length === 0 ? (
-        <Text style={styles.emptyText}>No vaccination reminders available.</Text>
-      ) : (
-        <FlatList
-          data={reminders}
-          renderItem={renderReminder}
-          keyExtractor={(item) => item._id}
-        />
-      )}
-    </View>
+    <ScrollView>
+      <View>
+        <Text style={styles.cardTitle}>Reserved Vaccination Schedules</Text>
+      </View>
+      <View style={styles.container}>
+        {reminders.length === 0 ? (
+          <Text style={styles.emptyText}>No vaccination reminders available.</Text>
+        ) : (
+          <FlatList
+            data={reminders}
+            renderItem={renderReminder}
+            keyExtractor={(item) => item._id}
+          />
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F8F8',
-    padding: 16,
+    padding: 20,
+    marginTop: 10,
   },
   reminderCard: {
     backgroundColor: '#FFFFFF',
-    padding: 16,
+    padding: 20,
     borderRadius: 12,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
+    marginBottom: 20,
+    elevation: 4,
+    paddingBottom: 80, 
   },
   textTitle: {
-    fontSize: 14,
+    fontSize: 16,  
     fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   textValue: {
+    fontSize: 16, 
     fontWeight: '400',
+  },
+  cardTitle: {
+    fontSize: 20,  
+    fontWeight: 'bold',
+    marginTop: 20,
+    textAlign: 'center',
+    color: '#000',
   },
   loader: {
     flex: 1,
@@ -118,12 +154,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 30,
+    color: '#777',
   },
-  backButton: {
-    marginRight: 10,
+  buttonContainer: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+  },
+  button: {
+    marginHorizontal: 8,
+  },
+  imageButton: {
+    width: 90, 
+    height: 60, 
   },
 });
 

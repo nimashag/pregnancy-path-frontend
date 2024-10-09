@@ -40,6 +40,7 @@ const CreateEventScreen = () => {
     setShowDatePicker(false);
     if (selectedDate) {
       setEventDate(selectedDate);
+
     }
   };
 
