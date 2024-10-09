@@ -60,16 +60,10 @@ const ViewVaccinesSchedule = () => {
     return <View style={styles.errorContainer}><Text>{error}</Text></View>;
   }
 
-  const handleBackPress = () => {
-    router.push('/_sitemap'); 
-  };
-
   // Handle empty data response
   return (
     <View style={styles.container}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
+        
       {reminders.length === 0 ? (
         <Text style={styles.emptyText}>No vaccination reminders available.</Text>
       ) : (
