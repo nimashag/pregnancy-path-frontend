@@ -17,19 +17,11 @@ import { FontAwesome } from "@expo/vector-icons";
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import moment from "moment"; // For formatting date
 import config from "../../constants/config";
+import { Memory } from "./IMemory"
 
 const { width } = Dimensions.get("window");
 
-interface Memory {
-  _id: string;
-  name: string;
-  description: string;
-  time: string;
-  date: string;
-  image?: string;
-  feelings?: string;
-  isFavorite: boolean
-}
+
 
 interface MemoryResponse {
   data: Memory[]; // API response shape
