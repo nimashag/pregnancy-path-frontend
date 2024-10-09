@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -27,7 +28,8 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+
+    <ThemeProvider value={DefaultTheme}>
       <Stack>
         <Stack.Screen name="/index" options={{ headerShown: false }} />
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
@@ -37,6 +39,15 @@ export default function RootLayout() {
         <Stack.Screen name="journal/journalEntryDetail" options={{ headerShown: false }} />
         <Stack.Screen name="journal/favourites" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
+
+
+        <Stack.Screen name="vaccination/vacciguide" />
+        <Stack.Screen name="vaccination/vaccimain" />
+        <Stack.Screen name="vaccination/vaccilog" />
+        <Stack.Screen name="vaccination/createvaccischedule" />
+        <Stack.Screen name="vaccination/viewvaccischedule" />
+        <Stack.Screen name="vaccination/vaccimonthtracker" />
+
       </Stack>
     </ThemeProvider>
   );

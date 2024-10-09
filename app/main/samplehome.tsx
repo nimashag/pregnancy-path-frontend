@@ -21,7 +21,7 @@ const samplehome = () => {
     };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16 }} style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.welcomeText}>Welcome</Text>
@@ -81,13 +81,13 @@ const samplehome = () => {
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
                         Schedule dates for your vaccinations
                     </Text>
-                    <TouchableOpacity style={{ backgroundColor: '#8B0000', padding: 8, borderRadius: 5 }}>
+                    <TouchableOpacity style={{ backgroundColor: '#F88C8C', padding: 8, borderRadius: 5 }}>
                         <Text style={{ color: '#fff', fontWeight: 'bold' }}>Schedule</Text>
                     </TouchableOpacity>
                 </ImageBackground>
             </TouchableOpacity>
 
-        {/* Additional sections */}
+        {/* Journal section */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 {/* Card 1 */}
                 <TouchableOpacity onPress={handleJournalNavigation} style={{ flex: 1, marginRight: 10 }}>
@@ -102,7 +102,7 @@ const samplehome = () => {
                         }}
                         resizeMode="cover"
                     >
-                        <Text style={{ color: '#ffffff', fontWeight: 'bold', fontSize: 16 }}>
+                        <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
                             Save Your Memories With Us
                         </Text>
                         <TouchableOpacity style={{ backgroundColor: '#000', padding: 8, marginTop: 10, borderRadius: 5 }}>
@@ -124,10 +124,10 @@ const samplehome = () => {
                         }}
                         resizeMode="cover"
                     >
-                        <Text style={{ color: '#ffffff', fontWeight: 'bold', fontSize: 16 }}>
+                        <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
                             Track Your Daily Habits
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#8B0000', padding: 8, marginTop: 10, borderRadius: 5 }}>
+                        <TouchableOpacity style={{ backgroundColor: '#5C0D0D', padding: 8, marginTop: 10, borderRadius: 5 }}>
                             <Text style={{ color: '#fff', fontWeight: 'bold' }}>Tracker</Text>
                         </TouchableOpacity>
                     </ImageBackground>
@@ -139,7 +139,7 @@ const samplehome = () => {
                 {/* Card 1 */}
                 <TouchableOpacity onPress={handleJournalNavigation} style={{ flex: 1, marginRight: 10 }}>
                     <ImageBackground
-                        source={require('../../assets/images/journalimg.png')}
+                        source={require('../../assets/images/home/clinic1.png')}
                         style={{
                             height: 200,
                             borderRadius: 15,
@@ -158,7 +158,7 @@ const samplehome = () => {
                 {/* Card 2 */}
                 <TouchableOpacity onPress={handleTrackerNavigation} style={{ flex: 1, marginLeft: 10 }}>
                     <ImageBackground
-                        source={require('../../assets/images/trackerimg.png')}
+                        source={require('../../assets/images/home/clinic2.png')}
                         style={{
                             height: 200,
                             borderRadius: 15,
@@ -177,7 +177,7 @@ const samplehome = () => {
                 {/* Card 3  */}
                 <TouchableOpacity onPress={handleTrackerNavigation} style={{ flex: 1, marginLeft: 10 }}>
                     <ImageBackground
-                        source={require('../../assets/images/trackerimg.png')}
+                        source={require('../../assets/images/home/clinic3.png')}
                         style={{
                             height: 200,
                             borderRadius: 15,
@@ -215,7 +215,7 @@ const samplehome = () => {
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
                       Easily manage your appointments and stay on top of your care.
                     </Text>
-                    <TouchableOpacity style={{ backgroundColor: '#8B0000', padding: 8, borderRadius: 5 }}>
+                    <TouchableOpacity style={{ backgroundColor: '#1C476F', padding: 8, borderRadius: 5 }}>
                         <Text style={{ color: '#fff', fontWeight: 'bold' }}>Check Now</Text>
                     </TouchableOpacity>
                 </ImageBackground>
@@ -239,7 +239,7 @@ const samplehome = () => {
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
                         Navigate your pregnancy with ease using our comprehensive guide.
                     </Text>
-                    <TouchableOpacity style={{ backgroundColor: '#8B0000', padding: 8, borderRadius: 5 }}>
+                    <TouchableOpacity style={{ backgroundColor: '#641E1F', padding: 8, borderRadius: 5 }}>
                         <Text style={{ color: '#fff', fontWeight: 'bold' }}>Check Now</Text>
                     </TouchableOpacity>
                 </ImageBackground>
