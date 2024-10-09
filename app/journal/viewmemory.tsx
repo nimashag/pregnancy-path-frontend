@@ -62,6 +62,15 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
     ]);
   };
 
+  // Function to format the date to YYYY-MM-DD
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   return (
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.card}>
@@ -78,7 +87,7 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
             <View style={styles.metadata}>
               <View style={styles.metaItem}>
                 <MaterialIcons name="date-range" size={20} color="#6a7fdb" />
-                <Text style={styles.date}>{parsedEntry.date}</Text>
+                <Text style={styles.date}>{formatDate(parsedEntry.date)}</Text>
               </View>
               <View style={styles.metaItem}>
                 <FontAwesome name="clock-o" size={20} color="#6a7fdb" />
