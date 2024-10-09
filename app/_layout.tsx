@@ -35,6 +35,15 @@ export default function RootLayout() {
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
         <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
+
+
+        <Stack.Screen name="vaccination/vacciguide" />
+        <Stack.Screen name="vaccination/vaccimain" />
+        <Stack.Screen name="vaccination/vaccilog" />
+        <Stack.Screen name="vaccination/createvaccischedule" />
+        <Stack.Screen name="vaccination/viewvaccischedule" />
+        <Stack.Screen name="vaccination/vaccimonthtracker" />
+
       </Stack>
     </ThemeProvider>
   );

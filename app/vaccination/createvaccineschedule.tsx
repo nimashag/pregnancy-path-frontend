@@ -81,15 +81,10 @@ const CreateVaccinationSchedule = () => {
     }
   };
 
-  const handleBackPress = () => {
-    router.push('/_sitemap'); 
-  };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
       <Text style={styles.headerText}>Create Vaccination Schedule</Text>
 
       <Text style={styles.label}>Vaccine Name</Text>
