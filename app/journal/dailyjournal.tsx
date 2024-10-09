@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -36,36 +36,36 @@ const DailyJournal: React.FC = () => {
 
   // Fetch memory data from backend
   useEffect(() => {
-    const fetchMemories = async (): Promise<void> => {
-      try {
-        const response = await fetch(`${config.backend_url}/memory?userId=66dd6bf95be4a8cf0d58bf1f`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        console.log("Response status:", response.status);
-        console.log(response);
-
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          throw new Error(
-            `Failed to fetch memories: ${response.status} - ${errorMessage}`
-          );
-        }
-
-        const data: MemoryResponse = await response.json();
-        setMemories(data.data); // Directly setting the data array
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching memories:", (error as Error).message);
-        setLoading(false);
-      }
-    };
-
     fetchMemories();
   }, []);
+
+  const fetchMemories = async (): Promise<void> => {
+    try {
+      const response = await fetch(`${config.backend_url}/memory?userId=66dd6bf95be4a8cf0d58bf1f`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response status:", response.status);
+      console.log(response);
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(
+          `Failed to fetch memories: ${response.status} - ${errorMessage}`
+        );
+      }
+
+      const data: MemoryResponse = await response.json();
+      setMemories(data.data); // Directly setting the data array
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching memories:", (error as Error).message);
+      setLoading(false);
+    }
+  };
 
   // Grouping data by date
   const groupByDate = (entries: Memory[]) => {
@@ -82,36 +82,6 @@ const DailyJournal: React.FC = () => {
   const filteredData = Object.keys(groupedData).filter((date) =>
     date.includes(searchQuery)
   );
-
-  // Delete function
-  const deleteEntry = async (id: string) => {
-    try {
-      const response = await fetch(`${config.backend_url}/memory/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(
-          `Failed to delete entry: ${response.status} - ${errorMessage}`
-        );
-      }
-
-      // Update the state to remove the deleted entry
-      setMemories((prevMemories) =>
-        prevMemories.filter((entry) => entry._id !== id)
-      );
-    } catch (error) {
-      console.error("Error deleting entry:", (error as Error).message);
-    }
-  };
-
-  const confirmDelete = (id: string) => {
-    Alert.alert("Delete Entry", "Are you sure you want to delete this entry?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "OK", onPress: () => deleteEntry(id) },
-    ]);
-  };
 
   // Navigate to JournalEntryDetail screen with selected entry
   const handleJournalEntry = (entry: Memory) => {
