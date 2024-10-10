@@ -32,16 +32,23 @@ export default function RootLayout() {
     <ThemeProvider value={DefaultTheme}>
       <Stack>
         <Stack.Screen name="/index" options={{ headerShown: false }} />
+        <Stack.Screen name="main/home" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+
+        {/* Startup Routes */}
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
         <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
-        <Stack.Screen name="main/home" options={{ headerShown: false }} />
+
+        {/* Home Routes */}
+        <Stack.Screen name="main/samplehome" />
+
+        {/* Journal Routes */}
         <Stack.Screen name="journal/creatememory" options={{ headerShown: false }} />
         <Stack.Screen name="journal/dailyjournal" options={{ headerShown: false }} />
         <Stack.Screen name="journal/journalEntryDetail" options={{ headerShown: false }} />
         <Stack.Screen name="journal/favourites" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
 
-
+        {/* Vaccination Routes */}
         <Stack.Screen name="vaccination/vacciguide" />
         <Stack.Screen name="vaccination/vaccimain" />
         <Stack.Screen name="vaccination/vaccilog" />
