@@ -27,6 +27,7 @@ const CreateVaccinationSchedule = () => {
   const [showScheduleDatePicker, setShowScheduleDatePicker] = useState(false);
   const [showNotificationReminderTimePicker, setShowNotificationReminderTimePicker] = useState(false);
   const [showNotificationReminderDatePicker, setShowNotificationReminderDatePicker] = useState(false);
+  const [vaccineNameError, setVaccineNameError] = useState("");
 
   const onScheduleTimeChange = (event: any, selectedTime: Date | undefined) => {
     if (event.type === 'set' && selectedTime) {
@@ -37,6 +38,12 @@ const CreateVaccinationSchedule = () => {
 
   const onScheduleDateChange = (event: any, selectedDate: Date | undefined) => {
     if (event.type === 'set' && selectedDate) {
+      // Check if the selected date is in the past
+      const currentDate = new Date();
+      if (selectedDate < currentDate) {
+        Alert.alert("Error", "Can't select a past date.");
+        return; // Do not update state if date is in the past
+      }
       setScheduleDate(selectedDate);
     }
     setShowScheduleDatePicker(false);
@@ -49,32 +56,43 @@ const CreateVaccinationSchedule = () => {
     setShowNotificationReminderTimePicker(false);
   };
 
+  const handleVaccineNameChange = (text: string) => {
+    // Regular expression to allow only letters, numbers, and spaces
+    const regex = /^[A-Za-z0-9\s]*$/;
+
+    if (regex.test(text)) {
+      setVaccineName(text);
+      setVaccineNameError(""); 
+    } else {
+      setVaccineNameError("Vaccine name can only contain letters, numbers, and spaces.");
+    }
+  };
+
   const handleSubmit = async () => {
-    if (!vaccineName || !notificationReminderDays) {
-      Alert.alert("Error", "Vaccine name and notification days are required.");
+    if (!vaccineName || !scheduleDate || !scheduleTime) {
+      Alert.alert("Error", "Vaccine name, schedule date, and schedule time are required.");
       return;
     }
 
+    // Set default notes if none are provided
+    const finalNotes = notes.trim() === "" ? "No special notes." : notes;
+
     try {
       const response = await axios.post("http://192.168.1.5:3000/vaccination", {
-        userId: "66dc91bfa30ade59031324c4", // aththa users wa dapuwama meka remove karanna pettiyolaaaaaaaaaaaa
+        userId: "66dc91bfa30ade59031324c4",
         vaccineName,
         scheduleTime: scheduleTime.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
         }),
         scheduleDate: scheduleDate.toISOString(),
-        notificationReminderTime: notificationReminderTime.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        notificationReminderDays,
         status,
-        notes,
+        notes: finalNotes,
       });
 
       if (response.status === 201) {
         Alert.alert("Success", "Vaccination schedule created successfully!");
+        router.back(); // Navigate back after successful submission
       }
     } catch (error) {
       console.error(error);
@@ -82,11 +100,15 @@ const CreateVaccinationSchedule = () => {
     }
   };
 
+  const handleCancel = () => {
+    router.back(); // Navigate back when cancel is clicked
+  };
+
   return (
     <KeyboardAvoidingView 
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={100} // Adjust this value to fit your design
+      keyboardVerticalOffset={100} 
     >
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.headerText}>Create Vaccination Schedule</Text>
@@ -96,8 +118,9 @@ const CreateVaccinationSchedule = () => {
           style={styles.input}
           placeholder="Enter vaccine name here..."
           value={vaccineName}
-          onChangeText={setVaccineName}
+          onChangeText={handleVaccineNameChange}
         />
+        {vaccineNameError ? <Text style={styles.errorText}>{vaccineNameError}</Text> : null}
 
         <Text style={styles.label}>Schedule Time</Text>
         <TouchableOpacity style={styles.input} onPress={() => setShowScheduleTimePicker(true)}>
@@ -131,34 +154,6 @@ const CreateVaccinationSchedule = () => {
           />
         )}
 
-        <Text style={styles.label}>Notification Reminder Time</Text>
-        <TouchableOpacity style={styles.input} onPress={() => setShowNotificationReminderTimePicker(true)}>
-          <Text>
-            {notificationReminderTime.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </Text>
-        </TouchableOpacity>
-        {showNotificationReminderTimePicker && (
-          <DateTimePicker
-            value={notificationReminderTime}
-            mode="time"
-            is24Hour={false}
-            display="default"
-            onChange={onNotificationReminderTimeChange}
-          />
-        )}
-
-        <Text style={styles.label}>Notification Reminder Days</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter days before schedule..."
-          keyboardType="numeric"
-          value={notificationReminderDays.toString()}
-          onChangeText={(value) => setNotificationReminderDays(Number(value))}
-        />
-
         <Text style={styles.label}>Notes</Text>
         <TextInput
           style={[styles.input, styles.descriptionInput]}
@@ -169,7 +164,7 @@ const CreateVaccinationSchedule = () => {
         />
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.cancelButton}>
+          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
 
@@ -213,6 +208,11 @@ const styles = StyleSheet.create({
   },
   descriptionInput: {
     height: 128,
+  },
+  errorText: {
+    color: "#CC1616",
+    fontSize: 14,
+    marginBottom: 8,
   },
   buttonContainer: {
     flexDirection: "row",
