@@ -58,7 +58,14 @@ export default function RootLayout() {
         <Stack.Screen name="vaccination/viewvaccischedule" />
         <Stack.Screen name="vaccination/vaccimonthtracker" />
 
+        {/* Vaccination Routes */}
         <Stack.Screen name="clinic/CreateClinicSchedule" />
+
+        {/* Startup Pages */}
+        <Stack.Screen name="startup/startup1"  options={{headerShown: false}}/>
+        <Stack.Screen name="startup/startup2"  options={{headerShown: false}}/>
+        <Stack.Screen name="startup/startup3"  options={{headerShown: false}}/>
+        <Stack.Screen name="startup/startup4"  options={{headerShown: false}}/>
 
       </Stack>
     </ThemeProvider>
