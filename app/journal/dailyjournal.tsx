@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -17,18 +17,11 @@ import { FontAwesome } from "@expo/vector-icons";
 import Icon from 'react-native-vector-icons/Ionicons'; 
 import moment from "moment"; // For formatting date
 import config from "../../constants/config";
+import { Memory } from "./IMemory"
 
 const { width } = Dimensions.get("window");
 
-interface Memory {
-  _id: string;
-  name: string;
-  description: string;
-  time: string;
-  date: string;
-  image?: string;
-  feelings?: string;
-}
+
 
 interface MemoryResponse {
   data: Memory[]; // API response shape
@@ -43,36 +36,36 @@ const DailyJournal: React.FC = () => {
 
   // Fetch memory data from backend
   useEffect(() => {
-    const fetchMemories = async (): Promise<void> => {
-      try {
-        const response = await fetch(`${config.backend_url}/memory?userId=66dd6bf95be4a8cf0d58bf1f`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        console.log("Response status:", response.status);
-        console.log(response);
-
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          throw new Error(
-            `Failed to fetch memories: ${response.status} - ${errorMessage}`
-          );
-        }
-
-        const data: MemoryResponse = await response.json();
-        setMemories(data.data); // Directly setting the data array
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching memories:", (error as Error).message);
-        setLoading(false);
-      }
-    };
-
     fetchMemories();
   }, []);
+
+  const fetchMemories = async (): Promise<void> => {
+    try {
+      const response = await fetch(`${config.backend_url}/memory?userId=66dd6bf95be4a8cf0d58bf1f`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response status:", response.status);
+      console.log(response);
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(
+          `Failed to fetch memories: ${response.status} - ${errorMessage}`
+        );
+      }
+
+      const data: MemoryResponse = await response.json();
+      setMemories(data.data); // Directly setting the data array
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching memories:", (error as Error).message);
+      setLoading(false);
+    }
+  };
 
   // Grouping data by date
   const groupByDate = (entries: Memory[]) => {
@@ -90,36 +83,6 @@ const DailyJournal: React.FC = () => {
     date.includes(searchQuery)
   );
 
-  // Delete function
-  const deleteEntry = async (id: string) => {
-    try {
-      const response = await fetch(`${config.backend_url}/memory/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const errorMessage = await response.text();
-        throw new Error(
-          `Failed to delete entry: ${response.status} - ${errorMessage}`
-        );
-      }
-
-      // Update the state to remove the deleted entry
-      setMemories((prevMemories) =>
-        prevMemories.filter((entry) => entry._id !== id)
-      );
-    } catch (error) {
-      console.error("Error deleting entry:", (error as Error).message);
-    }
-  };
-
-  const confirmDelete = (id: string) => {
-    Alert.alert("Delete Entry", "Are you sure you want to delete this entry?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "OK", onPress: () => deleteEntry(id) },
-    ]);
-  };
-
   // Navigate to JournalEntryDetail screen with selected entry
   const handleJournalEntry = (entry: Memory) => {
     // Navigate to the 'viewmemory' screen and pass the 'entry' data
@@ -127,6 +90,46 @@ const DailyJournal: React.FC = () => {
       pathname: "/journal/viewmemory",  // Ensure the correct path
       params: { entry: JSON.stringify(entry) },  // Pass the entry data as a JSON string
     });
+  };
+
+  const toggleFavorite = async (id: string, currentStatus: boolean) => {
+    try {
+      // Send the update request to the backend
+      const response = await fetch(`${config.backend_url}/memory/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isFavorite: !currentStatus, // Send the opposite of the current status
+        }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(
+            `Failed to update memory: ${response.status} - ${errorMessage}`
+        );
+      }
+
+      // Optimistically update local state
+      setMemories((prevMemories) =>
+          prevMemories.map((memory) =>
+              memory._id === id ? { ...memory, isFavorite: !currentStatus } : memory
+          )
+      );
+
+      // No need to do anything here as the local state is already updated
+      console.log("Favorite status updated successfully");
+    } catch (error) {
+      console.error("Error updating favorite status:", (error as Error).message);
+      // Revert the local state if the update fails
+      setMemories((prevMemories) =>
+          prevMemories.map((memory) =>
+              memory._id === id ? { ...memory, isFavorite: currentStatus } : memory
+          )
+      );
+    }
   };
 
   const renderEntry = ({ item }: { item: Memory }) => (
@@ -146,11 +149,15 @@ const DailyJournal: React.FC = () => {
           style={styles.entryImage}
         />
       )}
-      <TouchableOpacity style={styles.deleteButton} onPress={() => confirmDelete(item._id)}>
-        <FontAwesome name="trash" size={20} color="red" />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.starIcon}>
-        <FontAwesome name="star-o" size={20} color="black" />
+      <TouchableOpacity
+          style={styles.starIcon}
+          onPress={() => toggleFavorite(item._id, item.isFavorite)} // Toggle favorite on press
+      >
+        <FontAwesome
+            name={item.isFavorite ? "star" : "star-o"}
+            size={20}
+            color="black"
+        />
       </TouchableOpacity>
     </View>
     </TouchableOpacity>

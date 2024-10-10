@@ -45,7 +45,8 @@ export default function RootLayout() {
         {/* Journal Routes */}
         <Stack.Screen name="journal/creatememory" options={{ headerShown: false }} />
         <Stack.Screen name="journal/dailyjournal" options={{ headerShown: false }} />
-        <Stack.Screen name="journal/journalEntryDetail" options={{ headerShown: false }} />
+        <Stack.Screen name="journal/updatememory" options={{ headerShown: false }} />
+        <Stack.Screen name="journal/viewmemory" options={{ headerShown: false }} />
         <Stack.Screen name="journal/favourites" options={{ headerShown: false }} />
 
         {/* Vaccination Routes */}

@@ -1,8 +1,10 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView, Dimensions } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Alert } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';  // Icons for time, date, and feelings
 import { Chip, ProgressBar } from 'react-native-paper';  // Chips for feelings and a progress bar for emotions
+import config from "../../constants/config";
+import {Memory} from "@/app/journal/IMemory";
 
 const { width } = Dimensions.get("window");
 
@@ -24,9 +26,57 @@ interface JournalEntryDetailProps {
 
 const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
   const { entry } = useLocalSearchParams();
-  const parsedEntry = JSON.parse(entry as string);
+  const parsedEntry: Memory = JSON.parse(entry as string);
+  const router = useRouter();
 
-  const emotionsColor = parsedEntry.emotionLevel ? getEmotionColor(parsedEntry.emotionLevel) : "#d3d3d3";
+  // Function to delete the entry
+  const deleteEntry = async (entryId: string) => {
+    try {
+      const response = await fetch(`${config.backend_url}/memory/${entryId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(`Failed to delete entry: ${response.status} - ${errorMessage}`);
+      }
+
+      // Optionally navigate back or show a success message
+      Alert.alert("Success", "Entry deleted successfully", [
+        {
+          text: "OK",
+          onPress: () => {
+            router.push("/journal/dailyjournal"); // Navigate back to daily journal
+          },
+        },
+      ]);
+    } catch (error) {
+      console.error("Error deleting entry:", (error as Error).message);
+    }
+  };
+
+  const confirmDelete = (entryId: string) => {
+    Alert.alert("Delete Entry", "Are you sure you want to delete this entry?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "OK", onPress: () => deleteEntry(entryId) },
+    ]);
+  };
+
+  // Function to format the date to YYYY-MM-DD
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleEdit = () => {
+    router.push({
+      pathname: "/journal/updatememory",
+      params: { entry }, // Pass the memory object to the update screen
+    });
+  };
 
   return (
       <ScrollView contentContainerStyle={styles.container}>
@@ -44,7 +94,7 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
             <View style={styles.metadata}>
               <View style={styles.metaItem}>
                 <MaterialIcons name="date-range" size={20} color="#6a7fdb" />
-                <Text style={styles.date}>{parsedEntry.date}</Text>
+                <Text style={styles.date}>{formatDate(parsedEntry.date)}</Text>
               </View>
               <View style={styles.metaItem}>
                 <FontAwesome name="clock-o" size={20} color="#6a7fdb" />
@@ -66,24 +116,16 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
                   </View>
                 </View>
             )}
-
-            {parsedEntry.emotionLevel !== undefined && (
-                <View style={styles.emotionLevelContainer}>
-                  <Text style={styles.emotionLevelText}>Emotion Intensity:</Text>
-                  <ProgressBar progress={parsedEntry.emotionLevel / 10} color={emotionsColor} style={styles.progressBar} />
-                </View>
-            )}
           </View>
+          <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
+            <FontAwesome name="edit" size={24} color="blue" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => confirmDelete(parsedEntry._id as string)} style={styles.deleteButton}>
+            <FontAwesome name="trash" size={24} color="red" />
+          </TouchableOpacity>
         </View>
       </ScrollView>
   );
-};
-
-// Helper function to return color based on emotion level
-const getEmotionColor = (level: number) => {
-  if (level <= 3) return "#64b5f6"; // Light blue for calm
-  if (level <= 6) return "#ffb74d"; // Orange for moderate emotions
-  return "#e57373"; // Red for intense emotions
 };
 
 const styles = StyleSheet.create({
@@ -178,6 +220,22 @@ const styles = StyleSheet.create({
   progressBar: {
     height: 10,
     borderRadius: 5,
+  },
+  deleteButton: {
+    position: "absolute",
+    right: 20,
+    bottom: 24,
+    backgroundColor: "white",
+    borderRadius: 50,
+    padding: 10,
+  },
+  editButton: {
+    padding: 10,
+    borderRadius: 5,
+    position: "absolute",
+    right: 60,
+    bottom: 23,
+    backgroundColor: "white",
   },
 });
 
