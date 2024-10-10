@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import clinicScheduleType from "../../types/clinicScheduleType";
 import { format } from "date-fns";
+import config from "../../constants/config"
 
 const CreateClinicSchedule = () => {
   const [schedules, setSchedules] = useState<clinicScheduleType[]>([]);
@@ -33,7 +34,7 @@ const CreateClinicSchedule = () => {
       try {
         const id = "66dd6bf95be4a8cf0d58bf1f";
         const response = await axios.get(
-          `http://192.168.8.127:3000/clinic-schedule/upcoming-clinic-schedule/${id}`
+          `${config.backend_url}/clinic-schedule/upcoming-clinic-schedule/${id}`
         );
         setSchedules(response.data);
       } catch (error) {
@@ -87,7 +88,11 @@ const CreateClinicSchedule = () => {
           headerTitle: "Clinic Schedule",
           headerTitleAlign: "center",
           headerLeft: () => (
-            <TouchableOpacity onPress={() => {router.push('/_sitemap');}}>
+            <TouchableOpacity
+              onPress={() => {
+                router.push("/_sitemap");
+              }}
+            >
               <View>
                 <Ionicons name="chevron-back-outline" size={24} color="black" />
               </View>
@@ -110,7 +115,7 @@ const CreateClinicSchedule = () => {
         Clinic Appointments for this month
       </Text>
 
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView className="">
         <FlatList
           data={schedules}
           renderItem={renderItems}
@@ -119,18 +124,33 @@ const CreateClinicSchedule = () => {
       </ScrollView>
 
       {/*Footer*/}
-      <View className="absolute bottom-0 px-4 p-8 flex-row bg-white">
-        <TouchableOpacity className="bg-green-600 items-center py-5 px-16 rounded-xl flex-grow mr-4">
-          <View className="flex-row items-center">
-            <Text className="text-white text-lg uppercase pr-1">Add</Text>
-            <Ionicons name="add-circle-outline" size={20} color="white" />
+      <View className= "p-3 space-y-1">
+        <TouchableOpacity className="bg-clinic-guide items-center py-3 w-full rounded-xl">
+          <View className="flex-row items-center space-x-4">
+            <Image
+              className="w-10 h-10"
+              source={require("../../assets/images/Clinic/clinicGuide.png")}
+            />
+            <View className="">
+              <Text className="text-black font-light text-lg">Clinic Guide</Text>
+              <Text className="text-gray-500">How to prepare for your vaccinations</Text>
+            </View>
+            <Ionicons name="chevron-forward-circle-outline" size={40} color="black" />
           </View>
+
         </TouchableOpacity>
-        <TouchableOpacity
-          className="bg-red-700 items-center p-5 px-8 rounded-xl"
-          onPress={() => {}}
-        >
-          <Text className="text-white text-lg uppercase">Cancel</Text>
+        <TouchableOpacity className="bg-clinic-assistant items-center py-3 w-full rounded-xl">
+        <View className="flex-row items-center space-x-4">
+            <Image
+              className="w-10 h-10"
+              source={require("../../assets/images/Clinic/clinicAssistant.png")}
+            />
+            <View className="">
+              <Text className="text-black font-light text-lg">Contact Clinic Assistant</Text>
+              <Text className="text-gray-500">Contact assistant to shcedule dates</Text>
+            </View>
+            <Ionicons name="chevron-forward-circle-outline" size={40} color="black" />
+          </View>
         </TouchableOpacity>
       </View>
     </View>

@@ -6,18 +6,22 @@ import {
   TextInput,
   ScrollView,
   Image,
+  Modal,
+  Alert,
 } from "react-native";
-import {Link, Stack, useLocalSearchParams, useRouter} from "expo-router";
+import { Href, Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { useHeaderHeight } from "@react-navigation/elements";
 import axios from "axios";
 import clinicScheduleType from "@/types/clinicScheduleType";
 import moment from "moment/moment";
+import config from "@/constants/config";
 
 const ViewClinicSchedule = () => {
   const headerHeight = useHeaderHeight();
   const [schedule, setSchedule] = useState<clinicScheduleType | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const { id } = useLocalSearchParams();
   const router = useRouter();
   //const id = "67060dc91a93bdfab50ea80e";
@@ -26,10 +30,9 @@ const ViewClinicSchedule = () => {
     const getSchedule = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.8.127:3000/clinic-schedule/get-one-clinic-schedule/${id}`,
+          `${config.backend_url}/clinic-schedule/get-one-clinic-schedule/${id}`
         );
         setSchedule(response.data);
-        //console.log(schedule._id);
       } catch (error) {
         console.log(error);
       }
@@ -44,6 +47,21 @@ const ViewClinicSchedule = () => {
     "ChildbirthPreparationClasses.jpg": require("../../../assets/images/Clinic/ChildbirthPreparationClasses.jpg"),
   };
 
+  const handleDelete = async () => {
+  try {
+    const response = await axios.delete(
+      `${config.backend_url}/clinic-schedule/delete-clinic-schedule/${id}`
+    );
+
+    if (response) {
+      Alert.alert("Success", "Schedule deleted successfully");
+      router.push("/clinic/ClinicSchedule");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
   return (
     <View style={{ flex: 1 }}>
       <Stack.Screen
@@ -52,7 +70,11 @@ const ViewClinicSchedule = () => {
           headerTitle: "",
           headerTitleAlign: "center",
           headerLeft: () => (
-            <TouchableOpacity onPress={() => {router.back();}}>
+            <TouchableOpacity
+              onPress={() => {
+                router.back();
+              }}
+            >
               <View>
                 <Ionicons name="chevron-back-outline" size={24} color="black" />
               </View>
@@ -60,6 +82,29 @@ const ViewClinicSchedule = () => {
           ),
         }}
       />
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+        >
+          <View className="flex-1 justify-center items-center bg-black/50">
+            <View className="bg-white border h-52 px-5 justify-center items-center rounded-lg">
+              <Text className="font-semibold text-base text-center py-5">
+                Are you sure you want to delete
+              </Text>
+              <View className="flex-row space-x-4">
+                <TouchableOpacity className="bg-red-600 py-2.5 w-28 rounded-lg items-center justify-center" onPress={handleDelete}> 
+                  <Text className="text-white font-semibold">Confirm</Text>
+                </TouchableOpacity>
+                <TouchableOpacity className="border py-2.5 w-28 rounded-lg items-center justify-center" onPress={() => setModalVisible(!modalVisible)}>
+                  <Text className="font-semibold">Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </View>
 
       <View>
         <ScrollView>
@@ -134,15 +179,20 @@ const ViewClinicSchedule = () => {
                   ))}
                 </View>
                 <View>
-                    <Link href={`/clinic/UpdateClinicSchedule/${schedule._id}`} asChild>
-                  <TouchableOpacity className="py-3 bg-yellow-400 mx-5 mb-3 items-center justify-center rounded-lg">
-                    <Text className="text-base">Update</Text>
-                  </TouchableOpacity>
-                    </Link>
-                  <TouchableOpacity className="py-3 bg-red-600 mx-5 mb-3 items-center justify-center rounded-lg">
+                  <Link
+                    href={`/clinic/UpdateClinicSchedule/${schedule._id}`}
+                    asChild
+                  >
+                    <TouchableOpacity className="py-3 bg-yellow-400 mx-5 mb-3 items-center justify-center rounded-lg">
+                      <Text className="text-base">Update</Text>
+                    </TouchableOpacity>
+                  </Link>
+                  <TouchableOpacity
+                    className="py-3 bg-red-600 mx-5 mb-3 items-center justify-center rounded-lg"
+                    onPress={() => setModalVisible(true)}
+                  >
                     <Text className="text-base">Delete</Text>
                   </TouchableOpacity>
-
                 </View>
               </ScrollView>
             </View>

@@ -37,6 +37,7 @@ export default function RootLayout() {
 
         {/* Startup Routes */}
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+        <Stack.Screen name="moodTracker/Moods" options={{ headerShown: false }} />
         <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
 
         {/* Home Routes */}
@@ -56,6 +57,8 @@ export default function RootLayout() {
         <Stack.Screen name="vaccination/createvaccischedule" />
         <Stack.Screen name="vaccination/viewvaccischedule" />
         <Stack.Screen name="vaccination/vaccimonthtracker" />
+
+        <Stack.Screen name="clinic/CreateClinicSchedule" />
 
       </Stack>
     </ThemeProvider>
