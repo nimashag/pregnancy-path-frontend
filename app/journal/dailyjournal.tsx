@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -11,10 +10,8 @@ import {
   Dimensions,
   Image,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import Icon from 'react-native-vector-icons/Ionicons'; 
 import moment from "moment"; // For formatting date
 import config from "../../constants/config";
 import { Memory } from "./IMemory"
@@ -32,7 +29,6 @@ const DailyJournal: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
-  const navigation = useNavigation();
 
   // Fetch memory data from backend
   useEffect(() => {
@@ -137,10 +133,6 @@ const DailyJournal: React.FC = () => {
     <View style={styles.entryContainer}>
       <View style={styles.textContent}>
         <Text style={styles.entryText}>{item.name}</Text>
-        {/* {item.feelings && (
-          <Text style={styles.entryFeelings}>Feelings: {item.feelings}</Text>
-        )}
-        <Text style={styles.entryDescription}>{item.description}</Text> */}
         <Text style={styles.entryTime}>{item.time}</Text>
       </View>
       {item.image && (
@@ -271,21 +263,12 @@ const styles = StyleSheet.create({
   },
   textContent: {
     flex: 1,
-    paddingRight: 70, // Add padding for image space
+    paddingRight: width * 0.30, // Add padding for image space
   },
   entryText: {
     fontSize: width * 0.045,
     fontWeight: "bold",
     marginBottom: 8,
-  },
-  entryFeelings: {
-    fontSize: width * 0.04,
-    color: "#888",
-  },
-  entryDescription: {
-    fontSize: width * 0.04,
-    color: "#555",
-    marginBottom: 4,
   },
   entryTime: {
     fontSize: width * 0.04,
@@ -304,11 +287,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 5,
     right: 16,
-  },
-  deleteButton: {
-    position: "absolute",
-    bottom: 5,
-    right: 60,
   },
   listContainer: {
     paddingBottom: 100,

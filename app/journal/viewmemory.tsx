@@ -109,7 +109,7 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
           <Image
             source={{ uri: `${parsedEntry.image}` }}
             style={styles.image}
-            resizeMode="contain"
+            resizeMode="cover"
           />
         )}
         <View style={styles.content}>
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   metaItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 15,
+    marginRight: 18,
   },
   date: {
     fontSize: 16,

@@ -82,7 +82,7 @@ const CreateEventScreen = () => {
   };
 
   const handleSubmit = async () => {
-    if (!eventName || !eventDescription || !selectedFeeling) {
+    if (!eventName || !eventDescription || !selectedImage ||!selectedFeeling) {
       Alert.alert("Error", "All fields are required.");
       return;
     }
@@ -111,18 +111,28 @@ const CreateEventScreen = () => {
           },
           body: JSON.stringify({
             user: "66dd6bf95be4a8cf0d58bf1f", // TODO: read actual user from session data
-            image: base64Image || null,
+            image: base64Image,
             name: eventName,
             description: eventDescription,
             feelings: selectedFeeling,
-            time: eventTime.toLocaleTimeString(),
+            time: eventTime.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
             date: eventDate.toISOString(),
           }),
         }
       );
 
       if (response.status === 200) {
-        Alert.alert("Success", "Memory created successfully!");
+        Alert.alert("Success", "Memory created successfully!", [
+          {
+            text: "OK",
+            onPress: () => {
+              router.push("/journal/dailyjournal"); // Navigate back to daily journal
+            },
+          },
+        ]);
       }
     } catch (error) {
       console.error(error);
