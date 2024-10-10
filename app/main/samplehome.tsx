@@ -1,13 +1,13 @@
 import React from 'react';
 import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 const samplehome = () => {
     const router = useRouter();
 
     const handleJournalNavigation = () => {
         // Navigate to Journal Screen
-        router.push('/_sitemap');
+        router.push('/journal/dailyjournal');
     };
 
     const handleTrackerNavigation = () => {
@@ -24,14 +24,19 @@ const samplehome = () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16 }} style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
+      <View style={styles.textContainer}>
         <Text style={styles.welcomeText}>Welcome</Text>
         <Text style={styles.userName}>Jennifer</Text>
+      </View>
+      <View style={styles.iconContainer}>
         <Image source={require('../../assets/images/home/notificationimg.png')} style={styles.notificationIcon} />
         <Image source={require('../../assets/images/home/userhomeimg.png')} style={styles.profileIcon} />
       </View>
+    </View>
+
 
       {/* Baby Status */}
-      <View style={styles.statusSection}>
+      <View>
         <Text style={styles.statusTitle}>Baby Status</Text>
         <Text style={styles.statusDate}>12 October 2024, 12th Week</Text>
         <View style={styles.babyStatus}>
@@ -44,8 +49,8 @@ const samplehome = () => {
       </View>
 
       {/* Mom Status */}
-      <View style={styles.statusSection}>
-        <Text style={styles.statusTitle}>Mom Status</Text>
+      <View>
+      <Text style={styles.subHeader}>Mom Status</Text>
         <View style={styles.momStatus}>
           <View style={styles.statusItem}>
             <Image source={require('../../assets/images/home/scaleimg.png')} style={styles.icon} />
@@ -62,7 +67,8 @@ const samplehome = () => {
         </View>
       </View>
 
-      {/* Full Width Card */}
+      {/* Vaccination section */}
+      <Text style={styles.subHeader}>Vaccination Details</Text>
       <TouchableOpacity onPress={handleGuideNavigation} style={{ marginBottom: 20 }}>
                 <ImageBackground
                     source={require('../../assets/images/home/vaccished.png')}
@@ -75,19 +81,19 @@ const samplehome = () => {
                     }}
                     resizeMode="cover"
                 >
-                    <Text style={{ color: '#ffffff', fontWeight: 'bold', fontSize: 16 }}>
-                        Schedule Your Vaccination
+                    <Text style={{ color: '#ffffff', fontSize: 14, width: '60%', marginBottom: 8}}>
+                    Access all essential information about your vaccinations to stay on top of your health.
                     </Text>
-                    <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
-                        Schedule dates for your vaccinations
-                    </Text>
-                    <TouchableOpacity style={{ backgroundColor: '#F88C8C', padding: 8, borderRadius: 5 }}>
-                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Schedule</Text>
+                    <TouchableOpacity style={{ backgroundColor: '#F88C8C', padding: 8, borderRadius: 5 ,  width: '40%'}}>
+                      <Link href='/vaccination/vaccimain' style={{ width: '100%' }}>
+                        <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Access</Text>
+                      </Link>
                     </TouchableOpacity>
                 </ImageBackground>
             </TouchableOpacity>
 
         {/* Journal section */}
+        <Text style={styles.subHeader}>Journal & Tracker</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 {/* Card 1 */}
                 <TouchableOpacity onPress={handleJournalNavigation} style={{ flex: 1, marginRight: 10 }}>
@@ -101,13 +107,20 @@ const samplehome = () => {
                             padding: 16,
                         }}
                         resizeMode="cover"
-                    >
-                        <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
-                            Save Your Memories With Us
+                    >   
+                        <View style={{ flex: 1,  alignItems: 'center' }}>
+                        <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 , }}>
+                          Save Your
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#000', padding: 8, marginTop: 10, borderRadius: 5 }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Journal</Text>
+                        <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 , }}>
+                          Memories
+                        </Text>
+                        <TouchableOpacity style={{ backgroundColor: '#000000', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
+                          <Link href='/' style={{ width: '100%' }}> 
+                            <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center' }}>Journal</Text>
+                          </Link>
                         </TouchableOpacity>
+                      </View>
                     </ImageBackground>
                 </TouchableOpacity>
 
@@ -124,17 +137,25 @@ const samplehome = () => {
                         }}
                         resizeMode="cover"
                     >
-                        <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
-                            Track Your Daily Habits
+                        <View style={{ flex: 1,  alignItems: 'center' }}>
+                        <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 , }}>
+                        Track Your 
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#5C0D0D', padding: 8, marginTop: 10, borderRadius: 5 }}>
-                            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Tracker</Text>
+                        <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 , }}>
+                        Daily Habits
+                        </Text>
+                        <TouchableOpacity style={{ backgroundColor: '#5C0D0D', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
+                          <Link href='/' style={{ width: '100%' }}> 
+                            <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center' }}>Tracker</Text>
+                          </Link>
                         </TouchableOpacity>
+                      </View>
                     </ImageBackground>
                 </TouchableOpacity>
             </View>
 
         {/* Clinic Section */}
+        <Text style={styles.subHeader}>Clinical Information</Text>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 {/* Card 1 */}
                 <TouchableOpacity onPress={handleJournalNavigation} style={{ flex: 1, marginRight: 10 }}>
@@ -197,6 +218,7 @@ const samplehome = () => {
 
       {/* Yatama Kaaalla */}
       {/* Full Width Card */}
+      <Text style={styles.subHeader}>Other Services</Text>
       <TouchableOpacity onPress={handleGuideNavigation} style={{ marginBottom: 20 }}>
                 <ImageBackground
                     source={require('../../assets/images/emergency1.png')}
@@ -213,10 +235,10 @@ const samplehome = () => {
                       Parental Appoinments
                     </Text>
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
-                      Easily manage your appointments and stay on top of your care.
+                        Navigate your pregnancy with ease using our comprehensive guide.
                     </Text>
-                    <TouchableOpacity style={{ backgroundColor: '#1C476F', padding: 8, borderRadius: 5 }}>
-                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Check Now</Text>
+                    <TouchableOpacity style={{ backgroundColor: '#1C476F', padding: 8, borderRadius: 5 , width: '40%'}}>
+                        <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>Check Now</Text>
                     </TouchableOpacity>
                 </ImageBackground>
             </TouchableOpacity>
@@ -239,8 +261,8 @@ const samplehome = () => {
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
                         Navigate your pregnancy with ease using our comprehensive guide.
                     </Text>
-                    <TouchableOpacity style={{ backgroundColor: '#641E1F', padding: 8, borderRadius: 5 }}>
-                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>Check Now</Text>
+                    <TouchableOpacity style={{ backgroundColor: '#641E1F', padding: 8, borderRadius: 5 , width: '40%'}}>
+                        <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center'}}>Check Now</Text>
                     </TouchableOpacity>
                 </ImageBackground>
             </TouchableOpacity>
@@ -256,25 +278,39 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
+    justifyContent: 'space-between',  
+    alignItems: 'center', 
+    padding: 10,  
+    marginBottom: 20
+  },
+  textContainer: {
+    flexDirection: 'column',  
   },
   welcomeText: {
-    fontSize: 18,
-    color: '#888',
+    fontSize: 14,
   },
   userName: {
     fontSize: 24,
     fontWeight: 'bold',
   },
-  profileIcon: {
-    width: 40,
-    height: 40,
+  iconContainer: {
+    flexDirection: 'row', 
+    alignItems: 'center',
   },
   notificationIcon: {
-    width: 25,
-    height: 25,
+    width: 24, 
+    height: 24,
+    marginRight: 10, 
+  },
+  profileIcon: {
+    width: 50,  
+    height: 50,
+  },
+  subHeader: {
+    fontSize: 20,
+    fontWeight: '800',
+    marginVertical: 15,
+    color: '#000000',
   },
   statusSection: {
     marginVertical: 20,

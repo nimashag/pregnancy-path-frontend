@@ -1,371 +1,334 @@
-// PregnantJournalScreen.tsx
-// import React from "react";
-// import {
-//   View,
-//   Text,
-//   FlatList,
-//   TextInput,
-//   TouchableOpacity,
-//   StyleSheet,
-//   Dimensions,
-// } from "react-native";
-// import { FontAwesome } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  Image,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import Icon from 'react-native-vector-icons/Ionicons'; 
+import moment from "moment"; // For formatting date
+import config from "../../constants/config";
+import { Memory } from "./IMemory"
 
-// const { width } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
-// const data = [
-//   {
-//     id: "1",
-//     content: "Feeling hungry and dizzy",
-//     time: "08:30 AM",
-//     date: "20th July 2024",
-//   },
-//   {
-//     id: "2",
-//     content: "Having breakfast as recommended by the doctors",
-//     time: "10:00 AM",
-//   },
-//   {
-//     id: "3",
-//     content: "Went on a walk with family and friends",
-//     time: "12:30 PM",
-//   },
-//   {
-//     id: "4",
-//     content: "First parental appointment and first ultrasound of baby",
-//     time: "01:30 PM",
-//   },
-//   { id: "5", content: "Head back home", time: "04:00 PM" },
-//   {
-//     id: "6",
-//     content:
-//       "Having a party with the family and getting the stuff ready for it",
-//     time: "07:30 PM",
-//   },
-//   { id: "7", content: "Going to sleep", time: "10:30 PM" },
-//   {
-//     id: "8",
-//     content: "Feeling hungry and dizzy",
-//     time: "08:30 AM",
-//     date: "21st July 2024",
-//   },
-//   {
-//     id: "9",
-//     content: "Having breakfast as recommended by the doctors",
-//     time: "10:00 AM",
-//   },
-// ];
 
-// const PregnantJournalScreen = () => {
-//   const renderItem = ({
-//     item,
-//   }: {
-//     item: { content: string; time: string };
-//   }) => (
-//     <View style={styles.entryContainer}>
-//       <View>
-//         <Text className="text-lg font-semibold">{item.content}</Text>
-//         <Text className="text-gray-500">{item.time}</Text>
-//       </View>
-//       <TouchableOpacity>
-//         <FontAwesome name="star-o" size={20} color="black" />
-//       </TouchableOpacity>
-//     </View>
-//   );
 
-//   return (
-//     <View className="flex-1 bg-gray-100 p-4">
-//       {/* Header Section */}
-//       <View className="flex-row items-center justify-between mb-4">
-//         <TouchableOpacity>
-//           <Text className="text-xl text-purple-950 font-bold">{"<"}</Text>
-//         </TouchableOpacity>
-//         <Text className="text-2xl text-center text-purple-950 font-bold">
-//           Pregnant Journal
-//         </Text>
-//         <View />
-//       </View>
+interface MemoryResponse {
+  data: Memory[]; // API response shape
+}
 
-//       {/* Journal Type Selection */}
-//       <View className="flex-row justify-around  rounded-lg shadow p-2 mb-4">
-//         <TouchableOpacity className="flex-1 py-2 rounded-lg bg-gray-300 ">
-//           <Text className="text-center text-black font-semibold">
-//             Daily Journal
-//           </Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity className="flex-1 py-2 rounded-lg bg-black">
-//           <Text className="text-center text-white font-semibold">
-//             Memory Lane
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
+const DailyJournal: React.FC = () => {
+  const [memories, setMemories] = useState<Memory[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const router = useRouter();
+  const navigation = useNavigation();
 
-//       {/* Date Input and Sort Button */}
-//       <View className="flex-row justify-between items-center mb-4">
-//           <TextInput
-//             style={styles.input}
-//             placeholder="DD / MM / YYYY"
-//             placeholderTextColor="#AFAFAF"
-//             className="flex-1 p-2 bg-white rounded-lg"
-//           />
-//           <TouchableOpacity style={styles.sortButton}>
-//             <Text className="text-black font-semibold">Sort</Text>
-//           </TouchableOpacity>
-//           <TouchableOpacity className="bg-white p-2 rounded-lg ml-2">
-//             <Text className="text-black font-semibold">+ Add Post</Text>
-//           </TouchableOpacity>
+  // Fetch memory data from backend
+  useEffect(() => {
+    fetchMemories();
+  }, []);
 
-//       </View>
+  const fetchMemories = async (): Promise<void> => {
+    try {
+      const response = await fetch(`${config.backend_url}/memory?userId=66dd6bf95be4a8cf0d58bf1f`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-//       {/* Journal Entries List */}
-//       <FlatList
-//         data={data}
-//         renderItem={renderItem}
-//         keyExtractor={(item) => item.id}
-//         showsVerticalScrollIndicator={false}
-//         ListHeaderComponent={
-//           <Text className="text-gray-600 mb-3 mt-2">{data[0].date}</Text>
-//         }
-//         contentContainerStyle={styles.listContainer}
-//         style={{ flexGrow: 1 }} // Allow FlatList to grow and take available space
-//       />
-//     </View>
-//   );
-// };
+      console.log("Response status:", response.status);
+      console.log(response);
 
-// const styles = StyleSheet.create({
-//   entryContainer: {
-//     backgroundColor: "white",
-//     borderBottomWidth: 1,
-//     borderBottomColor: "#e5e5e5",
-//     paddingVertical: 16,
-//     paddingHorizontal: 12,
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "flex-end",
-//     width: width - 32, // Adjusting for padding
-//     borderRadius: 8,
-//     marginBottom: 10,
-//     shadowColor: "#000",
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.25,
-//     shadowRadius: 3.84,
-//     elevation: 5,
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(
+          `Failed to fetch memories: ${response.status} - ${errorMessage}`
+        );
+      }
 
-//   },
-//   listContainer: {
-//     paddingBottom: 100, // Space for bottom navigation or any other UI elements
+      const data: MemoryResponse = await response.json();
+      setMemories(data.data); // Directly setting the data array
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching memories:", (error as Error).message);
+      setLoading(false);
+    }
+  };
 
-//   },
-//   datePickerContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     marginBottom: 16, // Adjust margin as needed
-//     position: 'relative', // Set to relative positioning
-//   },
-//   input: {
-//     borderWidth: 1,
-//     borderColor: '#AFAFAF',
-//     borderRadius: 8,
-//     paddingHorizontal: 10,
-//     color: '#000',
-//     backgroundColor: '#FFFFFF', // Ensure the background is white
-//     flex: 1, // Take full width
-//   },
-//   sortButton: {
-//     marginLeft: 8, // Space between input and button
-//     backgroundColor: '#E5E5E5', // Button background color
-//     paddingVertical: 8,
-//     paddingHorizontal: 12,
-//     borderRadius: 8,
-//   },
-// });
+  // Grouping data by date
+  const groupByDate = (entries: Memory[]) => {
+    return entries.reduce((acc, entry) => {
+      const formattedDate = moment(entry.date).format("DD/MM/YYYY");
+      (acc[formattedDate] = acc[formattedDate] || []).push(entry);
+      return acc;
+    }, {} as { [key: string]: Memory[] });
+  };
 
-// export default PregnantJournalScreen;
+  const groupedData = groupByDate(memories);
 
-// DailyJournal.tsx
-// import React, { useState, useEffect } from "react";
-// import {
-//   View,
-//   Text,
-//   FlatList,
-//   TextInput,
-//   TouchableOpacity,
-//   StyleSheet,
-//   Dimensions,
-//   ActivityIndicator,
-// } from "react-native";
-// import axios from "axios";
-// import { FontAwesome } from "@expo/vector-icons";
+  // Filter data based on search query
+  const filteredData = Object.keys(groupedData).filter((date) =>
+    date.includes(searchQuery)
+  );
 
-// const { width } = Dimensions.get("window");
+  // Navigate to JournalEntryDetail screen with selected entry
+  const handleJournalEntry = (entry: Memory) => {
+    // Navigate to the 'viewmemory' screen and pass the 'entry' data
+    router.push({
+      pathname: "/journal/viewmemory",  // Ensure the correct path
+      params: { entry: JSON.stringify(entry) },  // Pass the entry data as a JSON string
+    });
+  };
 
-// const DailyJournal = () => {
-//   const [data, setData] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
+  const toggleFavorite = async (id: string, currentStatus: boolean) => {
+    try {
+      // Send the update request to the backend
+      const response = await fetch(`${config.backend_url}/memory/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isFavorite: !currentStatus, // Send the opposite of the current status
+        }),
+      });
 
-//   // Fetch data from backend
-//   const fetchData = async () => {
-//     try {
-//       const response = await fetch("http://192.168.1.8:3000/memory");
-//       if (!response.ok) {
-//         throw new Error("Network response was not ok");
-//       }
-//       const jsonData = await response.json();
-//       setData(jsonData);
-//       setLoading(false);
-//     } catch (error) {
-//       console.error("Fetch error:", error);
-//       setError(error.message);
-//       setLoading(false);
-//     }
-//   };
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(
+            `Failed to update memory: ${response.status} - ${errorMessage}`
+        );
+      }
 
-//   // UseEffect to fetch data on component mount
-//   useEffect(() => {
-//     fetchData();
-//   }, []);
+      // Optimistically update local state
+      setMemories((prevMemories) =>
+          prevMemories.map((memory) =>
+              memory._id === id ? { ...memory, isFavorite: !currentStatus } : memory
+          )
+      );
 
-//   // Render each journal entry
-//   const renderItem = ({
-//     item,
-//   }: {
-//     item: { name: string; time: string; date: string };
-//   }) => (
-//     <View style={styles.entryContainer}>
-//       <View>
-//         <Text className="text-lg font-semibold">{item.name}</Text>
-//         <Text className="text-gray-500">{item.time}</Text>
-//         <Text className="text-gray-500">
-//           {new Date(item.date).toDateString()}
-//         </Text>{" "}
-//         {/* Display formatted date */}
-//       </View>
-//       <TouchableOpacity>
-//         <FontAwesome name="star-o" size={20} color="black" />
-//       </TouchableOpacity>
-//     </View>
-//   );
+      // No need to do anything here as the local state is already updated
+      console.log("Favorite status updated successfully");
+    } catch (error) {
+      console.error("Error updating favorite status:", (error as Error).message);
+      // Revert the local state if the update fails
+      setMemories((prevMemories) =>
+          prevMemories.map((memory) =>
+              memory._id === id ? { ...memory, isFavorite: currentStatus } : memory
+          )
+      );
+    }
+  };
 
-//   // Display loading indicator while fetching data
-//   if (loading) {
-//     return (
-//       <View className="flex-1 justify-center items-center">
-//         <ActivityIndicator size="large" color="#0000ff" />
-//       </View>
-//     );
-//   }
+  const renderEntry = ({ item }: { item: Memory }) => (
+    <TouchableOpacity onPress={() => handleJournalEntry(item)}>
+    <View style={styles.entryContainer}>
+      <View style={styles.textContent}>
+        <Text style={styles.entryText}>{item.name}</Text>
+        {/* {item.feelings && (
+          <Text style={styles.entryFeelings}>Feelings: {item.feelings}</Text>
+        )}
+        <Text style={styles.entryDescription}>{item.description}</Text> */}
+        <Text style={styles.entryTime}>{item.time}</Text>
+      </View>
+      {item.image && (
+        <Image
+          source={{ uri: `${item.image}` }} // Ensure correct URL
+          style={styles.entryImage}
+        />
+      )}
+      <TouchableOpacity
+          style={styles.starIcon}
+          onPress={() => toggleFavorite(item._id, item.isFavorite)} // Toggle favorite on press
+      >
+        <FontAwesome
+            name={item.isFavorite ? "star" : "star-o"}
+            size={20}
+            color="black"
+        />
+      </TouchableOpacity>
+    </View>
+    </TouchableOpacity>
+  );
 
-//   // Handle error state
-//   if (error) {
-//     return (
-//       <View className="flex-1 justify-center items-center">
-//         <Text>Error fetching data. Please try again later.</Text>
-//       </View>
-//     );
-//   }
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  };
 
-//   return (
-//     <View className="flex-1 bg-gray-100 p-4">
-//       {/* Header Section */}
-//       <View className="flex-row items-center justify-between mb-4">
-//         <TouchableOpacity>
-//           <Text className="text-xl text-purple-950 font-bold">{"<"}</Text>
-//         </TouchableOpacity>
-//         <Text className="text-2xl text-center text-purple-950 font-bold">
-//           Pregnant Journal
-//         </Text>
-//         <View />
-//       </View>
+  const handleAddPost = () => {
+    router.push("/journal/creatememory");
+  };
 
-//       {/* Journal Type Selection */}
-//       <View className="flex-row justify-around  rounded-lg shadow p-2 mb-4">
-//         <TouchableOpacity className="flex-1 py-2 rounded-lg bg-gray-300 ">
-//           <Text className="text-center text-black font-semibold">
-//             Daily Journal
-//           </Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity className="flex-1 py-2 rounded-lg bg-black">
-//           <Text className="text-center text-white font-semibold">
-//             Memory Lane
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
+  const handleBackPress = () => {
+    router.push('/_sitemap'); 
+  };
 
-//       {/* Date Input and Sort Button */}
-//       <View className="flex-row justify-between items-center mb-4">
-//         <TextInput
-//           style={styles.input}
-//           placeholder="DD / MM / YYYY"
-//           placeholderTextColor="#AFAFAF"
-//           className="flex-1 p-2 bg-white rounded-lg"
-//         />
-//         <TouchableOpacity style={styles.sortButton}>
-//           <Text className="text-black font-semibold">Sort</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity className="bg-white p-2 rounded-lg ml-2">
-//           <Text className="text-black font-semibold">+ Add Post</Text>
-//         </TouchableOpacity>
-//       </View>
+  const handlefavourites = () => {
+    router.push("/journal/favourites");
+  };
 
-//       {/* Journal Entries List */}
-//       <FlatList
-//         data={data}
-//         renderItem={renderItem}
-//         keyExtractor={(item) => item._id} // Assuming the _id is the unique identifier in MongoDB
-//         showsVerticalScrollIndicator={false}
-//         contentContainerStyle={styles.listContainer}
-//         style={{ flexGrow: 1 }} // Allow FlatList to grow and take available space
-//       />
-//     </View>
-//   );
-// };
+  return (
+    <View className="flex-1 bg-gray-100 p-4 ">
+      {/* Header Section */}
+      <View className="flex-row items-center justify-between mb-4 mt-8">
+        <TouchableOpacity onPress={handleBackPress} className="ml-2">
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
+        </TouchableOpacity>
+        <Text className="text-2xl text-center text-indigo-950 font-bold">
+          Pregnant Journal
+        </Text>
+        <View />
+      </View>
 
-// const styles = StyleSheet.create({
-//   entryContainer: {
-//     backgroundColor: "white",
-//     borderBottomWidth: 1,
-//     borderBottomColor: "#e5e5e5",
-//     paddingVertical: 16,
-//     paddingHorizontal: 12,
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "flex-end",
-//     width: width - 32, // Adjusting for padding
-//     borderRadius: 8,
-//     marginBottom: 10,
-//     shadowColor: "#000",
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.25,
-//     shadowRadius: 3.84,
-//     elevation: 5,
-//   },
-//   listContainer: {
-//     paddingBottom: 100, // Space for bottom navigation or any other UI elements
-//   },
-//   input: {
-//     borderWidth: 1,
-//     borderColor: "#AFAFAF",
-//     borderRadius: 8,
-//     paddingHorizontal: 10,
-//     color: "#000",
-//     backgroundColor: "#FFFFFF", // Ensure the background is white
-//     flex: 1, // Take full width
-//   },
-//   sortButton: {
-//     marginLeft: 8, // Space between input and button
-//     backgroundColor: "#E5E5E5", // Button background color
-//     paddingVertical: 8,
-//     paddingHorizontal: 12,
-//     borderRadius: 8,
-//   },
-// });
+      {/* Journal Type Selection */}
+      <View className="flex-row justify-around rounded-lg shadow p-2 mb-4">
+        <TouchableOpacity className="flex-1 py-3  bg-black rounded-l-lg ">
+          <Text className="text-center text-white font-semibold">
+            Daily Journal
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handlefavourites} className="flex-1 py-3 rounded-r-lg bg-gray-300">
+          <Text className="text-center text-black font-semibold">
+            Memory Lane
+          </Text>
+        </TouchableOpacity>
+      </View>
 
-// export default DailyJournal;
+      {/* Date Input and Sort Button */}
+      <View className="flex-row justify-between items-center mb-4">
+        <TextInput
+          style={styles.input}
+          placeholder="DD / MM / YYYY"
+          placeholderTextColor="#AFAFAF"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          className="flex-1  bg-white rounded-lg"
+        />
+        {/* <TouchableOpacity style={styles.sortButton}>
+          <Text className="text-black font-semibold">Sort</Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity onPress={handleAddPost} className="bg-white p-2 rounded-lg ml-2 border-2">
+          <Text className="text-black font-semibold ">+ Add Post</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Journal Entries List */}
+      <FlatList
+        data={filteredData}
+        keyExtractor={(item) => item}
+        renderItem={({ item: date }) => (
+          <View>
+            <Text className="text-gray-600 mb-3 mt-2">{date}</Text>
+            {groupedData[date].map((entry) => renderEntry({ item: entry }))}
+          </View>
+        )}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
+        style={{ flexGrow: 1 }}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  entryContainer: {
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e5e5",
+    paddingVertical: 35,
+    paddingHorizontal: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    width: "100%",
+    borderRadius: 8,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    position: "relative",
+  },
+  textContent: {
+    flex: 1,
+    paddingRight: 70, // Add padding for image space
+  },
+  entryText: {
+    fontSize: width * 0.045,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  entryFeelings: {
+    fontSize: width * 0.04,
+    color: "#888",
+  },
+  entryDescription: {
+    fontSize: width * 0.04,
+    color: "#555",
+    marginBottom: 4,
+  },
+  entryTime: {
+    fontSize: width * 0.04,
+    color: "#555",
+    top: 30,
+  },
+  entryImage: {
+    position: "absolute",
+    top: 16,
+    right: 16,
+    width: width * 0.25,
+    height: width * 0.15,
+    borderRadius: 8,
+  },
+  starIcon: {
+    position: "absolute",
+    bottom: 5,
+    right: 16,
+  },
+  deleteButton: {
+    position: "absolute",
+    bottom: 5,
+    right: 60,
+  },
+  listContainer: {
+    paddingBottom: 100,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#AFAFAF",
+    borderRadius: 8,
+    paddingHorizontal: 20,
+    color: "#000",
+    backgroundColor: "#FFFFFF",
+    flex: 1,
+    fontSize: width * 0.04,
+  },
+  
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
+
+export default DailyJournal;

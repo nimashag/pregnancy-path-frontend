@@ -1,4 +1,3 @@
-// viewvaccineschedule.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
@@ -21,25 +20,26 @@ const ViewVaccinesSchedule = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchReminders = async () => {
-      try {
-        const response = await axios.get('http://192.168.1.5:3000/vaccination'); 
-        setReminders(response.data.data); 
-      } catch (err) {
-        console.error('Error fetching reminders:', err);
-        setError('Failed to fetch reminders. Please try again later.');
-      } finally {
-        setLoading(false); 
-      }
-    };
+  // Fetch reminders function
+  const fetchReminders = async () => {
+    setLoading(true); // Set loading to true before fetching
+    try {
+      const response = await axios.get('http://192.168.1.5:3000/vaccination');
+      setReminders(response.data.data);
+    } catch (err) {
+      console.error('Error fetching reminders:', err);
+      setError('Failed to fetch reminders. Please try again later.');
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
+  };
 
-    fetchReminders();
+  useEffect(() => {
+    fetchReminders(); // Fetch reminders on component mount
   }, []);
 
   const handleUpdate = (id: string) => {
-    // Handle the update logic here, for example, navigate to the update screen
-    //router.push(`/vaccination/updatevaccineschedule/${id}`);
+    router.push(`/vaccination/updatevaccineschedule/${id}`);
   };
 
   const handleDelete = async (id: string) => {
@@ -51,6 +51,10 @@ const ViewVaccinesSchedule = () => {
       console.error('Error deleting reminder:', err);
       Alert.alert('Error', 'Failed to delete reminder. Please try again.');
     }
+  };
+
+  const handleAddNewSchedule = () => {
+    router.push('/vaccination/createvaccineschedule'); 
   };
 
   const renderReminder = ({ item }: { item: Reminder }) => (
@@ -97,6 +101,17 @@ const ViewVaccinesSchedule = () => {
     <ScrollView>
       <View>
         <Text style={styles.cardTitle}>Reserved Vaccination Schedules</Text>
+        {/* Updated Button Container */}
+        <View style={styles.buttonContainer2}>
+          {/* Add New Schedule Button */}
+          <TouchableOpacity style={styles.fullWidthButton} onPress={handleAddNewSchedule}>
+            <Text style={styles.fullWidthButtonText}>+ Add New Schedule</Text>
+          </TouchableOpacity>
+          {/* Refresh Button */}
+          <TouchableOpacity style={styles.fullWidthButton2} onPress={fetchReminders}>
+            <Text style={styles.fullWidthButtonText}>Refresh Tab</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.container}>
         {reminders.length === 0 ? (
@@ -125,7 +140,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 20,
     elevation: 4,
-    paddingBottom: 80, 
+    paddingBottom: 20, 
   },
   textTitle: {
     fontSize: 16,  
@@ -142,6 +157,33 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: 'center',
     color: '#000',
+  },
+  buttonContainer2: {
+    flexDirection: 'row', 
+    justifyContent: 'center',
+    padding: 20,
+    marginBottom: 10,
+    gap: 10
+  },
+  fullWidthButton: {
+    backgroundColor: '#FF979E', 
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 10,
+    width: '50%', 
+  },
+  fullWidthButton2: {
+    backgroundColor: '#0E4C80', 
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 10,
+    width: '40%', 
+  },
+  fullWidthButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center', 
   },
   loader: {
     flex: 1,
@@ -160,17 +202,16 @@ const styles = StyleSheet.create({
     color: '#777',
   },
   buttonContainer: {
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
-  },
-  button: {
-    marginHorizontal: 8,
+    flexDirection: 'row', 
+    justifyContent: 'flex-end', 
+    marginBottom: 5,
   },
   imageButton: {
     width: 90, 
     height: 60, 
+  },
+  button: { 
+    marginHorizontal: 8,
   },
 });
 

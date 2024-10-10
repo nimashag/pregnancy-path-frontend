@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "expo-router";
 import {
   View,
   Text,
@@ -9,13 +10,16 @@ import {
   StyleSheet,
   Dimensions,
   Alert,
+  Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from 'expo-file-system';
+import Icon from "react-native-vector-icons/Ionicons";
+import * as FileSystem from "expo-file-system";
 import axios from "axios";
+import config from "../../constants/config";
 
 const CreateEventScreen = () => {
   const [eventName, setEventName] = useState("");
@@ -25,9 +29,8 @@ const CreateEventScreen = () => {
   const [eventDate, setEventDate] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | undefined>(
-    undefined
-  );
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined);
+  const router = useRouter();
 
   const onTimeChange = (event: any, selectedTime: Date | undefined) => {
     setShowTimePicker(false);
@@ -56,7 +59,6 @@ const CreateEventScreen = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
-      base64: true,
     });
 
     if (!pickerResult.canceled) {
@@ -64,7 +66,19 @@ const CreateEventScreen = () => {
     } else {
       alert("You did not select any image.");
     }
-    
+  };
+
+  // Convert image URI to Base64 (for mobile platforms only)
+  const convertToBase64 = async (uri: string) => {
+    try {
+      const base64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      return `data:image/jpeg;base64,${base64}`; // Prepend the base64 string with this prefix
+    } catch (error) {
+      console.error("Error converting to Base64:", error);
+      return null;
+    }
   };
 
   const handleSubmit = async () => {
@@ -73,39 +87,39 @@ const CreateEventScreen = () => {
       return;
     }
 
-    try {
-      const formData = new FormData();
-      formData.append("name", eventName);
-      formData.append("description", eventDescription);
-      formData.append("feelings", selectedFeeling);
-      formData.append("time", eventTime.toLocaleTimeString());
-      formData.append("date", eventDate.toISOString());
+    let base64Image;
 
-      // Post the memory data to your backend
-    //   const response = await axios.post(
-    //     "http://localhost:3000/memory",
-    //     formData,
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     }
-    //   );
-    // const response = await axios.post("http://192.168.1.8:3000/memory",{
-    const response = await fetch('http://192.168.1.8:3000/memory', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            image: selectedImage || null,
+    // Check if the platform is web; if not, convert to Base64
+    if (selectedImage && Platform.OS !== "web") {
+      base64Image = await convertToBase64(selectedImage);
+      if (!base64Image) {
+        console.log("Failed to convert image to Base64");
+        return;
+      }
+    } else {
+      base64Image = selectedImage; // On web, use the selected image URI directly
+    }
+
+    try {
+
+      const response = await fetch(
+        `${config.backend_url}/memory`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user: "66dd6bf95be4a8cf0d58bf1f", // TODO: read actual user from session data
+            image: base64Image || null,
             name: eventName,
             description: eventDescription,
-            feelings:selectedFeeling,
-            time:eventTime.toLocaleTimeString(),
-            date:eventDate.toISOString(),
-        })
-    });
+            feelings: selectedFeeling,
+            time: eventTime.toLocaleTimeString(),
+            date: eventDate.toISOString(),
+          }),
+        }
+      );
 
       if (response.status === 200) {
         Alert.alert("Success", "Memory created successfully!");
@@ -114,6 +128,10 @@ const CreateEventScreen = () => {
       console.error(error);
       Alert.alert("Error", "Failed to create memory. Please try again.");
     }
+  };
+
+  const handleCancel = () => {
+    router.push("/journal/dailyjournal");
   };
 
   return (
@@ -213,7 +231,7 @@ const CreateEventScreen = () => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.cancelButton}>
+        <TouchableOpacity onPress={handleCancel} style={styles.cancelButton}>
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
 
@@ -227,7 +245,7 @@ const CreateEventScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 30,
     backgroundColor: "#F3F4F6",
     minHeight: "100%",
   },
@@ -237,6 +255,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#18113E",
     marginBottom: 16,
+    marginTop: 40,
   },
   label: {
     fontSize: 18,

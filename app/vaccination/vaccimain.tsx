@@ -19,7 +19,7 @@ const vaccimain = () => {
                     }}
                     resizeMode="cover"
                 >
-                    <Text style={{ color: '#000000', fontSize: 14, marginBottom: 10 }}>
+                    <Text style={{ color: '#000000', fontSize: 14, marginBottom: 10, width: '68%' }}>
                     Get information about what vaccinations you have to get monthly and keep track.
                     </Text>
                     <TouchableOpacity style={{ backgroundColor: '#F88C8C', padding: 8, width: '30%', borderRadius: 5 }}>
@@ -33,7 +33,6 @@ const vaccimain = () => {
 
       {/* Vaccination Scheduling */}
       <Text style={styles.subHeader}>Vaccination Scheduling</Text>
-      <Text></Text>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 {/* Card 1 */}
                 <TouchableOpacity  style={{ flex: 1, marginRight: 10 }}>
@@ -96,7 +95,6 @@ const vaccimain = () => {
 
       {/* What To Know About Vaccines */}
       <Text style={styles.subHeader}>What To Know About Vaccines</Text>
-      <Text></Text>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 {/* Card 1 */}
                 <TouchableOpacity  style={{ flex: 1, marginRight: 10 }}>
@@ -130,7 +128,7 @@ const vaccimain = () => {
                 {/* Card 2 */}
                 <TouchableOpacity  style={{ flex: 1, marginLeft: 10 }}>
                     <ImageBackground
-                        source={require('../../assets/images/vaccination/vaccicard4.png')}
+                        source={require('../../assets/images/vaccination/vaccicard6.png')}
                         style={{
                             height: 200,
                             borderRadius: 15,
@@ -147,7 +145,7 @@ const vaccimain = () => {
                         <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
                         Log
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#4B736A', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
+                        <TouchableOpacity style={{ backgroundColor: '#000', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
                           <Link href="/vaccination/vaccilog" style={{ width: '100%' }}>
                             <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Log</Text>
                            </Link>

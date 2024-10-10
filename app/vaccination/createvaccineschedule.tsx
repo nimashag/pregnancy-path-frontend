@@ -7,10 +7,11 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
-import Icon from 'react-native-vector-icons/Ionicons'; 
 import { useRouter } from 'expo-router';
 
 const CreateVaccinationSchedule = () => {
@@ -28,24 +29,24 @@ const CreateVaccinationSchedule = () => {
   const [showNotificationReminderDatePicker, setShowNotificationReminderDatePicker] = useState(false);
 
   const onScheduleTimeChange = (event: any, selectedTime: Date | undefined) => {
-    setShowScheduleTimePicker(false);
-    if (selectedTime) {
+    if (event.type === 'set' && selectedTime) {
       setScheduleTime(selectedTime);
     }
+    setShowScheduleTimePicker(false);
   };
 
   const onScheduleDateChange = (event: any, selectedDate: Date | undefined) => {
-    setShowScheduleDatePicker(false);
-    if (selectedDate) {
+    if (event.type === 'set' && selectedDate) {
       setScheduleDate(selectedDate);
     }
+    setShowScheduleDatePicker(false);
   };
 
   const onNotificationReminderTimeChange = (event: any, selectedTime: Date | undefined) => {
-    setShowNotificationReminderTimePicker(false);
-    if (selectedTime) {
+    if (event.type === 'set' && selectedTime) {
       setNotificationReminderTime(selectedTime);
     }
+    setShowNotificationReminderTimePicker(false);
   };
 
   const handleSubmit = async () => {
@@ -81,104 +82,111 @@ const CreateVaccinationSchedule = () => {
     }
   };
 
-  
-
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.headerText}>Create Vaccination Schedule</Text>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={100} // Adjust this value to fit your design
+    >
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <Text style={styles.headerText}>Create Vaccination Schedule</Text>
 
-      <Text style={styles.label}>Vaccine Name</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter vaccine name here..."
-        value={vaccineName}
-        onChangeText={setVaccineName}
-      />
-
-      <Text style={styles.label}>Schedule Time</Text>
-      <TouchableOpacity style={styles.input} onPress={() => setShowScheduleTimePicker(true)}>
-        <Text>
-          {scheduleTime.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </Text>
-      </TouchableOpacity>
-      {showScheduleTimePicker && (
-        <DateTimePicker
-          value={scheduleTime}
-          mode="time"
-          is24Hour={false}
-          display="default"
-          onChange={onScheduleTimeChange}
+        <Text style={styles.label}>Vaccine Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter vaccine name here..."
+          value={vaccineName}
+          onChangeText={setVaccineName}
         />
-      )}
 
-      <Text style={styles.label}>Schedule Date</Text>
-      <TouchableOpacity style={styles.input} onPress={() => setShowScheduleDatePicker(true)}>
-        <Text>{scheduleDate.toLocaleDateString()}</Text>
-      </TouchableOpacity>
-      {showScheduleDatePicker && (
-        <DateTimePicker
-          value={scheduleDate}
-          mode="date"
-          display="default"
-          onChange={onScheduleDateChange}
-        />
-      )}
-
-      <Text style={styles.label}>Notification Reminder Time</Text>
-      <TouchableOpacity style={styles.input} onPress={() => setShowNotificationReminderTimePicker(true)}>
-        <Text>
-          {notificationReminderTime.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </Text>
-      </TouchableOpacity>
-      {showNotificationReminderTimePicker && (
-        <DateTimePicker
-          value={notificationReminderTime}
-          mode="time"
-          is24Hour={false}
-          display="default"
-          onChange={onNotificationReminderTimeChange}
-        />
-      )}
-
-      <Text style={styles.label}>Notification Reminder Days</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter days before schedule..."
-        keyboardType="numeric"
-        value={notificationReminderDays.toString()}
-        onChangeText={(value) => setNotificationReminderDays(Number(value))}
-      />
-
-      <Text style={styles.label}>Notes</Text>
-      <TextInput
-        style={[styles.input, styles.descriptionInput]}
-        placeholder="Enter any notes here..."
-        value={notes}
-        onChangeText={setNotes}
-        multiline={true}
-      />
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.cancelButton}>
-          <Text style={styles.buttonText}>Cancel</Text>
+        <Text style={styles.label}>Schedule Time</Text>
+        <TouchableOpacity style={styles.input} onPress={() => setShowScheduleTimePicker(true)}>
+          <Text>
+            {scheduleTime.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </Text>
         </TouchableOpacity>
+        {showScheduleTimePicker && (
+          <DateTimePicker
+            value={scheduleTime}
+            mode="time"
+            is24Hour={false}
+            display="default"
+            onChange={onScheduleTimeChange}
+          />
+        )}
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Submit</Text>
+        <Text style={styles.label}>Schedule Date</Text>
+        <TouchableOpacity style={styles.input} onPress={() => setShowScheduleDatePicker(true)}>
+          <Text>{scheduleDate.toLocaleDateString()}</Text>
         </TouchableOpacity>
-      </View>
-    </ScrollView>
+        {showScheduleDatePicker && (
+          <DateTimePicker
+            value={scheduleDate}
+            mode="date"
+            display="default"
+            onChange={onScheduleDateChange}
+          />
+        )}
+
+        <Text style={styles.label}>Notification Reminder Time</Text>
+        <TouchableOpacity style={styles.input} onPress={() => setShowNotificationReminderTimePicker(true)}>
+          <Text>
+            {notificationReminderTime.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </Text>
+        </TouchableOpacity>
+        {showNotificationReminderTimePicker && (
+          <DateTimePicker
+            value={notificationReminderTime}
+            mode="time"
+            is24Hour={false}
+            display="default"
+            onChange={onNotificationReminderTimeChange}
+          />
+        )}
+
+        <Text style={styles.label}>Notification Reminder Days</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter days before schedule..."
+          keyboardType="numeric"
+          value={notificationReminderDays.toString()}
+          onChangeText={(value) => setNotificationReminderDays(Number(value))}
+        />
+
+        <Text style={styles.label}>Notes</Text>
+        <TextInput
+          style={[styles.input, styles.descriptionInput]}
+          placeholder="Enter any notes here..."
+          value={notes}
+          onChangeText={setNotes}
+          multiline={true}
+        />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.cancelButton}>
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollView: {
     padding: 16,
     backgroundColor: "#F3F4F6",
     minHeight: "100%",
@@ -227,9 +235,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     textAlign: "center",
     fontWeight: "bold",
-  },
-  backButton: {
-    marginRight: 10,
   },
 });
 
