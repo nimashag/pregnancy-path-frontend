@@ -7,7 +7,7 @@ const samplehome = () => {
 
     const handleJournalNavigation = () => {
         // Navigate to Journal Screen
-        router.push('/_sitemap');
+        router.push('/journal/dailyjournal');
     };
 
     const handleTrackerNavigation = () => {
