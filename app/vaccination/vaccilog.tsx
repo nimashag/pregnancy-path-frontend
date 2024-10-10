@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Switch } from 'react-native';
 import axios from 'axios';
+import config from "../../constants/config";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Vaccine = {
@@ -24,7 +25,7 @@ const VaccinationLog = () => {
   useEffect(() => {
     const fetchVaccines = async () => {
       try {
-        const response = await axios.get('http://192.168.1.5:3000/vaccine');
+        const response = await axios.get(`${config.backend_url}/vaccine`); //meka wenas karanna amathaka karanna epa pettiyo
         const data: Vaccine[] = response.data.data;
 
         // Organizing data by month
