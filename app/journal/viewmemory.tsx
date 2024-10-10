@@ -80,6 +80,10 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
 
   return (
       <ScrollView contentContainerStyle={styles.container}>
+        {/* Header section with title */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Memory Details</Text>
+      </View>
         <View style={styles.card}>
           {parsedEntry.image && (
               <Image
@@ -133,6 +137,16 @@ const styles = StyleSheet.create({
     padding: 20,
     flexGrow: 1,
     backgroundColor: "#f0f0f0",
+    paddingTop: 90,
+  },
+  header: {
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#6a7fdb',
   },
   card: {
     backgroundColor: "#fff",
@@ -142,12 +156,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
-    overflow: "hidden",
+    // overflow: "hidden",
     marginBottom: 20,
   },
   image: {
     width: "100%",
-    height: width * 0.6,
+    height: width * 0.9,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
