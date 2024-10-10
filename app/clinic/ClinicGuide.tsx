@@ -5,6 +5,7 @@ import ClinicType from '../../types/clinicType';
 import { Stack, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import {useHeaderHeight} from "@react-navigation/elements";
+import config from "@/constants/config";
 
 
 const CreateClinicSchedule = () => {
@@ -23,7 +24,7 @@ const CreateClinicSchedule = () => {
     useEffect(() => {
         const fetchClinics = async () => {
             try {
-                const response = await axios.get('http://192.168.8.127:3000/clinic/all-clinic');
+                const response = await axios.get(`${config.backend_url}/clinic/all-clinic`);
                 setClinics(response.data);
             } catch (error) {
                 console.error(error);

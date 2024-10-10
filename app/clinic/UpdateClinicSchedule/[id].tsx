@@ -9,6 +9,7 @@ import axios from "axios";
 import ClinicType from "@/types/clinicType";
 import moment from 'moment';
 import clinicScheduleType from "@/types/clinicScheduleType";
+import config from "@/constants/config";
 
 const UpdateClinicSchedule = () => {
 
@@ -32,11 +33,11 @@ const UpdateClinicSchedule = () => {
     useEffect(() => {
         const getSchedule = async () => {
             try {
-                const response = await axios.get('http://192.168.8.127:3000/clinic/all-clinic');
+                const response = await axios.get(`${config.backend_url}/clinic/all-clinic`);
                 setClinics(response.data);
 
                 console.log(id);
-                const schedule = await axios.get(`http://192.168.8.127:3000/clinic-schedule/get-one-clinic-schedule/${id}`)
+                const schedule = await axios.get(`${config.backend_url}/clinic-schedule/get-one-clinic-schedule/${id}`)
                 setClinic(schedule.data.clinic);
                 console.log(schedule.data.clinic);
                 setPreviousDate(schedule.data.date);
@@ -69,7 +70,7 @@ const UpdateClinicSchedule = () => {
 
     const handleUpdate = async () => {
         try {
-            const response= await axios.put(`http://192.168.8.127:3000/clinic-schedule/update-clinic-schedule/${id}`,{
+            const response= await axios.put(`${config.backend_url}/clinic-schedule/update-clinic-schedule/${id}`,{
                 clinic,
                 date,
                 time: dbTime,

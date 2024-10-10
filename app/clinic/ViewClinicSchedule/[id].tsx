@@ -16,6 +16,7 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import axios from "axios";
 import clinicScheduleType from "@/types/clinicScheduleType";
 import moment from "moment/moment";
+import config from "@/constants/config";
 
 const ViewClinicSchedule = () => {
   const headerHeight = useHeaderHeight();
@@ -29,7 +30,7 @@ const ViewClinicSchedule = () => {
     const getSchedule = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.8.127:3000/clinic-schedule/get-one-clinic-schedule/${id}`
+          `${config.backend_url}/clinic-schedule/get-one-clinic-schedule/${id}`
         );
         setSchedule(response.data);
       } catch (error) {
@@ -49,7 +50,7 @@ const ViewClinicSchedule = () => {
   const handleDelete = async () => {
   try {
     const response = await axios.delete(
-      `http://192.168.8.127:3000/clinic-schedule/delete-clinic-schedule/${id}`
+      `${config.backend_url}/clinic-schedule/delete-clinic-schedule/${id}`
     );
 
     if (response) {

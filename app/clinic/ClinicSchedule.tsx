@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import clinicScheduleType from "../../types/clinicScheduleType";
 import { format } from "date-fns";
+import config from "../../constants/config"
 
 const CreateClinicSchedule = () => {
   const [schedules, setSchedules] = useState<clinicScheduleType[]>([]);
@@ -33,7 +34,7 @@ const CreateClinicSchedule = () => {
       try {
         const id = "66dd6bf95be4a8cf0d58bf1f";
         const response = await axios.get(
-          `http://192.168.8.127:3000/clinic-schedule/upcoming-clinic-schedule/${id}`
+          `${config.backend_url}/clinic-schedule/upcoming-clinic-schedule/${id}`
         );
         setSchedules(response.data);
       } catch (error) {

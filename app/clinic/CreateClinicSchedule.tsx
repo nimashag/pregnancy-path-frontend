@@ -8,6 +8,7 @@ import {Picker} from "@react-native-picker/picker";
 import axios from "axios";
 import ClinicType from "@/types/clinicType";
 import moment from 'moment';
+import config from "@/constants/config";
 
 const CreateClinicSchedule = () => {
 
@@ -55,7 +56,7 @@ const CreateClinicSchedule = () => {
     const handleAdd = async () => {
         try {
 
-            const response= await axios.post('http://192.168.8.127:3000/clinic-schedule/create-clinic-schedule',{
+            const response= await axios.post(`${config.backend_url}/clinic-schedule/create-clinic-schedule`,{
                 user,
                 clinic,
                 date,
