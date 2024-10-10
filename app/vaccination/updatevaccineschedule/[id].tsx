@@ -37,7 +37,7 @@ const UpdateVaccineSchedule = () => {
 
           // Set the scheduleDate correctly using the UTC date
           const fetchedDate = new Date(schedule.scheduleDate);
-          setScheduleDate(fetchedDate.toISOString().split('T')[0]); // Set as 'YYYY-MM-DD'
+          setScheduleDate(fetchedDate.toISOString().split('T')[0]); 
 
           setNotifyTime(schedule.notificationReminderTime || '');
           setNotifyDate(schedule.notificationReminderDays ? schedule.notificationReminderDays.toString() : '');
