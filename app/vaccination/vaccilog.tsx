@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Switch } from 'react-native';
 import axios from 'axios';
 import config from "../../constants/config";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Vaccine = {
   _id: string;
@@ -19,6 +20,7 @@ type MonthData = {
 
 const VaccinationLog = () => {
   const [vaccineData, setVaccineData] = useState<MonthData[]>([]);
+  const [takenVaccines, setTakenVaccines] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     const fetchVaccines = async () => {
@@ -33,6 +35,7 @@ const VaccinationLog = () => {
         }));
 
         setVaccineData(organizedData);
+        await loadTakenVaccines(); // Load the saved vaccine status
       } catch (error) {
         console.error('Error fetching vaccines:', error);
       }
@@ -41,16 +44,46 @@ const VaccinationLog = () => {
     fetchVaccines();
   }, []);
 
+  const loadTakenVaccines = async () => {
+    try {
+      const storedData = await AsyncStorage.getItem('takenVaccines');
+      if (storedData) {
+        setTakenVaccines(JSON.parse(storedData));
+      }
+    } catch (error) {
+      console.error('Error loading taken vaccines:', error);
+    }
+  };
+
+  const handleSwitchChange = async (vaccineId: string, monthIndex: number) => {
+    const key = `${vaccineId}-${monthIndex}`; // Create a unique key for each vaccine and month
+    const updatedTakenVaccines = {
+      ...takenVaccines,
+      [key]: !takenVaccines[key], // Toggle the taken status
+    };
+    setTakenVaccines(updatedTakenVaccines);
+    await AsyncStorage.setItem('takenVaccines', JSON.stringify(updatedTakenVaccines)); // Save to local storage
+  };
+
   return (
     <ScrollView style={styles.container}>
       {vaccineData.map((item, index) => (
         <View key={index} style={styles.monthContainer}>
           <Text style={styles.monthTitle}>{item.month}</Text>
-          {item.vaccines.map((vaccine, idx) => (
-            <View key={idx} style={styles.vaccineContainer}>
-              <Text style={styles.vaccineText}>{vaccine.vaccineName}</Text>
-            </View>
-          ))}
+          {item.vaccines.map((vaccine) => {
+            const key = `${vaccine._id}-${index}`; // Create the same unique key for the switch value
+            return (
+              <View key={vaccine._id} style={styles.vaccineContainer}>
+                <View style={styles.checkboxContainer}>
+                  <Switch
+                    value={takenVaccines[key] || false}
+                    onValueChange={() => handleSwitchChange(vaccine._id, index)}
+                  />
+                  <Text style={styles.vaccineText}>{vaccine.vaccineName}</Text>
+                </View>
+              </View>
+            );
+          })}
         </View>
       ))}
     </ScrollView>
@@ -83,9 +116,14 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 2,
   },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   vaccineText: {
     fontSize: 16,
     color: '#333',
+    marginLeft: 8,
   },
 });
 

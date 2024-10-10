@@ -27,7 +27,6 @@ const UpdateVaccineSchedule = () => {
     const fetchSchedule = async () => {
       try {
         const response = await axios.get(`http://192.168.1.5:3000/vaccination/${id}`);
-
         const schedule = response.data.data;
 
         console.log('Fetched schedule data:', schedule);
@@ -35,14 +34,18 @@ const UpdateVaccineSchedule = () => {
         if (schedule) {
           setVaccineName(schedule.vaccineName || '');
           setScheduleTime(schedule.scheduleTime || '');
-          setScheduleDate(new Date(schedule.scheduleDate).toLocaleDateString() || '');
+
+          // Set the scheduleDate correctly using the UTC date
+          const fetchedDate = new Date(schedule.scheduleDate);
+          setScheduleDate(fetchedDate.toISOString().split('T')[0]); // Set as 'YYYY-MM-DD'
+
           setNotifyTime(schedule.notificationReminderTime || '');
           setNotifyDate(schedule.notificationReminderDays ? schedule.notificationReminderDays.toString() : '');
           setStatus(schedule.status || '');
           setNotes(schedule.notes || '');
 
           if (schedule.scheduleDate) {
-            setSelectedScheduleDate(new Date(schedule.scheduleDate));
+            setSelectedScheduleDate(fetchedDate); // Ensure this is the correct date object
           }
           if (schedule.scheduleTime) {
             setSelectedScheduleTime(new Date(`1970-01-01T${schedule.scheduleTime}`));
@@ -67,7 +70,8 @@ const UpdateVaccineSchedule = () => {
       const payload = {
         vaccineName,
         scheduleTime,
-        scheduleDate,
+        // Send the date as an ISO string to handle time zones properly
+        scheduleDate: selectedScheduleDate.toISOString(),
         notificationReminderTime: notifyTime,
         notificationReminderDays: parseInt(notifyDate) || 0,
         status,
@@ -92,7 +96,7 @@ const UpdateVaccineSchedule = () => {
     const currentDate = selectedDate || selectedScheduleDate;
     setShowScheduleDatePicker(Platform.OS === 'ios');
     setSelectedScheduleDate(currentDate);
-    setScheduleDate(currentDate.toLocaleDateString());
+    setScheduleDate(currentDate.toISOString().split('T')[0]); // Set as 'YYYY-MM-DD'
   };
 
   const onChangeScheduleTime = (event: any, selectedTime?: Date) => {
@@ -254,15 +258,38 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 5,
-    padding: 10,
     backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 10,
     marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#D3D3D3',
   },
   textArea: {
-    height: 100,
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  button: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    marginHorizontal: 5,
+  },
+  saveButton: {
+    backgroundColor: '#4CAF50',
+  },
+  cancelButton: {
+    backgroundColor: '#F44336',
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
   radioGroup: {
     flexDirection: 'row',
@@ -274,36 +301,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   radioCircle: {
-    width: 20,
     height: 20,
+    width: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#E0E0E0',
+    borderColor: '#1E1E1E',
     marginRight: 10,
   },
   radioCircleSelected: {
-    backgroundColor: '#6C63FF',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    padding: 15,
-    borderRadius: 5,
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  cancelButton: {
-    backgroundColor: '#9D1F1F',
-  },
-  saveButton: {
-    backgroundColor: '#1B9F1F',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    textAlign: 'center',
-    fontWeight: 'bold',
+    backgroundColor: '#1E1E1E',
   },
 });
 
