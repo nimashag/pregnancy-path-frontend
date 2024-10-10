@@ -29,7 +29,9 @@ const samplehome = () => {
         <Text style={styles.userName}>Jennifer</Text>
       </View>
       <View style={styles.iconContainer}>
+        <Link href='/notification/NotificationPage' >
         <Image source={require('../../assets/images/home/notificationimg.png')} style={styles.notificationIcon} />
+        </Link>
         <Image source={require('../../assets/images/home/userhomeimg.png')} style={styles.profileIcon} />
       </View>
     </View>

@@ -8,8 +8,6 @@ interface Reminder {
   vaccineName: string;
   scheduleTime: string;
   scheduleDate: string;
-  notificationReminderTime: string;
-  notificationReminderDays: number;
   status: string;
   notes: string;
 }
@@ -25,7 +23,14 @@ const ViewVaccinesSchedule = () => {
     setLoading(true); // Set loading to true before fetching
     try {
       const response = await axios.get('http://192.168.1.5:3000/vaccination');
-      setReminders(response.data.data);
+      const fetchedReminders = response.data.data;
+
+      // Sort reminders by scheduleDate in ascending order
+      const sortedReminders = fetchedReminders.sort((a: Reminder, b: Reminder) => {
+        return new Date(a.scheduleDate).getTime() - new Date(b.scheduleDate).getTime();
+      });
+
+      setReminders(sortedReminders); // Set the sorted reminders
     } catch (err) {
       console.error('Error fetching reminders:', err);
       setError('Failed to fetch reminders. Please try again later.');
@@ -62,8 +67,6 @@ const ViewVaccinesSchedule = () => {
       <Text style={styles.textTitle}>Vaccine Name: <Text style={styles.textValue}>{item.vaccineName}</Text></Text>
       <Text style={styles.textTitle}>Schedule Time: <Text style={styles.textValue}>{item.scheduleTime}</Text></Text>
       <Text style={styles.textTitle}>Schedule Date: <Text style={styles.textValue}>{new Date(item.scheduleDate).toLocaleDateString()}</Text></Text>
-      <Text style={styles.textTitle}>Notify Time: <Text style={styles.textValue}>{item.notificationReminderTime}</Text></Text>
-      <Text style={styles.textTitle}>Notify Days: <Text style={styles.textValue}>{item.notificationReminderDays}</Text></Text>
       <Text style={styles.textTitle}>Status: <Text style={styles.textValue}>{item.status}</Text></Text>
       <Text style={styles.textTitle}>Notes: <Text style={styles.textValue}>{item.notes}</Text></Text>
 

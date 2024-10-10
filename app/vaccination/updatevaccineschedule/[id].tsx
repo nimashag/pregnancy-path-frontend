@@ -39,19 +39,15 @@ const UpdateVaccineSchedule = () => {
           const fetchedDate = new Date(schedule.scheduleDate);
           setScheduleDate(fetchedDate.toISOString().split('T')[0]); 
 
-          setNotifyTime(schedule.notificationReminderTime || '');
-          setNotifyDate(schedule.notificationReminderDays ? schedule.notificationReminderDays.toString() : '');
+          
           setStatus(schedule.status || '');
           setNotes(schedule.notes || '');
 
           if (schedule.scheduleDate) {
-            setSelectedScheduleDate(fetchedDate); // Ensure this is the correct date object
+            setSelectedScheduleDate(fetchedDate); 
           }
           if (schedule.scheduleTime) {
             setSelectedScheduleTime(new Date(`1970-01-01T${schedule.scheduleTime}`));
-          }
-          if (schedule.notificationReminderTime) {
-            setSelectedNotifyTime(new Date(`1970-01-01T${schedule.notificationReminderTime}`));
           }
         } else {
           Alert.alert('Error', 'Schedule not found.');
@@ -72,8 +68,6 @@ const UpdateVaccineSchedule = () => {
         scheduleTime,
         // Send the date as an ISO string to handle time zones properly
         scheduleDate: selectedScheduleDate.toISOString(),
-        notificationReminderTime: notifyTime,
-        notificationReminderDays: parseInt(notifyDate) || 0,
         status,
         notes,
       };
@@ -104,13 +98,6 @@ const UpdateVaccineSchedule = () => {
     setShowScheduleTimePicker(Platform.OS === 'ios');
     setSelectedScheduleTime(currentTime);
     setScheduleTime(currentTime.toLocaleTimeString());
-  };
-
-  const onChangeNotifyTime = (event: any, selectedTime?: Date) => {
-    const currentTime = selectedTime || selectedNotifyTime;
-    setShowNotifyTimePicker(Platform.OS === 'ios');
-    setSelectedNotifyTime(currentTime);
-    setNotifyTime(currentTime.toLocaleTimeString());
   };
 
   return (
@@ -163,34 +150,6 @@ const UpdateVaccineSchedule = () => {
             onChange={onChangeScheduleTime}
           />
         )}
-
-        <Text style={styles.label}>Notify Time</Text>
-        <TouchableOpacity onPress={() => setShowNotifyTimePicker(true)}>
-          <TextInput
-            style={styles.input}
-            value={notifyTime}
-            placeholder="Select notify time"
-            editable={false}
-          />
-        </TouchableOpacity>
-
-        {showNotifyTimePicker && (
-          <DateTimePicker
-            value={selectedNotifyTime}
-            mode="time"
-            display="default"
-            onChange={onChangeNotifyTime}
-          />
-        )}
-
-        <Text style={styles.label}>Notify Days</Text>
-        <TextInput
-          style={styles.input}
-          value={notifyDate}
-          onChangeText={setNotifyDate}
-          placeholder="Enter notify days"
-          keyboardType="numeric"
-        />
 
         <Text style={styles.label}>Status</Text>
         <View style={styles.radioGroup}>

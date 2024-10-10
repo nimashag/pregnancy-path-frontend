@@ -25,7 +25,7 @@ const Vacciguide = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${config.backend_url}/vaccine`); //meka maru karapan
+      const response = await axios.get(`http://192.168.1.5:3000/vaccine`); //meka maru karapan
       setData(response.data.data); 
       setFilteredData(response.data.data); 
     } catch (error) {

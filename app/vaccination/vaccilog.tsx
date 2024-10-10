@@ -25,7 +25,7 @@ const VaccinationLog = () => {
   useEffect(() => {
     const fetchVaccines = async () => {
       try {
-        const response = await axios.get(`${config.backend_url}/vaccine`); //meka wenas karanna amathaka karanna epa pettiyo
+        const response = await axios.get(`http://192.168.1.5:3000/vaccine`); //meka wenas karanna amathaka karanna epa pettiyo
         const data: Vaccine[] = response.data.data;
 
         // Organizing data by month
