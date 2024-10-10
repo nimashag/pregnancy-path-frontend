@@ -37,25 +37,6 @@ const Mood = () => {
     { emoji: '😃', description: 'Feeling cheerful', date: '2024-11-01' },
   ]);
 
-  var mood = ''
-  const getCurrentmood = () => {
-    moodHistory.map((item) => {
-        if (new Date(item.date) == new Date()){
-            console.log(new Date(item.date))
-            console.log(new Date)
-            mood = item.emoji
-        }
-    })
-  }
-
-  useEffect( () => {
-
-    getCurrentmood()
-  }, [])
-
- 
-
- 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedMood, setSelectedMood] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -106,13 +87,13 @@ const Mood = () => {
       {/* Month Header */}
       <View className="flex-row justify-between items-center mb-4">
         <TouchableOpacity onPress={handlePreviousMonth} className="p-2 bg-gray-300 rounded-full">
-          <Text className="text-lg">Previous</Text>
+          <Icon name="arrow-left" size={20} color="#000" />
         </TouchableOpacity>
         <Text className="text-2xl font-bold">
           {format(currentDate, 'MMMM yyyy')}
         </Text>
         <TouchableOpacity onPress={handleNextMonth} className="p-2 bg-gray-300 rounded-full">
-          <Text className="text-lg">Next</Text>
+          <Icon name="arrow-right" size={20} color="#000" />
         </TouchableOpacity>
       </View>
 
@@ -210,37 +191,31 @@ const Mood = () => {
       <View className="mt-6">
         <Text className="text-xl font-bold">Mood Analytics</Text>
         <Text>Total Moods Logged: {moodHistory.length}</Text>
-        <Text>Current mood: {mood}</Text>
         {/* Add more analytics as needed */}
       </View>
 
-      
-
-{/* Tips Section */}
-<View className="mt-6 p-4 bg-white rounded-lg shadow">
-  <Text className="text-xl font-bold">Tips & Tricks</Text>
-  {[
-    { tip: "Take a walk to clear your mind.", icon: "walking" },
-    { tip: "Practice mindfulness and meditation.", icon: "meditation" },
-    { tip: "Write in a journal to express your thoughts and feelings.", icon: "pen" },
-    { tip: "Connect with friends and family for support.", icon: "users" },
-    { tip: "Try breathing exercises to reduce stress.", icon: "heartbeat" },
-    { tip: "Set small, achievable goals to boost your confidence.", icon: "flag" },
-    { tip: "Listen to your favorite music to elevate your mood.", icon: "music" },
-    { tip: "Limit screen time, especially before bed.", icon: "laptop" },
-    { tip: "Engage in a hobby or activity you love.", icon: "paint-brush" },
-    { tip: "Practice gratitude by listing things you are thankful for.", icon: "heart" },
-    { tip: "Get enough sleep to recharge your mind and body.", icon: "bed" },
-    { tip: "Eat a balanced diet to support your mental health.", icon: "apple" },
-  ].map((item, index) => (
-    <View key={index} className="flex-row items-center mt-2 p-2 bg-gray-100 rounded-lg">
-      <Icon name={item.icon} size={24} color="#4B5563" style={{ marginRight: 8 }} />
-      <Text className="text-md">{item.tip}</Text>
-    </View>
-  ))}
-</View>
-
-
+      {/* Tips Section */}
+      <View className="mt-6">
+        <Text className="text-xl font-bold">Tips and Tricks</Text>
+        <View className="flex-wrap flex-row justify-evenly">
+          <TouchableOpacity className="p-3 bg-gray-200 rounded-lg m-2 w-5/12">
+            <Icon name="smile-o" size={24} color="#000" />
+            <Text className="text-center mt-2">Stay Positive</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="p-3 bg-gray-200 rounded-lg m-2 w-5/12">
+            <Icon name="heartbeat" size={24} color="#000" />
+            <Text className="text-center mt-2">Keep Moving</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="p-3 bg-gray-200 rounded-lg m-2 w-5/12">
+            <Icon name="leaf" size={24} color="#000" />
+            <Text className="text-center mt-2">Eat Healthy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="p-3 bg-gray-200 rounded-lg m-2 w-5/12">
+            <Icon name="music" size={24} color="#000" />
+            <Text className="text-center mt-2">Listen to Music</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </ScrollView>
   );
 };
