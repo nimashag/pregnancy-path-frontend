@@ -1,4 +1,4 @@
-import {View, Text, FlatList, TouchableOpacity, TextInput, ScrollView} from "react-native";
+import {View, Text, FlatList, TouchableOpacity, TextInput, ScrollView, Alert} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {Stack, useLocalSearchParams, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
@@ -13,11 +13,13 @@ import clinicScheduleType from "@/types/clinicScheduleType";
 const UpdateClinicSchedule = () => {
 
     const headerHeight = useHeaderHeight();
+
+    // for the drop down
     const [clinics, setClinics] = useState<ClinicType[]>([]);
     const { id } = useLocalSearchParams();
     const router = useRouter();
 
-    const [clinic, setClinic] = useState<ClinicType | undefined>(undefined);
+    const [clinic, setClinic] = useState<string | undefined>(undefined);
     const [previousDate, setPreviousDate] = useState('');
     const [date, setDate] = useState<Date | null>(null);
     const [time, setTime] = useState(new Date());
@@ -34,12 +36,12 @@ const UpdateClinicSchedule = () => {
                 setClinics(response.data);
 
                 console.log(id);
-                const schedule: clinicScheduleType = await axios.get(`http://192.168.8.127:3000/clinic-schedule/get-one-clinic-schedule/${id}`)
+                const schedule = await axios.get(`http://192.168.8.127:3000/clinic-schedule/get-one-clinic-schedule/${id}`)
                 setClinic(schedule.data.clinic);
+                console.log(schedule.data.clinic);
                 setPreviousDate(schedule.data.date);
                 setDbTime(schedule.data.time);
                 setLocation(schedule.data.location);
-                console.log(clinic?.clinicTitle)
 
 
             } catch (error) {
@@ -73,6 +75,12 @@ const UpdateClinicSchedule = () => {
                 time: dbTime,
                 location
             })
+
+            if (response) {
+                Alert.alert("Success", "Schedule Updated successfully");
+                router.push("/clinic/ClinicSchedule");
+              }
+
         } catch (error) {
             console.log(error);
         }
@@ -105,8 +113,8 @@ const UpdateClinicSchedule = () => {
                             selectedValue={clinic}
                             onValueChange={(itemValue) => setClinic(itemValue)}
                         >
-                            {clinics.map((clinic) => (
-                                <Picker.Item label={clinic.clinicTitle} value={clinic} />
+                            {clinics.map((item) => (
+                                <Picker.Item label={item.clinicTitle} value={item}/>
                             ))}
                         </Picker>
                     </View>

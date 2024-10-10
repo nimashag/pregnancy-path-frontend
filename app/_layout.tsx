@@ -44,6 +44,8 @@ export default function RootLayout() {
         <Stack.Screen name="vaccination/viewvaccischedule" />
         <Stack.Screen name="vaccination/vaccimonthtracker" />
 
+        <Stack.Screen name="clinic/CreateClinicSchedule" />
+
       </Stack>
     </ThemeProvider>
   );

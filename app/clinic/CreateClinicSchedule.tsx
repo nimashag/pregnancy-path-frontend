@@ -1,4 +1,4 @@
-import {View, Text, FlatList, TouchableOpacity, TextInput, ScrollView} from "react-native";
+import {View, Text, FlatList, TouchableOpacity, TextInput, ScrollView, Alert} from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {Stack, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
@@ -64,6 +64,11 @@ const CreateClinicSchedule = () => {
             })
 
             console.log('Schedule created successfully:', response.data);
+
+            if (response) {
+                Alert.alert("Success", "Schedule deleted successfully");
+                router.push("/clinic/ClinicSchedule");
+              }
 
             console.log(time);
 
