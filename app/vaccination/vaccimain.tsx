@@ -33,7 +33,6 @@ const vaccimain = () => {
 
       {/* Vaccination Scheduling */}
       <Text style={styles.subHeader}>Vaccination Scheduling</Text>
-      <Text></Text>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 {/* Card 1 */}
                 <TouchableOpacity  style={{ flex: 1, marginRight: 10 }}>
@@ -96,7 +95,6 @@ const vaccimain = () => {
 
       {/* What To Know About Vaccines */}
       <Text style={styles.subHeader}>What To Know About Vaccines</Text>
-      <Text></Text>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 {/* Card 1 */}
                 <TouchableOpacity  style={{ flex: 1, marginRight: 10 }}>
