@@ -42,7 +42,6 @@ const UpdateMemoryScreen: React.FC<JournalEntryDetailProps> = () => {
     const [eventDescription, setEventDescription] = useState(parsedEntry.description);
     const [selectedFeeling, setSelectedFeeling] = useState(parsedEntry.feelings);
     const [eventTime, setEventTime] = useState(parsedEntry.time);
-    console.log(`---------- ${eventTime}`)
     const [eventDate, setEventDate] = useState(new Date(parsedEntry.date));
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -231,23 +230,12 @@ const UpdateMemoryScreen: React.FC<JournalEntryDetailProps> = () => {
             <View style={styles.timeDateContainer}>
                 <View style={styles.timeContainer}>
                     <Text style={styles.label}>Enter Time</Text>
-                    <TouchableOpacity
+                    <TextInput
                         style={styles.input}
-                        onPress={() => setShowTimePicker(true)}
-                    >
-                        <Text>
-                            {eventTime}
-                        </Text>
-                    </TouchableOpacity>
-                    {showTimePicker && (
-                        <DateTimePicker
-                            value={convertToJSDate(eventTime)}
-                            mode="time"
-                            is24Hour={false}
-                            display="default"
-                            onChange={onTimeChange}
-                        />
-                    )}
+                        placeholder={eventTime}
+                        value={eventTime}
+                        onChangeText={setEventTime}
+                    />
                 </View>
 
                 <View style={styles.dateContainer}>
