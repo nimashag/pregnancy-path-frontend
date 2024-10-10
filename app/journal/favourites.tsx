@@ -146,7 +146,7 @@ const JournalScreen = () => {
                     <StyledText className="text-gray-500">
                       {new Date(entry.date).toLocaleDateString()} {entry.time} {/* Format date properly */}
                     </StyledText>
-                    <FontAwesome name="star" size={24} color={entry.isFavorite ? 'gold' : 'gray'} />
+                    <FontAwesome name="star" size={24} color={entry.isFavorite ? 'black' : 'black'} />
                   </View>
                   <StyledText className={`mt-2 font-medium`}>
                     • {entry.feelings}

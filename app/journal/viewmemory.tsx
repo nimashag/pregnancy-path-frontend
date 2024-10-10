@@ -1,10 +1,19 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';  // Icons for time, date, and feelings
-import { Chip, ProgressBar } from 'react-native-paper';  // Chips for feelings and a progress bar for emotions
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons"; // Icons for time, date, and feelings
+import { Chip } from "react-native-paper"; // Chips for feelings and a progress bar for emotions
 import config from "../../constants/config";
-import {Memory} from "@/app/journal/IMemory";
+import { Memory } from "@/app/journal/IMemory";
 
 const { width } = Dimensions.get("window");
 
@@ -16,9 +25,9 @@ interface JournalEntryDetailProps {
         description: string;
         time: string;
         date: string;
-        image?: string;  // base64 image
+        image?: string; // base64 image
         feelings?: string;
-        emotionLevel?: number;  // Emotional intensity (1-10)
+        emotionLevel?: number; // Emotional intensity (1-10)
       };
     };
   };
@@ -38,7 +47,9 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
 
       if (!response.ok) {
         const errorMessage = await response.text();
-        throw new Error(`Failed to delete entry: ${response.status} - ${errorMessage}`);
+        throw new Error(
+          `Failed to delete entry: ${response.status} - ${errorMessage}`
+        );
       }
 
       // Optionally navigate back or show a success message
@@ -66,8 +77,8 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
@@ -78,57 +89,75 @@ const JournalEntryDetail: React.FC<JournalEntryDetailProps> = () => {
     });
   };
 
+  const handleBackPress = () => {
+    router.back();
+  };
+
   return (
-      <ScrollView contentContainerStyle={styles.container}>
-        {/* Header section with title */}
+    <ScrollView contentContainerStyle={styles.container}>
+      {/* Header section with title */}
+      
       <View style={styles.header}>
+      <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
+      </TouchableOpacity>
         <Text style={styles.headerTitle}>Memory Details</Text>
       </View>
-        <View style={styles.card}>
-          {parsedEntry.image && (
-              <Image
-                  source={{ uri: `${parsedEntry.image}` }}
-                  style={styles.image}
-                  resizeMode="cover"
-              />
-          )}
-          <View style={styles.content}>
-            <Text style={styles.title}>{parsedEntry.name}</Text>
 
-            <View style={styles.metadata}>
-              <View style={styles.metaItem}>
-                <MaterialIcons name="date-range" size={20} color="#6a7fdb" />
-                <Text style={styles.date}>{formatDate(parsedEntry.date)}</Text>
-              </View>
-              <View style={styles.metaItem}>
-                <FontAwesome name="clock-o" size={20} color="#6a7fdb" />
-                <Text style={styles.time}>{parsedEntry.time}</Text>
+      <View style={styles.card}>
+        {parsedEntry.image && (
+          <Image
+            source={{ uri: `${parsedEntry.image}` }}
+            style={styles.image}
+            resizeMode="contain"
+          />
+        )}
+        <View style={styles.content}>
+          <Text style={styles.title}>{parsedEntry.name}</Text>
+
+          <View style={styles.metadata}>
+            <View style={styles.metaItem}>
+              <MaterialIcons name="date-range" size={20} color="#6a7fdb" />
+              <Text style={styles.date}>{formatDate(parsedEntry.date)}</Text>
+            </View>
+            <View style={styles.metaItem}>
+              <FontAwesome name="clock-o" size={20} color="#6a7fdb" />
+              <Text style={styles.time}>{parsedEntry.time}</Text>
+            </View>
+          </View>
+
+          <Text style={styles.description}>{parsedEntry.description}</Text>
+
+          {parsedEntry.feelings && (
+            <View style={styles.feelingsContainer}>
+              <Text style={styles.feelingsTitle}>Feelings:</Text>
+              <View style={styles.chipsContainer}>
+                {parsedEntry.feelings
+                  .split(",")
+                  .map((feeling: string, index: number) => (
+                    <Chip
+                      key={index}
+                      style={styles.feelingChip}
+                      textStyle={styles.feelingChipText}
+                    >
+                      {feeling.trim()}
+                    </Chip>
+                  ))}
               </View>
             </View>
-
-            <Text style={styles.description}>{parsedEntry.description}</Text>
-
-            {parsedEntry.feelings && (
-                <View style={styles.feelingsContainer}>
-                  <Text style={styles.feelingsTitle}>Feelings:</Text>
-                  <View style={styles.chipsContainer}>
-                    {parsedEntry.feelings.split(',').map((feeling: string, index: number) => (
-                        <Chip key={index} style={styles.feelingChip} textStyle={styles.feelingChipText}>
-                          {feeling.trim()}
-                        </Chip>
-                    ))}
-                  </View>
-                </View>
-            )}
-          </View>
-          <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
-            <FontAwesome name="edit" size={24} color="blue" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => confirmDelete(parsedEntry._id as string)} style={styles.deleteButton}>
-            <FontAwesome name="trash" size={24} color="red" />
-          </TouchableOpacity>
+          )}
         </View>
-      </ScrollView>
+        <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
+          <FontAwesome name="edit" size={24} color="blue" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => confirmDelete(parsedEntry._id as string)}
+          style={styles.deleteButton}
+        >
+          <FontAwesome name="trash" size={24} color="red" />
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -137,16 +166,24 @@ const styles = StyleSheet.create({
     padding: 20,
     flexGrow: 1,
     backgroundColor: "#f0f0f0",
-    paddingTop: 90,
+    paddingTop: 60,
   },
   header: {
+    flexDirection: "row", // Align back button and title in a row
+    alignItems: "center", // Align items vertically in the center
+    justifyContent: "center", // Center the title horizontally
     marginBottom: 20,
-    alignItems: 'center',
+    position: "relative", // For back button to stay on the left
+  },
+  backButton: {
+    position: "absolute", // Keep the back button aligned to the left
+    left: 0, // Align it at the start of the header
+    padding: 10,
   },
   headerTitle: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#6a7fdb',
+    fontWeight: "bold",
+    color: "#0c4a6e",
   },
   card: {
     backgroundColor: "#fff",

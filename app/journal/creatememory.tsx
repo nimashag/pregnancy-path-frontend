@@ -134,9 +134,18 @@ const CreateEventScreen = () => {
     router.push("/journal/dailyjournal");
   };
 
+  const handleBackPress = () => {
+    router.back();
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.headerText}>Create a Memory</Text>
+      <View style={styles.header}>
+      <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
+      </TouchableOpacity>
+      <Text style={styles.headerTitle}>Create a Memory</Text>
+      </View>
 
       <Text style={styles.label}>Title</Text>
       <TextInput
@@ -248,14 +257,24 @@ const styles = StyleSheet.create({
     padding: 30,
     backgroundColor: "#F3F4F6",
     minHeight: "100%",
+    paddingTop: 60,
   },
-  headerText: {
-    fontSize: 24,
+  header: {
+    flexDirection: "row", // Align back button and title in a row
+    alignItems: "center", // Align items vertically in the center
+    justifyContent: "center", // Center the title horizontally
+    marginBottom: 20,
+    position: "relative", // For back button to stay on the left
+  },
+  backButton: {
+    position: "absolute", // Keep the back button aligned to the left
+    left: 0, // Align it at the start of the header
+    padding: 10,
+  },
+  headerTitle: {
+    fontSize: 28,
     fontWeight: "bold",
-    textAlign: "center",
-    color: "#18113E",
-    marginBottom: 16,
-    marginTop: 40,
+    color: "#0c4a6e",
   },
   label: {
     fontSize: 18,

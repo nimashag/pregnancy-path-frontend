@@ -176,7 +176,7 @@ const DailyJournal: React.FC = () => {
   };
 
   const handleBackPress = () => {
-    router.push('/_sitemap'); 
+    router.push('/main/samplehome'); 
   };
 
   const handlefavourites = () => {
