@@ -219,7 +219,8 @@ const styles = StyleSheet.create({
   metaItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 18,
+    marginRight: 17,
+    marginLeft: 8,
   },
   date: {
     fontSize: 16,

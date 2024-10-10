@@ -69,7 +69,7 @@ const JournalScreen = () => {
   };
 
   const handleBackPress = () => {
-    router.push('/_sitemap');
+    router.back();
   };
 
   const handledailyjournal = () => {
