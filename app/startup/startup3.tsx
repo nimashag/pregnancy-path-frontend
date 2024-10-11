@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FE725C',
     fontFamily: 'cursive', 
+    marginTop: 40,
     marginBottom: 40,
   },
   image: {
@@ -70,8 +71,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   button: {
-    marginTop: 100,
-    marginBottom: 10,
+    marginTop: 30,
+    marginBottom: 20,
     backgroundColor: '#FE725C',
     paddingVertical: 15,
     paddingHorizontal: 80,

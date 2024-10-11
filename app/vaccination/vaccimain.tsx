@@ -1,10 +1,54 @@
-import { Link } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView,ImageBackground } from 'react-native';
+import { Link, useRouter } from 'expo-router';
+import { FontAwesome } from "@expo/vector-icons";
 
 const vaccimain = () => {
+
+  const router = useRouter();
+
+  const handleBackPress = () => {
+    router.back();  
+  };
+
+  const handleVacciTrackerNavigation = () => {
+    // Navigate to Vaccination Screen
+    router.push('/vaccination/vaccimonthtracker');
+  };
+
+  const handleVacciVeiwScheduleNavigation = () => {
+    // Navigate to Vaccination Screen
+    router.push('/vaccination/viewvaccineschedule');
+  };
+
+  const handleVacciCreateScheduleNavigation = () => {
+    // Navigate to Vaccination Screen
+    router.push('/vaccination/createvaccineschedule');
+  };
+
+  const handleVacciGuideNavigation = () => {
+    // Navigate to Vaccination Screen
+    router.push('/vaccination/vacciguide');
+  };
+
+  const handleVacciLogNavigation = () => {
+    // Navigate to Vaccination Screen
+    router.push('/vaccination/vaccilog');
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+
+      <View className="flex-row items-center justify-between mb-4 mt-5">
+        <TouchableOpacity onPress={handleBackPress} className="ml-1">
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
+        </TouchableOpacity>
+        <Text className="text-2xl text-center text-indigo-950 font-bold">
+          Vaccination Information
+        </Text>
+        <View />
+      </View>
+
       {/* Monthly Vaccination Details */}
       <Text style={styles.subHeader}>Monthly Vaccination Details</Text>
       <TouchableOpacity  style={{ marginBottom: 20 }}>
@@ -22,10 +66,8 @@ const vaccimain = () => {
                     <Text style={{ color: '#000000', fontSize: 14, marginBottom: 10, width: '68%' }}>
                     Get information about what vaccinations you have to get monthly and keep track.
                     </Text>
-                    <TouchableOpacity style={{ backgroundColor: '#F88C8C', padding: 8, width: '30%', borderRadius: 5 }}>
-                    <Link href="/vaccination/vaccimonthtracker" style={{ width: '100%' }}>
+                    <TouchableOpacity onPress={handleVacciTrackerNavigation} style={{ backgroundColor: '#F88C8C', padding: 8, width: '30%', borderRadius: 5 }}>
                         <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center' }}>Tracker</Text>
-                    </Link>
                     </TouchableOpacity>
                     
                 </ImageBackground>
@@ -54,10 +96,8 @@ const vaccimain = () => {
                         <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 , }}>
                         Schedules
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#0F3062', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
-                          <Link href='/vaccination/viewvaccineschedule' style={{ width: '100%' }}>
+                        <TouchableOpacity onPress={handleVacciVeiwScheduleNavigation} style={{ backgroundColor: '#0F3062', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
                             <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center' }}>View</Text>
-                          </Link>
                         </TouchableOpacity>
                       </View>
                     </ImageBackground>
@@ -83,10 +123,8 @@ const vaccimain = () => {
                         <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
                         Schedule
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#5C0D0D', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
-                          <Link href="/vaccination/createvaccineschedule" style={{ width: '100%' }}>
+                        <TouchableOpacity onPress={handleVacciCreateScheduleNavigation} style={{ backgroundColor: '#5C0D0D', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
                             <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Create</Text>
-                          </Link>
                         </TouchableOpacity>
                       </View>
                     </ImageBackground>
@@ -116,10 +154,8 @@ const vaccimain = () => {
                         <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
                         Guide
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#6D0A11', padding: 8, marginTop: 10, width: '100%', borderRadius: 5 }}>
-                          <Link href="/vaccination/vacciguide" style={{ width: '100%' }}>
+                        <TouchableOpacity onPress={handleVacciGuideNavigation} style={{ backgroundColor: '#6D0A11', padding: 8, marginTop: 10, width: '100%', borderRadius: 5 }}>
                             <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center'}}>Guide</Text>
-                          </Link>
                         </TouchableOpacity>
                       </View>
                     </ImageBackground>
@@ -145,10 +181,8 @@ const vaccimain = () => {
                         <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
                         Log
                         </Text>
-                        <TouchableOpacity style={{ backgroundColor: '#000', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
-                          <Link href="/vaccination/vaccilog" style={{ width: '100%' }}>
+                        <TouchableOpacity onPress={handleVacciLogNavigation} style={{ backgroundColor: '#000', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
                             <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Log</Text>
-                           </Link>
                         </TouchableOpacity>
                       </View>
                     </ImageBackground>

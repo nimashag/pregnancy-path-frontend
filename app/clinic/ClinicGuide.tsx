@@ -10,6 +10,8 @@ import config from "@/constants/config";
 
 const CreateClinicSchedule = () => {
     const [clinics, setClinics] = useState<ClinicType[]>([]);
+    const [search, setSearch] = useState<string | null>(null);
+    const [filteredClinics, setFilteredClinics] = useState<ClinicType[]>([]);
     const [loading, setLoading] = useState(true);
     const headerHeight = useHeaderHeight();
     const router = useRouter();
@@ -26,6 +28,8 @@ const CreateClinicSchedule = () => {
             try {
                 const response = await axios.get(`${config.backend_url}/clinic/all-clinic`);
                 setClinics(response.data);
+                
+
             } catch (error) {
                 console.error(error);
             } finally {
@@ -34,6 +38,22 @@ const CreateClinicSchedule = () => {
         };
         fetchClinics();
     }, []);
+
+
+    useEffect(() => {
+        try {
+            if (search === null) {
+                setFilteredClinics(clinics);
+            } else {
+                const filtered = clinics.filter(clinic =>
+                    clinic.clinicTitle.toLowerCase().includes(search.toLowerCase())
+                );
+                setFilteredClinics(filtered);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    },[clinics, search]);
 
     const renderItems: ListRenderItem<ClinicType> = ({item}) => {
         return (
@@ -64,7 +84,7 @@ const CreateClinicSchedule = () => {
                     headerTitle: "Clinic Guide",
                     headerTitleAlign: "center",
                     headerLeft: () => (
-                        <TouchableOpacity onPress={() => {router.push('/_sitemap');}}>
+                        <TouchableOpacity onPress={() => {router.back();}}>
                             <View>
                                 <Ionicons name="chevron-back-outline" size={24} color="black" />
                             </View>
@@ -73,16 +93,20 @@ const CreateClinicSchedule = () => {
                 }}
             />
 
-            <View className="flex-row justify-between mx-4" style={{paddingTop: headerHeight }}>
-                <Ionicons name="menu-outline" size={36} color="black" />
+
+            {/* search */}
+            <View className="flex-row justify-between mx-4 py-4" style={{paddingTop: headerHeight }}>
+                <TouchableOpacity onPress={() => router.push('/clinic/ClinicNotifications')}>
+                    <Ionicons name="notifications" size={36} color="black"/>
+                </TouchableOpacity>
                 <View className="flex-row border items-center rounded-3xl w-56 justify-between px-6">
-                    <TextInput placeholder="Search"/>
+                    <TextInput placeholder="Search" value={search} onChangeText={setSearch}/>
                     <Ionicons name="search" size={28} color="black" />
                 </View>
             </View>
 
             <ScrollView>
-                <FlatList data={clinics} renderItem={renderItems} showsVerticalScrollIndicator={false} />
+                <FlatList data={filteredClinics} renderItem={renderItems} showsVerticalScrollIndicator={false} />
             </ScrollView>
 
         </View>

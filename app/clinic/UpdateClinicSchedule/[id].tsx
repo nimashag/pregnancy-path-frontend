@@ -173,19 +173,13 @@ const UpdateClinicSchedule = () => {
             {/*Footer*/}
             <View className="absolute bottom-0 mx-4 pb-8 flex-row">
                 <TouchableOpacity
-                    className="bg-yellow-400 items-center py-5 px-16 rounded-xl flex-grow mr-4"
+                    className="bg-yellow-400 items-center py-5 px-16 rounded-xl flex-grow"
                     onPress={handleUpdate}
                 >
                     <View className="flex-row items-center">
                         <Text className="text-white text-lg uppercase pr-1">update</Text>
                         <Ionicons name="add-circle-outline" size={20} color="white" />
                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    className="bg-red-700 items-center p-5 px-8 rounded-xl"
-                    onPress={() => {}}
-                >
-                    <Text className="text-white text-lg uppercase">Cancel</Text>
                 </TouchableOpacity>
             </View>
 

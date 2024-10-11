@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, ScrollView, Image, Modal, Button, Platform } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, ScrollView, Image, Modal, Button, Platform, TouchableOpacity } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import axios from 'axios';
-import { useRouter } from 'expo-router';
+import { useRouter , useNavigation} from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
+import config from '@/constants/config';
+import { FontAwesome } from "@expo/vector-icons";
+import { blue } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
 interface Reminder {
   _id: string;
@@ -21,6 +24,16 @@ const NotificationPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'1day' | '1week' | '1month'>('1day');
   const [modalVisible, setModalVisible] = useState(false);
+
+  const { setOptions } = useNavigation();
+  useEffect(() => {
+    setOptions({ headerShown: false });
+  }, []);
+
+  const handleBackPress = () => {
+    router.back(); 
+  };
+
 
   const requestNotificationPermissions = async () => {
     const { status } = await Notifications.getPermissionsAsync();
@@ -51,7 +64,7 @@ const NotificationPage = () => {
   const fetchReminders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.1.5:3000/vaccination');
+      const response = await axios.get(`${config.backend_url}/vaccination`);
       setReminders(response.data.data);
     } catch (err) {
       console.error('Error fetching reminders:', err);
@@ -148,8 +161,19 @@ const NotificationPage = () => {
 
   return (
     <ScrollView>
+
+      <View className="flex-row items-center justify-between mb-8 mt-10">
+        <TouchableOpacity onPress={handleBackPress} className="ml-4">
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
+        </TouchableOpacity>
+        <Text className="text-2xl text-center text-indigo-950 font-bold">
+          Notification Panel
+        </Text>
+        <View />
+      </View>
+
+
       <View>
-        <Text style={styles.cardTitle}>Notification Panel</Text>
         <View style={styles.pickerContainer}>
           <Text style={styles.pickerLabel}>Filter By: </Text>
           <View style={styles.pickerLabel3} >
@@ -203,7 +227,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     elevation: 4,
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
   },
   reminderImage: {
     width: 60,

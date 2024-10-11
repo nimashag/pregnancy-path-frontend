@@ -2,11 +2,11 @@ import {
   View,
   Text,
   FlatList,
-  TouchableOpacity,
-  TextInput,
+  TouchableOpacity,  
   ScrollView,
   ListRenderItem,
   Image,
+  Linking
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -37,6 +37,32 @@ const CreateClinicSchedule = () => {
           `${config.backend_url}/clinic-schedule/upcoming-clinic-schedule/${id}`
         );
         setSchedules(response.data);
+
+        
+
+        response.data.forEach(async(item: clinicScheduleType) => {
+
+          const date = new Date(item.date);
+          const today = new Date();
+
+          date.setHours(0, 0, 0, 0);
+          today.setHours(0, 0, 0, 0);
+
+          if(date < today){
+            
+            const response =await axios.delete(
+              `${config.backend_url}/clinic-schedule/delete-clinic-schedule/${item._id}`
+
+            );
+
+            if(response) {
+              console.log("deleted : ",response);
+            }
+
+          }
+         
+        })
+
       } catch (error) {
         console.error(error);
       }
@@ -80,6 +106,15 @@ const CreateClinicSchedule = () => {
     );
   };
 
+
+  const openDialer = () => {
+    Linking.openURL('tel:+112');
+  };
+
+  const openClinicGuide = () => {
+    router.push('/clinic/ClinicGuide');
+  };
+  
   return (
     <View style={{ flex: 1 }}>
       <Stack.Screen
@@ -125,7 +160,8 @@ const CreateClinicSchedule = () => {
 
       {/*Footer*/}
       <View className= "p-3 space-y-1">
-        <TouchableOpacity className="bg-clinic-guide items-center py-3 w-full rounded-xl">
+        
+        <TouchableOpacity className="bg-clinic-guide items-center py-3 w-full rounded-xl" onPress={openClinicGuide}>
           <View className="flex-row items-center space-x-4">
             <Image
               className="w-10 h-10"
@@ -137,9 +173,9 @@ const CreateClinicSchedule = () => {
             </View>
             <Ionicons name="chevron-forward-circle-outline" size={40} color="black" />
           </View>
-
         </TouchableOpacity>
-        <TouchableOpacity className="bg-clinic-assistant items-center py-3 w-full rounded-xl">
+        
+        <TouchableOpacity className="bg-clinic-assistant items-center py-3 w-full rounded-xl" onPress={openDialer}>
         <View className="flex-row items-center space-x-4">
             <Image
               className="w-10 h-10"

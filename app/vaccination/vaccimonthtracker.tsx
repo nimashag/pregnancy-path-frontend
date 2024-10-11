@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
 import axios from 'axios';
 import { Link } from 'expo-router';
+import { FontAwesome } from "@expo/vector-icons";
+import { useRouter, useNavigation } from 'expo-router';
+import config from "../../constants/config";
 
 type Vaccine = {
   _id: string;
@@ -21,11 +24,16 @@ type MonthData = {
 const VaccinationSchedule = () => {
   const [vaccineData, setVaccineData] = useState<MonthData[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<number>(0); // Default 0: show all
+  
+  const router = useRouter();
+  const handleBackPress = () => {
+    router.back(); 
+  };
 
   useEffect(() => {
     const fetchVaccines = async () => {
       try {
-        const response = await axios.get('http://192.168.1.5:3000/vaccine'); // Replace with your actual API
+        const response = await axios.get(`${config.backend_url}/vaccine`); // Replace with your actual API
         const data: Vaccine[] = response.data.data;
 
         console.log('Fetched Vaccine Data:', data);
@@ -60,6 +68,16 @@ const VaccinationSchedule = () => {
 
   return (
     <ScrollView style={styles.container}>
+
+      <View className="flex-row items-center justify-between mb-4 mt-10">
+        <TouchableOpacity onPress={handleBackPress} className="ml-4">
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
+        </TouchableOpacity>
+        <Text className="text-2xl text-center text-indigo-950 font-bold">
+          Vaccine Tracker
+        </Text>
+      <View />
+      </View>
 
       {/* Main Card */}
       <View style={styles.card}>

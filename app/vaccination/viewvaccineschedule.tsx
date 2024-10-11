@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert, Image, TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
+import config from "../../constants/config";
+import { FontAwesome } from "@expo/vector-icons";
 
 interface Reminder {
   _id: string;
@@ -18,11 +20,17 @@ const ViewVaccinesSchedule = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+
+  const { setOptions } = useNavigation();
+  useEffect(() => {
+    setOptions({ headerShown: false });
+  }, []);
+
   // Fetch reminders function
   const fetchReminders = async () => {
     setLoading(true); // Set loading to true before fetching
     try {
-      const response = await axios.get('http://192.168.1.5:3000/vaccination');
+      const response = await axios.get(`${config.backend_url}/vaccination`);
       const fetchedReminders = response.data.data;
 
       // Sort reminders by scheduleDate in ascending order
@@ -39,6 +47,10 @@ const ViewVaccinesSchedule = () => {
     }
   };
 
+  const handleBackPress = () => {
+    router.back(); 
+  };
+
   useEffect(() => {
     fetchReminders(); // Fetch reminders on component mount
   }, []);
@@ -49,7 +61,7 @@ const ViewVaccinesSchedule = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://192.168.1.5:3000/vaccination/${id}`);
+      await axios.delete(`${config.backend_url}/vaccination/${id}`);
       setReminders(reminders.filter(reminder => reminder._id !== id));
       Alert.alert('Success', 'Reminder deleted successfully.');
     } catch (err) {
@@ -102,9 +114,23 @@ const ViewVaccinesSchedule = () => {
   // Handle empty data response
   return (
     <ScrollView>
+      <View className="flex-row items-center justify-between mb-4 mt-10">
+        <TouchableOpacity onPress={handleBackPress} className="ml-4">
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
+        </TouchableOpacity>
+        <Text className="text-2xl text-center text-indigo-950 font-bold">
+          Vaccination Schedules
+        </Text>
+      <View />
+      </View>
+
+      {/* Display the total count of reminders */}
+      <View style={styles.countContainer}>
+        <Text style={styles.countText}>Total Schedules: {reminders.length}</Text>
+      </View>
+
       <View>
-        <Text style={styles.cardTitle}>Reserved Vaccination Schedules</Text>
-        {/* Updated Button Container */}
+        {/*Button Container */}
         <View style={styles.buttonContainer2}>
           {/* Add New Schedule Button */}
           <TouchableOpacity style={styles.fullWidthButton} onPress={handleAddNewSchedule}>
@@ -135,7 +161,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    marginTop: 10,
   },
   reminderCard: {
     backgroundColor: '#FFFFFF',
@@ -165,8 +190,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     justifyContent: 'center',
     padding: 20,
-    marginBottom: 10,
     gap: 10
+  },
+  countContainer: {
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  countText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
   },
   fullWidthButton: {
     backgroundColor: '#FF979E', 

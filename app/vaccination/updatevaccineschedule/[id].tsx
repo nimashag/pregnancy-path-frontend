@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Platform, KeyboardAvoidingView } from 'react-native';
 import axios from 'axios';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, useNavigation } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import config from "../../../constants/config";
+import { FontAwesome } from "@expo/vector-icons";
 
 const UpdateVaccineSchedule = () => {
   const router = useRouter();
@@ -11,40 +13,44 @@ const UpdateVaccineSchedule = () => {
   const [vaccineName, setVaccineName] = useState('');
   const [scheduleTime, setScheduleTime] = useState('');
   const [scheduleDate, setScheduleDate] = useState('');
-  const [notifyTime, setNotifyTime] = useState('');
-  const [notifyDate, setNotifyDate] = useState('');
   const [status, setStatus] = useState('');
   const [notes, setNotes] = useState('');
 
   const [showScheduleDatePicker, setShowScheduleDatePicker] = useState(false);
   const [showScheduleTimePicker, setShowScheduleTimePicker] = useState(false);
-  const [showNotifyTimePicker, setShowNotifyTimePicker] = useState(false);
   const [selectedScheduleDate, setSelectedScheduleDate] = useState(new Date());
   const [selectedScheduleTime, setSelectedScheduleTime] = useState(new Date());
-  const [selectedNotifyTime, setSelectedNotifyTime] = useState(new Date());
 
+  const [isVaccineNameInvalid, setIsVaccineNameInvalid] = useState(false);
+
+  const { setOptions } = useNavigation();
+  useEffect(() => {
+    setOptions({ headerShown: false });
+  }, []);
+
+  const handleBackPress = () => {
+    router.back();
+  };
+
+  // Fetching schedule data from backend
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.5:3000/vaccination/${id}`);
+        const response = await axios.get(`${config.backend_url}/vaccination/${id}`);
         const schedule = response.data.data;
-
-        console.log('Fetched schedule data:', schedule);
 
         if (schedule) {
           setVaccineName(schedule.vaccineName || '');
           setScheduleTime(schedule.scheduleTime || '');
 
-          // Set the scheduleDate correctly using the UTC date
           const fetchedDate = new Date(schedule.scheduleDate);
-          setScheduleDate(fetchedDate.toISOString().split('T')[0]); 
+          setScheduleDate(fetchedDate.toISOString().split('T')[0]);
 
-          
           setStatus(schedule.status || '');
           setNotes(schedule.notes || '');
 
           if (schedule.scheduleDate) {
-            setSelectedScheduleDate(fetchedDate); 
+            setSelectedScheduleDate(fetchedDate);
           }
           if (schedule.scheduleTime) {
             setSelectedScheduleTime(new Date(`1970-01-01T${schedule.scheduleTime}`));
@@ -61,18 +67,31 @@ const UpdateVaccineSchedule = () => {
     fetchSchedule();
   }, [id]);
 
+  // Remove special characters in real-time
+  const handleVaccineNameChange = (text: string) => {
+    const sanitizedText = text.replace(/[^a-zA-Z0-9 ]/g, '');
+    setVaccineName(sanitizedText);
+
+    // If text contains invalid characters, show validation message
+    setIsVaccineNameInvalid(text !== sanitizedText);
+  };
+
   const handleUpdate = async () => {
+    if (!vaccineName) {
+      Alert.alert('Error', 'Vaccine Name cannot be empty.');
+      return;
+    }
+
     try {
       const payload = {
         vaccineName,
         scheduleTime,
-        // Send the date as an ISO string to handle time zones properly
         scheduleDate: selectedScheduleDate.toISOString(),
         status,
-        notes,
+        notes: notes || 'No special notes.',
       };
 
-      const response = await axios.put(`http://192.168.1.5:3000/vaccination/${id}`, payload);
+      const response = await axios.put(`${config.backend_url}/vaccination/${id}`, payload);
 
       if (response.status === 200) {
         Alert.alert('Success', 'Schedule updated successfully');
@@ -90,7 +109,7 @@ const UpdateVaccineSchedule = () => {
     const currentDate = selectedDate || selectedScheduleDate;
     setShowScheduleDatePicker(Platform.OS === 'ios');
     setSelectedScheduleDate(currentDate);
-    setScheduleDate(currentDate.toISOString().split('T')[0]); // Set as 'YYYY-MM-DD'
+    setScheduleDate(currentDate.toISOString().split('T')[0]);
   };
 
   const onChangeScheduleTime = (event: any, selectedTime?: Date) => {
@@ -103,15 +122,29 @@ const UpdateVaccineSchedule = () => {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.header}>Update Schedule</Text>
+        
+        <View className="flex-row items-center justify-between mb-7 mt-10">
+          <TouchableOpacity onPress={handleBackPress} className="ml-4">
+            <FontAwesome name="chevron-left" size={24} color="#18113E" />
+          </TouchableOpacity>
+          <Text className="text-2xl text-center text-indigo-950 font-bold">
+            Update Schedule
+          </Text>
+          <View />
+        </View>
 
         <Text style={styles.label}>Vaccine Name</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, isVaccineNameInvalid && styles.inputError]}
           value={vaccineName}
-          onChangeText={setVaccineName}
+          onChangeText={handleVaccineNameChange}
           placeholder="Enter vaccine name"
         />
+        {isVaccineNameInvalid && (
+          <Text style={styles.errorText}>
+            Vaccine Name should only contain letters, numbers, and spaces.
+          </Text>
+        )}
 
         <Text style={styles.label}>Schedule Date</Text>
         <TouchableOpacity onPress={() => setShowScheduleDatePicker(true)}>
@@ -185,7 +218,7 @@ const UpdateVaccineSchedule = () => {
         />
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => router.back()}>
+          <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleBackPress}>
             <Text style={styles.buttonText}>✖ Cancel</Text>
           </TouchableOpacity>
 
@@ -204,13 +237,6 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#F8F8F8',
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#252A4A',
-  },
   label: {
     fontSize: 16,
     color: '#1E1E1E',
@@ -224,31 +250,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#D3D3D3',
   },
+  inputError: {
+    borderColor: '#FF6347', // Red border for invalid input
+  },
   textArea: {
     height: 80,
-    textAlignVertical: 'top',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  button: {
-    flex: 1,
-    padding: 15,
-    borderRadius: 8,
-    marginHorizontal: 5,
-  },
-  saveButton: {
-    backgroundColor: '#4CAF50',
-  },
-  cancelButton: {
-    backgroundColor: '#F44336',
-  },
-  buttonText: {
-    textAlign: 'center',
-    color: '#FFFFFF',
-    fontWeight: 'bold',
+  errorText: {
+    color: '#FF6347',
+    marginBottom: 10,
   },
   radioGroup: {
     flexDirection: 'row',
@@ -263,12 +273,35 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
     borderRadius: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#1E1E1E',
     marginRight: 10,
   },
   radioCircleSelected: {
     backgroundColor: '#1E1E1E',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#F44336',
+    marginRight: 10,
+  },
+  saveButton: {
+    backgroundColor: '#4CAF50',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
   },
 });
 
