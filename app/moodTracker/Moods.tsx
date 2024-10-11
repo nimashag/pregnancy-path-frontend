@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Dimensions, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths, subMonths, getDay } from 'date-fns';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import axios from 'axios'; // Axios for making API calls
-import { moods } from '@/db/mood';
+import * as SQLite from 'expo-sqlite/legacy'; // Ensure you're using the correct import for SQLite
+
+const db = SQLite.openDatabase('moods.db'); // Open or create the SQLite database
 
 const Mood = () => {
   const [moodHistory, setMoodHistory] = useState([]);
@@ -11,20 +12,34 @@ const Mood = () => {
   const [selectedMood, setSelectedMood] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showAddMoodModal, setShowAddMoodModal] = useState(false);
-  const [newMood, setNewMood] = useState({ emoji: '', description: '', date: '' });
-  const [isLoading, setIsLoading] = useState(false); // Loading state for form submissions
+  const [newMood, setNewMood] = useState({ emoji: '', description: '' });
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch mood history from server
+  // Create table if not exists
   useEffect(() => {
-    axios.get('/api/mood')
-      .then(response => {
-        //setMoodHistory(response.data);
-        setMoodHistory(moods);
-      })
-      .catch(error => {
-        console.error('Error fetching mood history:', error);
-      });
+    db.transaction((tx) => {
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS mood (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          emoji TEXT,
+          description TEXT,
+          date TEXT
+        );`,
+        [],
+        () => console.log('Mood table created successfully'),
+        (tx, error) => console.error('Error creating mood table:', error)
+      );
+    }, null, refreshMoodHistory);
   }, []);
+
+  // Fetch mood history from SQLite
+  const refreshMoodHistory = () => {
+    db.transaction((tx) => {
+      tx.executeSql("SELECT * FROM mood ORDER BY date DESC", [], (_, { rows }) => {
+        setMoodHistory(rows._array);
+      });
+    });
+  };
 
   // Get current mood (last entry in moodHistory)
   const currentMood = moodHistory[moodHistory.length - 1];
@@ -47,43 +62,78 @@ const Mood = () => {
   const openMoodDetails = (day) => {
     const mood = moodHistory.find((m) => format(new Date(m.date), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd'));
     if (mood) {
-      setSelectedMood(mood);
+      setSelectedMood({ ...mood });
       setShowModal(true);
     }
   };
 
   // Add Mood
   const handleAddMood = () => {
+    if (!newMood.emoji || !newMood.description) {
+      alert('Please fill in both emoji and description.'); // Alert if fields are empty
+      return;
+    }
+
     setIsLoading(true);
-    axios.post('/api/mood/add', newMood)
-      .then(response => {
-        setMoodHistory([...moodHistory, response.data]);
-        setNewMood({ emoji: '', description: '', date: '' });
-        setShowAddMoodModal(false);
-      })
-      .catch(error => {
-        console.error('Error adding mood:', error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    db.transaction((tx) => {
+      tx.executeSql(
+        "INSERT INTO mood (emoji, description, date) VALUES (?, ?, ?)",
+        [newMood.emoji, newMood.description, format(new Date(), 'yyyy-MM-dd')],
+        (_, { insertId }) => {
+          setMoodHistory([...moodHistory, { ...newMood, id: insertId, date: format(new Date(), 'yyyy-MM-dd') }]);
+          setNewMood({ emoji: '', description: '' }); // Resetting the state after adding
+          setShowAddMoodModal(false);
+          console.log('Mood added:', { ...newMood, id: insertId, date: format(new Date(), 'yyyy-MM-dd') });
+        },
+        (tx, error) => {
+          console.error('Error inserting mood:', error);
+          alert('Failed to add mood. Please try again.'); // Notify user of error
+        }
+      );
+    }, null, () => setIsLoading(false));
   };
 
   // Edit/Update Mood
   const handleEditMood = () => {
+    if (!selectedMood.emoji || !selectedMood.description) {
+      alert('Please fill in both emoji and description.'); // Alert if fields are empty
+      return;
+    }
+
     setIsLoading(true);
-    axios.put(`/api/mood/update/${selectedMood._id}`, selectedMood)
-      .then(() => {
-        setMoodHistory(moodHistory.map((m) => (m._id === selectedMood._id ? selectedMood : m)));
-        setSelectedMood(null);
-        setShowModal(false);
-      })
-      .catch(error => {
-        console.error('Error updating mood:', error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    db.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE mood SET emoji = ?, description = ? WHERE id = ?",
+        [selectedMood.emoji, selectedMood.description, selectedMood.id],
+        () => {
+          setMoodHistory(moodHistory.map((m) => (m.id === selectedMood.id ? selectedMood : m)));
+          setSelectedMood(null);
+          setShowModal(false);
+        },
+        (tx, error) => {
+          console.error('Error updating mood:', error);
+          alert('Failed to update mood. Please try again.');
+        }
+      );
+    }, null, () => setIsLoading(false));
+  };
+
+  // Delete Mood
+  const handleDeleteMood = (id) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "DELETE FROM mood WHERE id = ?",
+        [id],
+        () => {
+          setMoodHistory(moodHistory.filter((mood) => mood.id !== id));
+          setShowModal(false);
+        },
+        (tx, error) => {
+          console.error('Error deleting mood:', error);
+          alert('Failed to delete mood. Please try again.');
+        }
+      );
+    });
   };
 
   // Get screen dimensions for responsive sizing
@@ -152,83 +202,91 @@ const Mood = () => {
         {/* Fill blank spaces after the last day of the month */}
         {[...Array(6 - getDay(endOfMonth(currentDate)))].map((_, index) => (
           <View key={index} style={{ width: dayTileWidth, height: 70 }} className="justify-center items-center">
-            <Text className="text-xl text-gray-400">-</Text>
+            <Text className="text-2xl"> </Text>
           </View>
         ))}
       </View>
 
-      {/* Current Mood Section */}
-      <View className="my-4 p-4 bg-blue-100 rounded-lg shadow-lg">
-        <Text className="text-lg font-bold">Current Mood</Text>
-        <Text className="text-6xl">{currentMood?.emoji || '🙂'}</Text>
-        <Text className="text-lg mt-2">{currentMood?.description || 'Add your mood!'}</Text>
+      {/* Mood Summary and Actions */}
+      <View className="mt-4">
+        <Text className="text-xl font-bold">Current Mood</Text>
+        <Text className="text-lg">{currentMood ? currentMood.emoji : 'No mood recorded'}</Text>
+        <Text className="text-lg">Description: {currentMood ? currentMood.description : 'N/A'}</Text>
+        <Text className="text-lg">Total Moods: {analytics.totalMoods}</Text>
+        <Text className="text-lg">Positive Mood Percentage: {analytics.positivePercentage}%</Text>
       </View>
 
-      {/* Expanded Analytics Section */}
-      <View className="p-4 bg-green-100 rounded-lg shadow-lg mb-6">
-        <Text className="text-lg font-bold mb-2">Mood Analytics</Text>
-        <View className="flex-wrap flex-row justify-around">
-          <View className="flex-column items-center">
-            <Text className="text-md font-bold">{analytics.totalMoods}</Text>
-            <Text className="text-md">Total Moods</Text>
-          </View>
-          <View className="flex-column items-center">
-            <Text className="text-md font-bold">{analytics.positivePercentage}%</Text>
-            <Text className="text-md">Positive Moods</Text>
-          </View>
-          <View className="flex-column items-center">
-            <Text className="text-md font-bold">{analytics.negativeMoods}</Text>
-            <Text className="text-md">Negative Moods</Text>
+      {/* Add Mood Button */}
+      <TouchableOpacity
+        onPress={() => setShowAddMoodModal(true)}
+        className="mt-4 p-2 bg-blue-500 rounded-lg"
+      >
+        <Text className="text-white text-center">Add Mood</Text>
+      </TouchableOpacity>
+
+      {/* Edit Mood Modal */}
+      <Modal visible={showModal} animationType="slide" transparent>
+        <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
+          <View className="bg-white rounded-lg p-4 w-80">
+            <Text className="text-xl font-bold">Edit Mood</Text>
+            <TextInput
+              value={selectedMood?.emoji}
+              onChangeText={(text) => setSelectedMood({ ...selectedMood, emoji: text })}
+              placeholder="Emoji"
+              className="border border-gray-300 p-2 rounded"
+            />
+            <TextInput
+              value={selectedMood?.description}
+              onChangeText={(text) => setSelectedMood({ ...selectedMood, description: text })}
+              placeholder="Description"
+              className="border border-gray-300 p-2 rounded mt-2"
+            />
+            <View className="flex-row justify-between mt-4">
+              <TouchableOpacity onPress={handleEditMood} className="bg-green-500 p-2 rounded">
+                <Text className="text-white">Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDeleteMood(selectedMood.id)} className="bg-red-500 p-2 rounded">
+                <Text className="text-white">Delete</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={() => setShowModal(false)} className="mt-4">
+              <Text className="text-blue-500">Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </Modal>
 
       {/* Add Mood Modal */}
-      <Modal visible={showAddMoodModal} animationType="slide">
-        <View className="flex-1 justify-center items-center bg-white p-6">
-          <Text className="text-lg font-bold mb-4">Add Today's Mood</Text>
-          <TextInput
-            className="border p-2 w-full mb-2"
-            placeholder="Emoji"
-            value={newMood.emoji}
-            onChangeText={(text) => setNewMood({ ...newMood, emoji: text })}
-          />
-          <TextInput
-            className="border p-2 w-full mb-2"
-            placeholder="Description"
-            value={newMood.description}
-            onChangeText={(text) => setNewMood({ ...newMood, description: text })}
-          />
-          <TouchableOpacity
-            onPress={handleAddMood}
-            className="bg-green-500 p-2 rounded-lg w-full text-center mt-2"
-            disabled={isLoading}
-          >
-            {isLoading ? <ActivityIndicator color="#fff" /> : <Text className="text-white font-bold">Add Mood</Text>}
-          </TouchableOpacity>
+      <Modal visible={showAddMoodModal} animationType="slide" transparent>
+        <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
+          <View className="bg-white rounded-lg p-4 w-80">
+            <Text className="text-xl font-bold">Add Mood</Text>
+            <TextInput
+              value={newMood.emoji}
+              onChangeText={(text) => setNewMood({ ...newMood, emoji: text })}
+              placeholder="Emoji"
+              className="border border-gray-300 p-2 rounded"
+            />
+            <TextInput
+              value={newMood.description}
+              onChangeText={(text) => setNewMood({ ...newMood, description: text })}
+              placeholder="Description"
+              className="border border-gray-300 p-2 rounded mt-2"
+            />
+            <TouchableOpacity onPress={handleAddMood} className="bg-blue-500 p-2 rounded mt-4">
+              <Text className="text-white">Add Mood</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowAddMoodModal(false)} className="mt-4">
+              <Text className="text-blue-500">Cancel</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
 
-      {/* Mood Details Modal */}
-      <Modal visible={showModal} animationType="slide">
-        <View className="flex-1 justify-center items-center bg-white p-6">
-          <Text className="text-lg font-bold mb-4">Mood Details</Text>
-          <Text className="text-6xl mb-4">{selectedMood?.emoji}</Text>
-          <TextInput
-            className="border p-2 w-full mb-2"
-            placeholder="Description"
-            value={selectedMood?.description}
-            onChangeText={(text) => setSelectedMood({ ...selectedMood, description: text })}
-          />
-          <TouchableOpacity
-            onPress={handleEditMood}
-            className="bg-blue-500 p-2 rounded-lg w-full text-center mt-2"
-            disabled={isLoading}
-          >
-            {isLoading ? <ActivityIndicator color="#fff" /> : <Text className="text-white font-bold">Save Changes</Text>}
-          </TouchableOpacity>
-        </View>
-      </Modal>
+      {/* Loading Indicator */}
+      {isLoading && (
+        <ActivityIndicator size="large" color="#000" className="absolute top-1/2 left-1/2" />
+      )}
     </ScrollView>
   );
 };
