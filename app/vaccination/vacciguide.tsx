@@ -5,6 +5,7 @@ import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; 
 import { useRouter } from 'expo-router';
 import axios from 'axios'; 
+import config from "../../constants/config";
 
 // Define a TypeScript interface for your vaccine data
 interface Vaccine {
@@ -24,7 +25,7 @@ const Vacciguide = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://192.168.1.5:3000/vaccine'); //meka maru karapan
+      const response = await axios.get(`http://192.168.1.5:3000/vaccine`); //meka maru karapan
       setData(response.data.data); 
       setFilteredData(response.data.data); 
     } catch (error) {

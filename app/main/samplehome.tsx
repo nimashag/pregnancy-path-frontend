@@ -29,7 +29,9 @@ const samplehome = () => {
         <Text style={styles.userName}>Jennifer</Text>
       </View>
       <View style={styles.iconContainer}>
+        <Link href='/notification/NotificationPage' >
         <Image source={require('../../assets/images/home/notificationimg.png')} style={styles.notificationIcon} />
+        </Link>
         <Image source={require('../../assets/images/home/userhomeimg.png')} style={styles.profileIcon} />
       </View>
     </View>
@@ -116,7 +118,7 @@ const samplehome = () => {
                           Memories
                         </Text>
                         <TouchableOpacity style={{ backgroundColor: '#000000', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
-                          <Link href='/' style={{ width: '100%' }}> 
+                          <Link href='/journal/dailyjournal' style={{ width: '100%' }}> 
                             <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center' }}>Journal</Text>
                           </Link>
                         </TouchableOpacity>

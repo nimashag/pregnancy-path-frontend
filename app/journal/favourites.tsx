@@ -4,6 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { styled } from 'nativewind';
 import { useRouter } from "expo-router";
 import { Memory } from "./IMemory";
+import config from "../../constants/config";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -22,7 +23,7 @@ const JournalScreen = () => {
   const fetchFavoriteMemories = async () => {
     try {
       const userId = '66dd6bf95be4a8cf0d58bf1f'; // Replace with dynamic userId if needed
-      const response = await fetch(`http://localhost:3000/memory?userId=${userId}&isFavorite=true`);
+      const response = await fetch(`${config.backend_url}/memory?userId=${userId}&isFavorite=true`);
       const data = await response.json();
       setJournalEntries(data.data); // Assuming the response structure matches your example
     } catch (error) {
@@ -68,7 +69,7 @@ const JournalScreen = () => {
   };
 
   const handleBackPress = () => {
-    router.push('/_sitemap');
+    router.back();
   };
 
   const handledailyjournal = () => {
@@ -145,7 +146,7 @@ const JournalScreen = () => {
                     <StyledText className="text-gray-500">
                       {new Date(entry.date).toLocaleDateString()} {entry.time} {/* Format date properly */}
                     </StyledText>
-                    <FontAwesome name="star" size={24} color={entry.isFavorite ? 'gold' : 'gray'} />
+                    <FontAwesome name="star" size={24} color={entry.isFavorite ? 'black' : 'black'} />
                   </View>
                   <StyledText className={`mt-2 font-medium`}>
                     • {entry.feelings}

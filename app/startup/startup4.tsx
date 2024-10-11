@@ -10,7 +10,7 @@ const startup4: React.FC = () => {
 
       {/* Vaccination Illustration */}
       <Image
-        source={require('../../assets/images/startup/start1.png')} 
+        source={require('../../assets/images/startup/start4.png')} 
         style={styles.image}
       />
 
@@ -66,10 +66,13 @@ const styles = StyleSheet.create({
     color: '#7e7e7e',
     textAlign: 'center',
     lineHeight: 22,
+    marginTop: 20,
     marginBottom: 40,
     paddingHorizontal: 10,
   },
   button: {
+    marginTop: 100,
+    marginBottom: 10,
     backgroundColor: '#36448B',
     paddingVertical: 15,
     paddingHorizontal: 80,
