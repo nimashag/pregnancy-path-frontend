@@ -62,7 +62,7 @@ const Mood = () => {
   const openMoodDetails = (day) => {
     const mood = moodHistory.find((m) => format(new Date(m.date), 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd'));
     if (mood) {
-      setSelectedMood({ ...mood });
+      setSelectedMood(mood);
       setShowModal(true);
     }
   };
@@ -116,24 +116,6 @@ const Mood = () => {
         }
       );
     }, null, () => setIsLoading(false));
-  };
-
-  // Delete Mood
-  const handleDeleteMood = (id) => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "DELETE FROM mood WHERE id = ?",
-        [id],
-        () => {
-          setMoodHistory(moodHistory.filter((mood) => mood.id !== id));
-          setShowModal(false);
-        },
-        (tx, error) => {
-          console.error('Error deleting mood:', error);
-          alert('Failed to delete mood. Please try again.');
-        }
-      );
-    });
   };
 
   // Get screen dimensions for responsive sizing
@@ -202,91 +184,94 @@ const Mood = () => {
         {/* Fill blank spaces after the last day of the month */}
         {[...Array(6 - getDay(endOfMonth(currentDate)))].map((_, index) => (
           <View key={index} style={{ width: dayTileWidth, height: 70 }} className="justify-center items-center">
-            <Text className="text-2xl"> </Text>
+            <Text className="text-xl text-gray-400">-</Text>
           </View>
         ))}
       </View>
 
-      {/* Mood Summary and Actions */}
-      <View className="mt-4">
-        <Text className="text-xl font-bold">Current Mood</Text>
-        <Text className="text-lg">{currentMood ? currentMood.emoji : 'No mood recorded'}</Text>
-        <Text className="text-lg">Description: {currentMood ? currentMood.description : 'N/A'}</Text>
-        <Text className="text-lg">Total Moods: {analytics.totalMoods}</Text>
-        <Text className="text-lg">Positive Mood Percentage: {analytics.positivePercentage}%</Text>
+      {/* Mood Analytics Section */}
+      <View className="mt-6 p-4 bg-white rounded-lg shadow">
+        <Text className="text-xl font-bold">Mood Analytics</Text>
+        <Text>Total Moods: {analytics.totalMoods}</Text>
+        <Text>Positive Mood Percentage: {analytics.positivePercentage}%</Text>
+        <Text>Negative Moods: {analytics.negativeMoods}</Text>
       </View>
 
       {/* Add Mood Button */}
       <TouchableOpacity
+        className="mt-4 p-4 bg-blue-500 rounded-lg shadow"
         onPress={() => setShowAddMoodModal(true)}
-        className="mt-4 p-2 bg-blue-500 rounded-lg"
       >
-        <Text className="text-white text-center">Add Mood</Text>
+        <Text className="text-white text-lg text-center">Add Mood</Text>
       </TouchableOpacity>
 
-      {/* Edit Mood Modal */}
-      <Modal visible={showModal} animationType="slide" transparent>
+      {/* Mood Details Modal */}
+      <Modal
+        visible={showModal}
+        transparent={true}
+        animationType="slide"
+      >
         <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-          <View className="bg-white rounded-lg p-4 w-80">
-            <Text className="text-xl font-bold">Edit Mood</Text>
-            <TextInput
-              value={selectedMood?.emoji}
-              onChangeText={(text) => setSelectedMood({ ...selectedMood, emoji: text })}
-              placeholder="Emoji"
-              className="border border-gray-300 p-2 rounded"
-            />
-            <TextInput
-              value={selectedMood?.description}
-              onChangeText={(text) => setSelectedMood({ ...selectedMood, description: text })}
-              placeholder="Description"
-              className="border border-gray-300 p-2 rounded mt-2"
-            />
-            <View className="flex-row justify-between mt-4">
-              <TouchableOpacity onPress={handleEditMood} className="bg-green-500 p-2 rounded">
-                <Text className="text-white">Save</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleDeleteMood(selectedMood.id)} className="bg-red-500 p-2 rounded">
-                <Text className="text-white">Delete</Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity onPress={() => setShowModal(false)} className="mt-4">
-              <Text className="text-blue-500">Cancel</Text>
+          <View className="bg-white rounded-lg w-80 p-5">
+            <Text className="text-2xl font-bold mb-2">Mood Details</Text>
+            {selectedMood && (
+              <>
+                <Text className="text-3xl mb-4">{selectedMood.emoji}</Text>
+                <Text className="text-lg">{selectedMood.description}</Text>
+                <TouchableOpacity className="mt-4 p-2 bg-red-500 rounded" onPress={() => handleDeleteMood(selectedMood.id)}>
+                  <Text className="text-white text-center">Delete Mood</Text>
+                </TouchableOpacity>
+                <TouchableOpacity className="mt-4 p-2 bg-yellow-500 rounded" onPress={() => {
+                  setNewMood({ emoji: selectedMood.emoji, description: selectedMood.description });
+                  setShowModal(false);
+                  setShowAddMoodModal(true);
+                }}>
+                  <Text className="text-white text-center">Edit Mood</Text>
+                </TouchableOpacity>
+              </>
+            )}
+            <TouchableOpacity className="mt-4 p-2 bg-gray-300 rounded" onPress={() => setShowModal(false)}>
+              <Text className="text-center">Close</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
       {/* Add Mood Modal */}
-      <Modal visible={showAddMoodModal} animationType="slide" transparent>
+      <Modal
+        visible={showAddMoodModal}
+        transparent={true}
+        animationType="slide"
+      >
         <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-          <View className="bg-white rounded-lg p-4 w-80">
-            <Text className="text-xl font-bold">Add Mood</Text>
+          <View className="bg-white rounded-lg w-80 p-5">
+            <Text className="text-2xl font-bold mb-4">Add Mood</Text>
             <TextInput
               value={newMood.emoji}
               onChangeText={(text) => setNewMood({ ...newMood, emoji: text })}
-              placeholder="Emoji"
-              className="border border-gray-300 p-2 rounded"
+              placeholder="😊"
+              className="border-b border-gray-400 p-2 mb-4"
+              style={{ fontSize: 30, textAlign: 'center' }}
             />
             <TextInput
               value={newMood.description}
               onChangeText={(text) => setNewMood({ ...newMood, description: text })}
-              placeholder="Description"
-              className="border border-gray-300 p-2 rounded mt-2"
+              placeholder="Describe your mood..."
+              className="border-b border-gray-400 p-2 mb-4"
             />
-            <TouchableOpacity onPress={handleAddMood} className="bg-blue-500 p-2 rounded mt-4">
-              <Text className="text-white">Add Mood</Text>
+            <TouchableOpacity className="mt-4 p-2 bg-blue-500 rounded" onPress={handleAddMood}>
+              {isLoading ? (
+                <ActivityIndicator color="#ffffff" />
+              ) : (
+                <Text className="text-white text-center">Add Mood</Text>
+              )}
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setShowAddMoodModal(false)} className="mt-4">
-              <Text className="text-blue-500">Cancel</Text>
+            <TouchableOpacity className="mt-4 p-2 bg-gray-300 rounded" onPress={() => setShowAddMoodModal(false)}>
+              <Text className="text-center">Close</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-
-      {/* Loading Indicator */}
-      {isLoading && (
-        <ActivityIndicator size="large" color="#000" className="absolute top-1/2 left-1/2" />
-      )}
     </ScrollView>
   );
 };

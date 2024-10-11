@@ -241,8 +241,8 @@ const HabitTracker = () => {
             setHabits([...habits, newHabitObj]);
             setNewHabit("");
             setTotalTasks("");
-            setDisplayPopup(false)
-            console.log("Hello world")
+            setDisplayPopup(false);
+            console.log("Hello world");
           },
           (_, error) => {
             console.log("Error inserting habit:", error);
@@ -287,13 +287,17 @@ const HabitTracker = () => {
     });
   };
 
-
   const startYogaSession = (posture) => {
-    setTimerDuration(posture.time === "Morning" ? 300 : posture.time === "Afternoon" ? 600 : 900); // Set duration based on time category
+    setTimerDuration(
+      posture.time === "Morning"
+        ? 300
+        : posture.time === "Afternoon"
+        ? 600
+        : 900
+    ); // Set duration based on time category
     startTimer(); // Start the timer
     alert(`Starting ${posture.name} session for ${posture.time} minutes!`);
   };
-  
 
   const showPostureDetails = (posture) => {
     setSelectedPosture(posture);
@@ -313,218 +317,235 @@ const HabitTracker = () => {
         Pregnancy Yoga & Meditation Guide
       </Text>
       <Text className="text-gray-600">
-        - Start your day with gentle yoga postures to stretch and relax your body.
+        - Start your day with gentle yoga postures to stretch and relax your
+        body.
       </Text>
       <Text className="text-gray-600">
-        - Perform each yoga posture for 5 minutes to enhance flexibility and improve circulation.
+        - Perform each yoga posture for 5 minutes to enhance flexibility and
+        improve circulation.
       </Text>
       <Text className="text-gray-600">
-        - In the morning, try poses like Cat-Cow or Warrior I to energize your body.
+        - In the morning, try poses like Cat-Cow or Warrior I to energize your
+        body.
       </Text>
       <Text className="text-gray-600">
-        - Incorporate meditation into your daily routine for 5 minutes. Begin with mindful breathing to calm your mind.
+        - Incorporate meditation into your daily routine for 5 minutes. Begin
+        with mindful breathing to calm your mind.
       </Text>
       <Text className="text-gray-600">
-        - Midday yoga can help alleviate back pain. Poses like Tree Pose can improve balance and stability.
+        - Midday yoga can help alleviate back pain. Poses like Tree Pose can
+        improve balance and stability.
       </Text>
       <Text className="text-gray-600">
-        - In the evening, try Seated Forward Bend or Bridge Pose to relax your body and unwind.
+        - In the evening, try Seated Forward Bend or Bridge Pose to relax your
+        body and unwind.
       </Text>
       <Text className="text-gray-600">
-        - Consistent practice of yoga and meditation helps with circulation, reduces stress, and prepares your body for birth.
+        - Consistent practice of yoga and meditation helps with circulation,
+        reduces stress, and prepares your body for birth.
       </Text>
     </View>
   );
-  
 
   const [displayPopup, setDisplayPopup] = useState(false);
 
   return (
     <ScrollView contentContainerStyle={{ padding: 20, paddingTop: 40 }}>
       <SafeAreaView>
+        {displayPopup && (
+          <View
+            className="bg-[#0000002a] bg-opacity-10 absolute
+   top-0 le justify-center items-center w-[100vw] h-[110vh] z-50"
+          >
+            <View className="bg-white rounded-lg shadow-lg p-6 w-4/5 max-w-md">
+              <TouchableOpacity
+                onPress={() => setDisplayPopup(false)}
+                className="absolute top-3 right-3"
+              >
+                <MaterialIcons name="close" size={30} color="#FF3D00" />
+              </TouchableOpacity>
+              <Text className="text-xl font-semibold text-center mb-4">
+                Add a New Habit
+              </Text>
+              <TextInput
+                placeholder="Enter new habit"
+                value={newHabit}
+                onChangeText={setNewHabit}
+                className="border border-gray-300 p-2 rounded mb-4"
+              />
+              <TextInput
+                placeholder="Total tasks (e.g., 10)"
+                value={totalTasks}
+                onChangeText={setTotalTasks}
+                keyboardType="numeric"
+                className="border border-gray-300 p-2 rounded mb-4"
+              />
+              <TouchableOpacity
+                onPress={addHabit}
+                className="bg-[#68a1b0] p-3 rounded-lg shadow-md"
+              >
+                <Text className="text-white text-center font-bold">
+                  Add Habit
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
-{displayPopup && (
-  <View className="bg-[#0000002a] bg-opacity-10 absolute
-   top-0 le justify-center items-center w-[100vw] h-[110vh] z-50">
-    <View className="bg-white rounded-lg shadow-lg p-6 w-4/5 max-w-md">
-      <TouchableOpacity
-        onPress={() => setDisplayPopup(false)}
-        className="absolute top-3 right-3"
-      >
-        <MaterialIcons name="close" size={30} color="#FF3D00" />
-      </TouchableOpacity>
-      <Text className="text-xl font-semibold text-center mb-4">Add a New Habit</Text>
-      <TextInput
-        placeholder="Enter new habit"
-        value={newHabit}
-        onChangeText={setNewHabit}
-        className="border border-gray-300 p-2 rounded mb-4"
-      />
-      <TextInput
-        placeholder="Total tasks (e.g., 10)"
-        value={totalTasks}
-        onChangeText={setTotalTasks}
-        keyboardType="numeric"
-        className="border border-gray-300 p-2 rounded mb-4"
-      />
-      <TouchableOpacity
-        onPress={addHabit}
-        className="bg-[#68a1b0] p-3 rounded-lg shadow-md"
-      >
-        <Text className="text-white text-center font-bold">Add Habit</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-)}
-
-
-      <Image
-        source={require("../../assets/images/habbits.jpg")}
-        className="w-full h-72 object-cover mb-4 rounded-lg"
-      />
-
-      {/* Timer Section */}
-      <View className="my-4">
-        <Text className="text-xl mb-2">Yoga/Meditation Timer</Text>
-        <Timer
-          duration={timerDuration}
-          onFinish={onFinishTimer}
-          isRunning={isTimerRunning}
-          startTimer={startTimer}
-          stopTimer={stopTimer}
-        />
-      </View>
-
-      {/* Music Player */}
-      <MusicPlayer />
-
-      {renderTipsAndMotivation()}
-      
-      <View className="absolute top-4 right-4">
-        <TouchableOpacity onPress={() => {setDisplayPopup(!displayPopup)}} className="p-2 flex items-center justify-center flex-row rounded-md absolute top-0 z-20 right-0 bg-[#cf937e]">
-          <MaterialIcons name="add" size={30} color="white" />
-          <Text className="font-bold text-white">Add Habit</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text className="text-3xl font-bold mb-4 mt-2 text-[#1f1f1f]">Habit Tracker</Text>
-
-      {/* Habits List */}
-      <FlatList
-  data={habits}
-  keyExtractor={(item) => item.id.toString()}
-  renderItem={({ item }) => (
-    <View className="mb-6 bg-white shadow-lg rounded-lg p-6 border border-gray-200">
-      {/* Habit Name */}
-      <Text className="text-2xl font-extrabold text-[#f28b3f] mb-2 tracking-wide">{item.habitName}</Text>
-
-      {/* Progress Bar */}
-      <View className="my-2">
-        <ProgressBar
-          progress={item.progress / item.totalTasks}
-          color="#f0a23b"
-          style={{ height: 10, borderRadius: 8 }}
-        />
-        <Text className="text-gray-500 text-sm mt-1">
-          {item.progress} / {item.totalTasks} completed
-        </Text>
-      </View>
-
-      {/* Buttons: Mark Progress and Delete */}
-      <View className="flex-row justify-between items-center mt-4">
-        <TouchableOpacity
-          className="bg-[#d8936b] rounded-lg py-2 px-4 shadow-md"
-          onPress={() => updateProgress(item.id, item.progress, item.totalTasks)}
-        >
-          <Text className="text-white font-semibold">Mark Progress</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          className="bg-red-500 rounded-full p-2 shadow-md"
-          onPress={() => deleteHabit(item.id)}
-        >
-          <MaterialIcons name="delete" size={24} color="#FFF" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  )}
-/>
-
-
-
-{/* Yoga Postures */} 
-<View className="my-8">
-  <Text className="text-4xl font-extrabold text-center mb-8 text-[#d27767]">
-    Yoga Postures
-  </Text>
-  <View className="space-y-8">
-    {yogaPostures.map((posture) => (
-      <View
-        key={posture.id}
-        className="bg-white p-6 rounded-2xl shadow-xl flex-col items-center space-y-4 border-2 border-[#f3d1c7]"
-      >
         <Image
-          source={{ uri: posture.imageUrl }}
-          className="w-36 h-36 rounded-full border-4 border-[#d27767]"
+          source={require("../../assets/images/habbits.jpg")}
+          className="w-full h-72 object-cover mb-4 rounded-lg"
         />
-        <View className="text-center">
-          <Text className="text-2xl font-bold text-[#aa5c3a]">
-            {posture.name}
-          </Text>
-          <Text className="text-lg text-[#aa8638] mt-2">
-            {posture.time} minutes
-          </Text>
-          <Text className="text-gray-600 mt-4">
-            {posture.description}
-          </Text>
+
+        {/* Timer Section */}
+        <View className="my-4">
+          <Text className="text-xl mb-2">Yoga/Meditation Timer</Text>
+          <Timer
+            duration={timerDuration}
+            onFinish={onFinishTimer}
+            isRunning={isTimerRunning}
+            startTimer={startTimer}
+            stopTimer={stopTimer}
+          />
         </View>
-        <View className="flex-row space-x-4">
-  <TouchableOpacity
-    onPress={() => startYogaSession(posture)}
-    className="bg-[#fce9dc] p-2 px-6 rounded-lg shadow-md"
-  >
-    <Text className="text-[#d27767] font-semibold">Start</Text>
-  </TouchableOpacity>
 
-</View>
+        {/* Music Player */}
+        <MusicPlayer />
 
-      </View>
-    ))}
-  </View>
-</View>
+        {renderTipsAndMotivation()}
 
-{/* Meditation Habits Section */}
-<View className="my-8">
-  <Text className="text-4xl font-extrabold text-center mb-8 text-[#d27767]">
-    Meditation Habits
-  </Text>
-  <View className="space-y-6">
-    {meditationHabits.map((habit) => (
-      <View
-        key={habit.id}
-        className="bg-gradient-to-r from-[#f6e4e2] to-[#fbe8dc] p-6 rounded-xl shadow-lg flex-row justify-between items-center"
-      >
-        <View>
-          <Text className="text-2xl font-semibold text-gray-900">
-            {habit.name}
-          </Text>
-          <Text className="text-lg text-[#aa8638] mt-2">
-            {habit.time} minutes
-          </Text>
+        <View className="absolute top-4 right-4">
+          <TouchableOpacity
+            onPress={() => {
+              setDisplayPopup(!displayPopup);
+            }}
+            className="p-2 flex items-center justify-center flex-row rounded-md absolute top-0 z-20 right-0 bg-[#cf937e]"
+          >
+            <MaterialIcons name="add" size={30} color="white" />
+            <Text className="font-bold text-white">Add Habit</Text>
+          </TouchableOpacity>
         </View>
-        <View className="bg-[#f3d1c7] px-4 py-2 rounded-full">
-  <TouchableOpacity  onPress={() => startYogaSession(habit)}>
-    <Text className="text-sm font-semibold text-[#aa8638]">Track</Text>
-  </TouchableOpacity>
-</View>
 
-      </View>
-    ))}
-  </View>
-</View>
+        <Text className="text-3xl font-bold mb-4 mt-2 text-[#1f1f1f]">
+          Habit Tracker
+        </Text>
 
+        {/* Habits List */}
+        <FlatList
+          data={habits}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View className="mb-6 bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+              {/* Habit Name */}
+              <Text className="text-2xl font-extrabold text-[#f28b3f] mb-2 tracking-wide">
+                {item.habitName}
+              </Text>
 
+              {/* Progress Bar */}
+              <View className="my-2">
+                <ProgressBar
+                  progress={item.progress / item.totalTasks}
+                  color="#f0a23b"
+                  style={{ height: 10, borderRadius: 8 }}
+                />
+                <Text className="text-gray-500 text-sm mt-1">
+                  {item.progress} / {item.totalTasks} completed
+                </Text>
+              </View>
 
+              {/* Buttons: Mark Progress and Delete */}
+              <View className="flex-row justify-between items-center mt-4">
+                <TouchableOpacity
+                  className="bg-[#d8936b] rounded-lg py-2 px-4 shadow-md"
+                  onPress={() =>
+                    updateProgress(item.id, item.progress, item.totalTasks)
+                  }
+                >
+                  <Text className="text-white font-semibold">
+                    Mark Progress
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  className="bg-red-500 rounded-full p-2 shadow-md"
+                  onPress={() => deleteHabit(item.id)}
+                >
+                  <MaterialIcons name="delete" size={24} color="#FFF" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        />
+
+        {/* Yoga Postures */}
+        <View className="my-8">
+          <Text className="text-4xl font-extrabold text-center mb-8 text-[#d27767]">
+            Yoga Postures
+          </Text>
+          <View className="space-y-8">
+            {yogaPostures.map((posture) => (
+              <View
+                key={posture.id}
+                className="bg-white p-6 rounded-2xl shadow-xl flex-col items-center space-y-4 border-2 border-[#f3d1c7]"
+              >
+                <Image
+                  source={{ uri: posture.imageUrl }}
+                  className="w-36 h-36 rounded-full border-4 border-[#d27767]"
+                />
+                <View className="text-center">
+                  <Text className="text-2xl font-bold text-[#aa5c3a]">
+                    {posture.name}
+                  </Text>
+                  <Text className="text-lg text-[#aa8638] mt-2">
+                    {posture.time} minutes
+                  </Text>
+                  <Text className="text-gray-600 mt-4">
+                    {posture.description}
+                  </Text>
+                </View>
+                <View className="flex-row space-x-4">
+                  <TouchableOpacity
+                    onPress={() => startYogaSession(posture)}
+                    className="bg-[#fce9dc] p-2 px-6 rounded-lg shadow-md"
+                  >
+                    <Text className="text-[#d27767] font-semibold">Start</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Meditation Habits Section */}
+        <View className="my-8">
+          <Text className="text-4xl font-extrabold text-center mb-8 text-[#d27767]">
+            Meditation Habits
+          </Text>
+          <View className="space-y-6">
+            {meditationHabits.map((habit) => (
+              <View
+                key={habit.id}
+                className="bg-gradient-to-r from-[#f6e4e2] to-[#fbe8dc] p-6 rounded-xl shadow-lg flex-row justify-between items-center"
+              >
+                <View>
+                  <Text className="text-2xl font-semibold text-gray-900">
+                    {habit.name}
+                  </Text>
+                  <Text className="text-lg text-[#aa8638] mt-2">
+                    {habit.time} minutes
+                  </Text>
+                </View>
+                <View className="bg-[#f3d1c7] px-4 py-2 rounded-full">
+                  <TouchableOpacity onPress={() => startYogaSession(habit)}>
+                    <Text className="text-sm font-semibold text-[#aa8638]">
+                      Track
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
       </SafeAreaView>
     </ScrollView>
   );
