@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Dimensions, TextInput, ScrollView } from 'react-native';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths, subMonths, getDay } from 'date-fns';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Ensure to install react-native-vector-icons
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Mood = () => {
   const [moodHistory, setMoodHistory] = useState([
@@ -43,6 +43,9 @@ const Mood = () => {
   const [showAddMoodModal, setShowAddMoodModal] = useState(false);
   const [newMood, setNewMood] = useState({ emoji: '', description: '', date: '' });
 
+  // Get current mood (last entry in moodHistory)
+  const currentMood = moodHistory[moodHistory.length - 1];
+
   // Generate dates for the current month
   const daysInMonth = eachDayOfInterval({
     start: startOfMonth(currentDate),
@@ -83,15 +86,13 @@ const Mood = () => {
   const dayTileWidth = width / 7 - 13; // Adjusted tile width
 
   return (
-    <ScrollView className="flex-1 p-4 pt-11 bg-gray-50">
+    <ScrollView className="flex-1 p-4 pt-11 mb-4 bg-gray-50">
       {/* Month Header */}
       <View className="flex-row justify-between items-center mb-4">
         <TouchableOpacity onPress={handlePreviousMonth} className="p-2 bg-gray-300 rounded-full">
           <Icon name="arrow-left" size={20} color="#000" />
         </TouchableOpacity>
-        <Text className="text-2xl font-bold">
-          {format(currentDate, 'MMMM yyyy')}
-        </Text>
+        <Text className="text-2xl font-bold">{format(currentDate, 'MMMM yyyy')}</Text>
         <TouchableOpacity onPress={handleNextMonth} className="p-2 bg-gray-300 rounded-full">
           <Icon name="arrow-right" size={20} color="#000" />
         </TouchableOpacity>
@@ -111,7 +112,12 @@ const Mood = () => {
         {/* Blank spaces for days before the first day of the month */}
         {[...Array(getDay(startOfMonth(currentDate)))].map((_, index) => (
           <View key={index} style={{ width: dayTileWidth, height: 70 }} className="justify-center items-center">
-            <TouchableOpacity onPress={() => { setNewMood({ emoji: '', description: '', date: format(currentDate, 'yyyy-MM-dd') }); setShowAddMoodModal(true); }}>
+            <TouchableOpacity
+              onPress={() => {
+                setNewMood({ emoji: '', description: '', date: format(currentDate, 'yyyy-MM-dd') });
+                setShowAddMoodModal(true);
+              }}
+            >
               <Text className="text-2xl">?</Text>
             </TouchableOpacity>
           </View>
@@ -133,89 +139,81 @@ const Mood = () => {
         {/* Fill blank spaces after the last day of the month */}
         {[...Array(6 - getDay(endOfMonth(currentDate)))].map((_, index) => (
           <View key={index} style={{ width: dayTileWidth, height: 70 }} className="justify-center items-center">
-            <Text className="text-2xl">?</Text>
+            <Text className="text-xl text-gray-400">-</Text>
           </View>
         ))}
       </View>
 
-      {/* Modal for Mood Details */}
-      {selectedMood && (
-        <Modal transparent={true} visible={showModal} animationType="slide">
-          <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-            <View className="bg-white p-6 rounded-lg w-3/4">
-              <Text className="text-4xl text-center">{selectedMood.emoji}</Text>
-              <Text className="text-lg mt-4 text-center">{selectedMood.description}</Text>
-              <Text className="text-gray-500 text-center mt-2">{selectedMood.date}</Text>
-              <TouchableOpacity className="bg-blue-500 p-2 mt-4 rounded-lg" onPress={() => {
-                setSelectedMood({ ...selectedMood, description: 'New description here' }); // Example edit
-                handleEditMood();
-              }}>
-                <Text className="text-white text-center">Edit Mood</Text>
-              </TouchableOpacity>
-              <TouchableOpacity className="bg-blue-500 p-2 mt-2 rounded-lg" onPress={() => setShowModal(false)}>
-                <Text className="text-white text-center">Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      )}
+      {/* Current Mood Section */}
+      <View className="my-4 p-4 bg-blue-100 rounded-lg shadow-lg">
+        <Text className="text-lg font-bold">Current Mood</Text>
+        <Text className="text-6xl">{currentMood?.emoji || '🙂'}</Text>
+        <Text className="text-lg mt-2">{currentMood?.description || 'Add your mood!'}</Text>
+      </View>
 
-      {/* Modal for Adding Mood */}
-      <Modal transparent={true} visible={showAddMoodModal} animationType="slide">
-        <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-          <View className="bg-white p-6 rounded-lg w-3/4">
-            <Text className="text-2xl text-center">Add Your Mood</Text>
-            <TextInput
-              placeholder="Emoji"
-              value={newMood.emoji}
-              onChangeText={(text) => setNewMood({ ...newMood, emoji: text })}
-              className="border border-gray-300 p-2 rounded mt-4"
-            />
-            <TextInput
-              placeholder="Description"
-              value={newMood.description}
-              onChangeText={(text) => setNewMood({ ...newMood, description: text })}
-              className="border border-gray-300 p-2 rounded mt-2"
-            />
-            <TouchableOpacity className="bg-blue-500 p-2 mt-4 rounded-lg" onPress={handleAddMood}>
-              <Text className="text-white text-center">Add Mood</Text>
-            </TouchableOpacity>
-            <TouchableOpacity className="bg-red-500 p-2 mt-2 rounded-lg" onPress={() => setShowAddMoodModal(false)}>
-              <Text className="text-white text-center">Cancel</Text>
-            </TouchableOpacity>
-          </View>
+      {/* Tips & Tricks Section */}
+      <View className="p-4 bg-green-100 rounded-lg shadow-lg mb-6">
+        <Text className="text-lg font-bold mb-2">Tips & Tricks</Text>
+        <View className="flex-wrap flex-row justify-between">
+          {[
+            { icon: 'sun', text: 'Start your day with gratitude' },
+            { icon: 'star', text: 'Take regular breaks' },
+            { icon: 'check', text: 'Prioritize your tasks' },
+            { icon: 'heart', text: 'Practice self-care' },
+            { icon: 'smile', text: 'Stay positive' },
+          ].map((tip, index) => (
+            <View key={index} className="flex-row items-center p-2">
+              <Icon name={tip.icon} size={20} color="#000" className="mr-2" />
+              <Text className="text-md">{tip.text}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Add Mood Modal */}
+      <Modal visible={showAddMoodModal} animationType="slide">
+        <View className="flex-1 justify-center items-center bg-white p-6">
+          <Text className="text-lg font-bold mb-4">Add Today's Mood</Text>
+          <TextInput
+            className="border p-2 w-full mb-2"
+            placeholder="Emoji"
+            value={newMood.emoji}
+            onChangeText={(text) => setNewMood({ ...newMood, emoji: text })}
+          />
+          <TextInput
+            className="border p-2 w-full mb-2"
+            placeholder="Description"
+            value={newMood.description}
+            onChangeText={(text) => setNewMood({ ...newMood, description: text })}
+          />
+          <TouchableOpacity
+            onPress={handleAddMood}
+            className="bg-green-500 p-2 rounded-lg w-full text-center mt-2"
+          >
+            <Text className="text-white font-bold">Add Mood</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
 
-      {/* Analytics Section */}
-      <View className="mt-6">
-        <Text className="text-xl font-bold">Mood Analytics</Text>
-        <Text>Total Moods Logged: {moodHistory.length}</Text>
-        {/* Add more analytics as needed */}
-      </View>
-
-      {/* Tips Section */}
-      <View className="mt-6">
-        <Text className="text-xl font-bold">Tips and Tricks</Text>
-        <View className="flex-wrap flex-row justify-evenly">
-          <TouchableOpacity className="p-3 bg-gray-200 rounded-lg m-2 w-5/12">
-            <Icon name="smile-o" size={24} color="#000" />
-            <Text className="text-center mt-2">Stay Positive</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="p-3 bg-gray-200 rounded-lg m-2 w-5/12">
-            <Icon name="heartbeat" size={24} color="#000" />
-            <Text className="text-center mt-2">Keep Moving</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="p-3 bg-gray-200 rounded-lg m-2 w-5/12">
-            <Icon name="leaf" size={24} color="#000" />
-            <Text className="text-center mt-2">Eat Healthy</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="p-3 bg-gray-200 rounded-lg m-2 w-5/12">
-            <Icon name="music" size={24} color="#000" />
-            <Text className="text-center mt-2">Listen to Music</Text>
+      {/* Mood Details Modal */}
+      <Modal visible={showModal} animationType="slide">
+        <View className="flex-1 justify-center items-center bg-white p-6">
+          <Text className="text-lg font-bold mb-4">Mood Details</Text>
+          <Text className="text-6xl mb-4">{selectedMood?.emoji}</Text>
+          <TextInput
+            className="border p-2 w-full mb-2"
+            placeholder="Description"
+            value={selectedMood?.description}
+            onChangeText={(text) => setSelectedMood({ ...selectedMood, description: text })}
+          />
+          <TouchableOpacity
+            onPress={handleEditMood}
+            className="bg-blue-500 p-2 rounded-lg w-full text-center mt-2"
+          >
+            <Text className="text-white font-bold">Save Changes</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Modal>
     </ScrollView>
   );
 };

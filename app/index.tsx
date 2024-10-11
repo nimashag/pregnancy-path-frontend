@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
+import { useRouter , useNavigation} from "expo-router";
 import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { checkAuth } from "@/utils/checkAuth";
 import { Image } from "react-native";
@@ -8,11 +8,17 @@ export default function Index() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
 
+    const { setOptions } = useNavigation();
+  useEffect(() => {
+    setOptions({ headerShown: false });
+  }, []);
+
+
     useEffect(() => {
         const authenticate = async () => {
             const token = await checkAuth(); // Wait for token
             if (token) {
-                router.replace("/main/home"); // Navigate if token exists
+                router.replace("/main/samplehome"); // Navigate if token exists
             }
             setIsLoading(false); // Hide loading once authentication check is done
         };

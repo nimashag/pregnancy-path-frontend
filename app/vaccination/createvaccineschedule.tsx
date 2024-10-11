@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,9 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
+import { FontAwesome } from "@expo/vector-icons";
+import config from "../../constants/config";
 
 const CreateVaccinationSchedule = () => {
   const router = useRouter();
@@ -29,6 +31,12 @@ const CreateVaccinationSchedule = () => {
   const [showNotificationReminderDatePicker, setShowNotificationReminderDatePicker] = useState(false);
   const [vaccineNameError, setVaccineNameError] = useState("");
 
+  const { setOptions } = useNavigation();
+
+  useEffect(() => {
+    setOptions({ headerShown: false });
+  }, []);
+  
   const onScheduleTimeChange = (event: any, selectedTime: Date | undefined) => {
     if (event.type === 'set' && selectedTime) {
       setScheduleTime(selectedTime);
@@ -56,6 +64,10 @@ const CreateVaccinationSchedule = () => {
     setShowNotificationReminderTimePicker(false);
   };
 
+  const handleBackPress = () => {
+    router.back(); 
+  };
+
   const handleVaccineNameChange = (text: string) => {
     // Regular expression to allow only letters, numbers, and spaces
     const regex = /^[A-Za-z0-9\s]*$/;
@@ -78,7 +90,7 @@ const CreateVaccinationSchedule = () => {
     const finalNotes = notes.trim() === "" ? "No special notes." : notes;
 
     try {
-      const response = await axios.post("http://192.168.1.5:3000/vaccination", {
+      const response = await axios.post(`${config.backend_url}/vaccination`, {
         userId: "66dc91bfa30ade59031324c4",
         vaccineName,
         scheduleTime: scheduleTime.toLocaleTimeString([], {
@@ -111,7 +123,16 @@ const CreateVaccinationSchedule = () => {
       keyboardVerticalOffset={100} 
     >
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <Text style={styles.headerText}>Create Vaccination Schedule</Text>
+        
+      <View className="flex-row items-center justify-between mb-4 mt-10">
+        <TouchableOpacity onPress={handleBackPress} className="ml-4">
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
+        </TouchableOpacity>
+        <Text className="text-2xl text-center text-indigo-950 font-bold">
+          Vaccination Schedules
+        </Text>
+      <View />
+      </View>
 
         <Text style={styles.label}>Vaccine Name</Text>
         <TextInput

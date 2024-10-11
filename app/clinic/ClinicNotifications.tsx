@@ -166,7 +166,7 @@ const ClinicNotifications = () => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                router.push("/_sitemap");
+                router.back();
               }}
             >
               <View>

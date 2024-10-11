@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import axios from 'axios'; 
 import config from "../../constants/config";
+import { FontAwesome } from "@expo/vector-icons";
 
 // Define a TypeScript interface for your vaccine data
 interface Vaccine {
@@ -25,7 +26,7 @@ const Vacciguide = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.5:3000/vaccine`); //meka maru karapan
+      const response = await axios.get(`${config.backend_url}/vaccine`); //meka maru karapan
       setData(response.data.data); 
       setFilteredData(response.data.data); 
     } catch (error) {
@@ -38,7 +39,7 @@ const Vacciguide = () => {
   }, []);
 
   const handleBackPress = () => {
-    router.push('/_sitemap'); 
+    router.back(); 
   };
 
   const renderItem = ({ item }: { item: Vaccine }) => ( 
@@ -60,10 +61,18 @@ const Vacciguide = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#000" />
+
+      <View className="flex-row items-center justify-between mb-4 mt-5">
+        <TouchableOpacity onPress={handleBackPress} className="ml-1">
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
         </TouchableOpacity>
+        <Text className="text-2xl text-center text-indigo-950 font-bold">
+          Vaccination Guide
+        </Text>
+      <View />
+      </View>
+
+      <View style={styles.header}>
         <TextInput 
           placeholder="Search" 
           style={styles.searchBar} 
@@ -90,9 +99,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
-  },
-  backButton: {
-    marginRight: 10,
   },
   searchBar: {
     flex: 1,

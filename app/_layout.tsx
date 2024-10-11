@@ -41,7 +41,7 @@ export default function RootLayout() {
         <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
 
         {/* Home Routes */}
-        <Stack.Screen name="main/samplehome" />
+        <Stack.Screen name="main/samplehome" options={{ headerShown: false }}/>
 
         {/* Journal Routes */}
         <Stack.Screen name="journal/creatememory" options={{ headerShown: false }} />
@@ -51,15 +51,15 @@ export default function RootLayout() {
         <Stack.Screen name="journal/favourites" options={{ headerShown: false }} />
 
         {/* Vaccination Routes */}
-        <Stack.Screen name="vaccination/vacciguide" />
-        <Stack.Screen name="vaccination/vaccimain" />
-        <Stack.Screen name="vaccination/vaccilog" />
-        <Stack.Screen name="vaccination/createvaccischedule" />
-        <Stack.Screen name="vaccination/viewvaccischedule" />
-        <Stack.Screen name="vaccination/vaccimonthtracker" />
+        <Stack.Screen name="vaccination/vacciguide" options={{ headerShown: false }}/>
+        <Stack.Screen name="vaccination/vaccimain" options={{ headerShown: false }}/>
+        <Stack.Screen name="vaccination/vaccilog" options={{ headerShown: false }}/>
+        <Stack.Screen name="vaccination/createvaccischedule" options={{ headerShown: false }}/>
+        <Stack.Screen name="vaccination/viewvaccischedule" options={{ headerShown: false }}/>
+        <Stack.Screen name="vaccination/vaccimonthtracker" options={{ headerShown: false }}/>
 
         {/* Vaccination Routes */}
-        <Stack.Screen name="clinic/CreateClinicSchedule" />
+        <Stack.Screen name="clinic/CreateClinicSchedule" options={{ headerShown: false }}/>
 
         {/* Startup Pages */}
         <Stack.Screen name="startup/startup1"  options={{headerShown: false}}/>
