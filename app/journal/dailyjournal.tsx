@@ -212,9 +212,6 @@ const DailyJournal: React.FC = () => {
           onChangeText={setSearchQuery}
           className="flex-1  bg-white rounded-lg"
         />
-        {/* <TouchableOpacity style={styles.sortButton}>
-          <Text className="text-black font-semibold">Sort</Text>
-        </TouchableOpacity> */}
         <TouchableOpacity onPress={handleAddPost} className="bg-white p-2 rounded-lg ml-2 border-2">
           <Text className="text-black font-semibold ">+ Add Post</Text>
         </TouchableOpacity>
@@ -223,11 +220,13 @@ const DailyJournal: React.FC = () => {
       {/* Journal Entries List */}
       <FlatList
         data={filteredData}
-        keyExtractor={(item) => item}
+        keyExtractor={(date) => date}
         renderItem={({ item: date }) => (
           <View>
             <Text className="text-gray-600 mb-3 mt-2">{date}</Text>
-            {groupedData[date].map((entry) => renderEntry({ item: entry }))}
+            {groupedData[date].map((entry) => (
+                <View key={entry._id}>{renderEntry({ item: entry })}</View>
+            ))}
           </View>
         )}
         showsVerticalScrollIndicator={false}
