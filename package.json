@@ -31,6 +31,8 @@
     "expo-font": "~12.0.9",
     "expo-image-picker": "~15.0.7",
     "expo-linking": "~6.3.1",
+    "expo-notifications": "~0.28.18",
+    "expo-permissions": "^14.4.0",
     "expo-router": "~3.5.23",
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
@@ -52,8 +54,7 @@
     "react-native-screens": "3.31.1",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.10",
-    "realm": "^20.0.0",
-    "expo-notifications": "~0.28.18"
+    "realm": "^20.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
