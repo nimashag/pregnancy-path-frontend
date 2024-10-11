@@ -33,6 +33,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="/index" options={{ headerShown: false }} />
         <Stack.Screen name="main/home" options={{ headerShown: false }} />
+        <Stack.Screen name="tracker/HealthTracker"  options={{headerShown: false}}/>
         <Stack.Screen name="+not-found" />
 
         {/* Startup Routes */}
@@ -44,6 +45,8 @@ export default function RootLayout() {
         <Stack.Screen name="main/samplehome" options={{ headerShown: false }}/>
 
         {/* Journal Routes */}
+        
+        <Stack.Screen name="tracker/HabitTracker" options={{headerShown: false}}/>
         <Stack.Screen name="journal/creatememory" options={{ headerShown: false }} />
         <Stack.Screen name="journal/dailyjournal" options={{ headerShown: false }} />
         <Stack.Screen name="journal/updatememory" options={{ headerShown: false }} />

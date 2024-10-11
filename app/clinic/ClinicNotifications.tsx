@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import clinicScheduleType from "@/types/clinicScheduleType";
 import axios from "axios";
 import config from "@/constants/config";
+import { scheduleNotification, askNotificationPermission } from '@/utils/notificationUtils';
 
 const ClinicNotifications = () => {
   const headerHeight = useHeaderHeight();
@@ -23,6 +24,11 @@ const ClinicNotifications = () => {
   const [tomorrowSchedules, setTomorrowSchedules] = useState<
     clinicScheduleType[]
   >([]);
+
+  useEffect(() => {
+    askNotificationPermission();
+  }, []);
+
 
   useEffect(() => {
     try {
@@ -47,10 +53,11 @@ const ClinicNotifications = () => {
 
           if (scheduleDate.getTime() === today.getTime()) {
             todaySchedulesTemp.push(item);
+            scheduleNotification(item, "today");
             console.log(todaySchedulesTemp);
           } else if (scheduleDate.getTime() === tomorrow.getTime()) {
             tomorrowSchedulesTemp.push(item);
-            console.log(tomorrowSchedulesTemp);
+            scheduleNotification(item, "tomorrow");
           }
         });
 
@@ -64,15 +71,13 @@ const ClinicNotifications = () => {
     }
   }, []);
 
-
   const viewSchedule = (id: string) => {
     try {
-        router.push(`/clinic/ViewClinicSchedule/${id}`);
+      router.push(`/clinic/ViewClinicSchedule/${id}`);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-    
-  }
+  };
 
   const renderTodayItems: ListRenderItem<clinicScheduleType> = ({
     item,
@@ -119,7 +124,6 @@ const ClinicNotifications = () => {
     index,
   }) => {
     return (
-        
       <TouchableOpacity
         className="flex-row bg-blue-200 p-4 items-center justify-between rounded-lg mx-5 mt-10"
         key={index}
@@ -152,7 +156,6 @@ const ClinicNotifications = () => {
           color="black"
         />
       </TouchableOpacity>
-      
     );
   };
 
