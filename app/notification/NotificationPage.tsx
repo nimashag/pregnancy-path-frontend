@@ -4,6 +4,7 @@ import * as Notifications from 'expo-notifications';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
+import config from '@/constants/config';
 
 interface Reminder {
   _id: string;
@@ -51,7 +52,7 @@ const NotificationPage = () => {
   const fetchReminders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.1.5:3000/vaccination');
+      const response = await axios.get(`${config.backend_url}/vaccination`);
       setReminders(response.data.data);
     } catch (err) {
       console.error('Error fetching reminders:', err);

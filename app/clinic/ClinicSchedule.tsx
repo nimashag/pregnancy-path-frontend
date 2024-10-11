@@ -40,13 +40,17 @@ const CreateClinicSchedule = () => {
 
         
 
-        response.data.forEach((item: clinicScheduleType) => {
+        response.data.forEach(async(item: clinicScheduleType) => {
 
           const date = new Date(item.date);
+          const today = new Date();
 
-          if(date < Date.now()){
-            console.log(item._id);
-            const response = axios.delete(
+          date.setHours(0, 0, 0, 0);
+          today.setHours(0, 0, 0, 0);
+
+          if(date < today){
+            
+            const response =await axios.delete(
               `${config.backend_url}/clinic-schedule/delete-clinic-schedule/${item._id}`
 
             );
