@@ -5,6 +5,11 @@ import { Link, useRouter } from 'expo-router';
 const samplehome = () => {
     const router = useRouter();
 
+    const handleVacciNavigation = () => {
+      // Navigate to Vaccination Screen
+      router.push('/vaccination/vaccimain');
+    };
+
     const handleJournalNavigation = () => {
         // Navigate to Journal Screen
         router.push('/journal/dailyjournal');
@@ -71,7 +76,7 @@ const samplehome = () => {
 
       {/* Vaccination section */}
       <Text style={styles.subHeader}>Vaccination Details</Text>
-      <TouchableOpacity onPress={handleGuideNavigation} style={{ marginBottom: 20 }}>
+      <TouchableOpacity style={{ marginBottom: 20 }}>
                 <ImageBackground
                     source={require('../../assets/images/home/vaccished.png')}
                     style={{
@@ -86,10 +91,8 @@ const samplehome = () => {
                     <Text style={{ color: '#ffffff', fontSize: 14, width: '60%', marginBottom: 8}}>
                     Access all essential information about your vaccinations to stay on top of your health.
                     </Text>
-                    <TouchableOpacity style={{ backgroundColor: '#F88C8C', padding: 8, borderRadius: 5 ,  width: '40%'}}>
-                      <Link href='/vaccination/vaccimain' style={{ width: '100%' }}>
+                    <TouchableOpacity onPress={handleVacciNavigation} style={{ backgroundColor: '#F88C8C', padding: 8, borderRadius: 5 ,  width: '40%'}}>
                         <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center' }}>Access</Text>
-                      </Link>
                     </TouchableOpacity>
                 </ImageBackground>
             </TouchableOpacity>
@@ -331,8 +334,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   babyImage: {
-    width: 100,
-    height: 100,
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+    marginTop:10,
+    borderRadius: 30
   },
   babyInfo: {
     marginLeft: 20,

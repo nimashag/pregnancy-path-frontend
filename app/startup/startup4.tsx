@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#36448B',
     fontFamily: 'cursive', 
+    marginTop: 40,
     marginBottom: 40,
   },
   image: {
@@ -66,13 +67,12 @@ const styles = StyleSheet.create({
     color: '#7e7e7e',
     textAlign: 'center',
     lineHeight: 22,
-    marginTop: 20,
     marginBottom: 40,
     paddingHorizontal: 10,
   },
   button: {
-    marginTop: 100,
-    marginBottom: 10,
+    marginTop: 30,
+    marginBottom: 20,
     backgroundColor: '#36448B',
     paddingVertical: 15,
     paddingHorizontal: 80,

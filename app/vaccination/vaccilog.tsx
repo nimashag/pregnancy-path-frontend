@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import config from "../../constants/config";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FontAwesome } from "@expo/vector-icons";
+import { Link, useRouter } from 'expo-router';
 
 type Vaccine = {
   _id: string;
@@ -22,10 +24,16 @@ const VaccinationLog = () => {
   const [vaccineData, setVaccineData] = useState<MonthData[]>([]);
   const [takenVaccines, setTakenVaccines] = useState<{ [key: string]: boolean }>({});
 
+  const router = useRouter();
+  
+  const handleBackPress = () => {
+    router.back(); 
+  };
+
   useEffect(() => {
     const fetchVaccines = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.5:3000/vaccine`); //meka wenas karanna amathaka karanna epa pettiyo
+        const response = await axios.get(`${config.backend_url}/vaccine`); //meka wenas karanna amathaka karanna epa pettiyo
         const data: Vaccine[] = response.data.data;
 
         // Organizing data by month
@@ -67,11 +75,22 @@ const VaccinationLog = () => {
 
   return (
     <ScrollView style={styles.container}>
+
+      <View className="flex-row items-center justify-between mb-4 mt-5">
+        <TouchableOpacity onPress={handleBackPress} className="ml-1">
+        <FontAwesome name="chevron-left" size={24} color="#18113E" />
+        </TouchableOpacity>
+        <Text className="text-2xl text-center text-indigo-950 font-bold">
+          Vaccination Log
+        </Text>
+        <View />
+      </View>
+
       {vaccineData.map((item, index) => (
         <View key={index} style={styles.monthContainer}>
           <Text style={styles.monthTitle}>{item.month}</Text>
           {item.vaccines.map((vaccine) => {
-            const key = `${vaccine._id}-${index}`; // Create the same unique key for the switch value
+            const key = `${vaccine._id}-${index}`; 
             return (
               <View key={vaccine._id} style={styles.vaccineContainer}>
                 <View style={styles.checkboxContainer}>
