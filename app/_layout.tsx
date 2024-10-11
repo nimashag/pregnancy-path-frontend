@@ -33,6 +33,8 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="/index" options={{ headerShown: false }} />
         <Stack.Screen name="main/home" options={{ headerShown: false }} />
+        <Stack.Screen name="tracker/HealthTracker"  options={{headerShown: false}}/>
+        <Stack.Screen name="tracker/HabitTracker" options={{headerShown: false}}/>
         <Stack.Screen name="+not-found" />
 
         {/* Startup Routes */}
