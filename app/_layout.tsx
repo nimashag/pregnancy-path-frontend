@@ -40,6 +40,7 @@ export default function RootLayout() {
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
         <Stack.Screen name="moodTracker/Moods" options={{ headerShown: false }} />
         <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
+        <Stack.Screen name="main/profile" options={{ headerShown: false }} />
 
         {/* Home Routes */}
         <Stack.Screen name="main/samplehome" options={{ headerShown: false }}/>

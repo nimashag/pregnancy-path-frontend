@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 
 const samplehome = () => {
+  
     const router = useRouter();
 
     const handleVacciNavigation = () => {
@@ -17,13 +18,18 @@ const samplehome = () => {
 
     const handleTrackerNavigation = () => {
         // Navigate to Tracker Screen
-        router.push('/_sitemap');
+        router.push('/tracker/HealthTracker');
     };
 
     const handleGuideNavigation = () => {
         // Navigate to Pregnancy Guide Screen
-        router.push('/_sitemap');
+        router.push('/tracker/HealthTracker');
     };
+
+    const handleProfileNavigation = () => {
+      // Navigate to Profile Screen
+      router.push('/main/profile'); // Update this to the correct path for your profile screen
+  };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16 }} style={styles.container}>
@@ -31,14 +37,17 @@ const samplehome = () => {
       <View style={styles.header}>
       <View style={styles.textContainer}>
         <Text style={styles.welcomeText}>Welcome</Text>
-        <Text style={styles.userName}>Jennifer</Text>
+        <Text style={styles.userName}>user</Text>
       </View>
       <View style={styles.iconContainer}>
         <Link href='/notification/NotificationPage' >
         <Image source={require('../../assets/images/home/notificationimg.png')} style={styles.notificationIcon} />
         </Link>
-        <Image source={require('../../assets/images/home/userhomeimg.png')} style={styles.profileIcon} />
-      </View>
+        <TouchableOpacity onPress={handleProfileNavigation}>
+        <Image  source={require('../../assets/images/home/userhomeimg.png')} style={styles.profileIcon} />
+        </TouchableOpacity>
+        </View>
+        
     </View>
 
 

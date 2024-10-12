@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { ImageBackground, TextInput, TouchableOpacity, Text, View, ScrollView } from "react-native";
+import { ImageBackground, TextInput, TouchableOpacity, Text, View, ScrollView, Alert } from "react-native";
 import { Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-// import realm from "@/models/userModel";
-// import { userData } from "@/test/userDb";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
     const router = useRouter();
@@ -13,22 +11,27 @@ export default function Login() {
     const [password, setPassword] = useState("");
 
     const handleLogin = async () => {
-        // const { name, email, password, contact, address, age, imagepath } = userData
+        if (!email || !password) {
+            Alert.alert("Error", "Please enter both email and password.");
+            return;
+        }
+        try {
+            const response = await fetch('http://192.168.43.33:3000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await response.json();
 
-        // realm.write( () => {
-        //     realm.create('User', {
-        //         _id: new Realm.BSON.ObjectId(),
-        //         name: name,
-        //         email: email,
-        //         password: password,
-        //         contact: contact || null, // Optional fields
-        //         address: address || null,
-        //         age: age || null,
-        //         imagepath: imagepath || null
-        //     })
-        // })
-         router.push('/main/samplehome')
-        
+            const profile = JSON.stringify(data);
+            await AsyncStorage.setItem('profile', profile);
+            router.replace("/main/samplehome");
+        } catch (error) {
+            console.error("Login error:", error);
+            Alert.alert("Error", "An error occurred while logging in. Please try again.");
+        }
     };
 
     const handleSignupRoute = () => {
