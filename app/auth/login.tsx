@@ -27,7 +27,7 @@ export default function Login() {
         //         imagepath: imagepath || null
         //     })
         // })
-         router.push('/main/home')
+         router.push('/main/samplehome')
         
     };
 

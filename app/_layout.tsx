@@ -31,7 +31,7 @@ export default function RootLayout() {
 
     <ThemeProvider value={DefaultTheme}>
       <Stack>
-        <Stack.Screen name="/index" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="main/home" options={{ headerShown: false }} />
         <Stack.Screen name="tracker/HealthTracker"  options={{headerShown: false}}/>
         <Stack.Screen name="+not-found" />
@@ -57,8 +57,8 @@ export default function RootLayout() {
         <Stack.Screen name="vaccination/vacciguide" options={{ headerShown: false }}/>
         <Stack.Screen name="vaccination/vaccimain" options={{ headerShown: false }}/>
         <Stack.Screen name="vaccination/vaccilog" options={{ headerShown: false }}/>
-        <Stack.Screen name="vaccination/createvaccischedule" options={{ headerShown: false }}/>
-        <Stack.Screen name="vaccination/viewvaccischedule" options={{ headerShown: false }}/>
+        <Stack.Screen name="vaccination/createvaccineschedule" options={{ headerShown: false }}/>
+        <Stack.Screen name="vaccination/viewvaccineschedule" options={{ headerShown: false }}/>
         <Stack.Screen name="vaccination/vaccimonthtracker" options={{ headerShown: false }}/>
 
         {/* Vaccination Routes */}
