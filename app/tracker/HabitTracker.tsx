@@ -16,6 +16,7 @@ import * as SQLite from "expo-sqlite/legacy";
 import { ProgressBar } from "react-native-paper";
 import { Audio } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
+import BackButton from "@/utils/backButtin";
 
 // Database setup
 const db = SQLite.openDatabase("habitTracker.db");
@@ -351,13 +352,13 @@ const HabitTracker = () => {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 20, paddingTop: 40 }}>
+       <BackButton />
       <SafeAreaView>
         {displayPopup && (
           <View
-            className="bg-[#0000002a] bg-opacity-10 absolute
-   top-0 le justify-center items-center w-[100vw] h-[110vh] z-50"
+            className="bg-[#0000002a] bg-opacity-10 absolute top-0 left-0 justify-center items-center w-[95vw] h-[100vh] z-50"
           >
-            <View className="bg-white rounded-lg shadow-lg p-6 w-4/5 max-w-md">
+            <View className="bg-white -ml-4 rounded-lg shadow-lg p-6 w-4/5 max-w-md">
               <TouchableOpacity
                 onPress={() => setDisplayPopup(false)}
                 className="absolute top-3 right-3"

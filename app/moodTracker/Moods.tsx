@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Modal, Dimensions, TextInput, ScrollView,
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths, subMonths, getDay } from 'date-fns';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as SQLite from 'expo-sqlite/legacy'; // Ensure you're using the correct import for SQLite
+import BackButton from '@/utils/backButtin';
 
 const db = SQLite.openDatabase('moods.db'); // Open or create the SQLite database
 
@@ -140,6 +141,7 @@ const Mood = () => {
   return (
     <ScrollView className="flex-1 p-4 pt-11 bg-gray-50">
       {/* Month Header */}
+      <BackButton />
       <View className="flex-row justify-between items-center mb-4">
         <TouchableOpacity onPress={handlePreviousMonth} className="p-2 bg-gray-300 rounded-full">
           <Icon name="arrow-left" size={20} color="#000" />
