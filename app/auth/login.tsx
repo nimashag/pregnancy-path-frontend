@@ -4,6 +4,7 @@ import { ImageBackground, TextInput, TouchableOpacity, Text, View, ScrollView, A
 import { Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import config from "../../constants/config";
 
 export default function Login() {
     const router = useRouter();
@@ -16,7 +17,7 @@ export default function Login() {
             return;
         }
         try {
-            const response = await fetch('http://192.168.43.33:3000/api/login', {
+            const response = await fetch(`${config.backend_url}/api/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
