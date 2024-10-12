@@ -2,10 +2,10 @@
   "expo": {
     "name": "pregnancy-path-frontend",
     "slug": "pregnancy-path-frontend",
-    "scheme" : "pregnanct-path-frontend",
+    "scheme": "pregnanct-path-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -34,7 +34,7 @@
       "typedRoutes": true
     },
     "notification": {
-      "icon": "./assets/images/vaccination/vaccinoti.png", 
+      "icon": "./assets/images/vaccination/vaccinoti.png",
       "color": "#000000",
       "android": {
         "channelId": "default",
@@ -42,6 +42,11 @@
       },
       "ios": {
         "sound": true
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "67820a42-9439-4de8-b63f-6a6ab61c90dc"
       }
     }
   }
