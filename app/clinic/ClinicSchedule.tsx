@@ -125,7 +125,7 @@ const CreateClinicSchedule = () => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                router.push("/_sitemap");
+                router.back();
               }}
             >
               <View>
@@ -138,13 +138,13 @@ const CreateClinicSchedule = () => {
 
       <View className="" style={{ paddingTop: headerHeight }}>
         <Text className="font-semibold text-base p-3 pl-6">
-          Preferred Clinic
+          Add Clinic Schedule
         </Text>
-        <View className="bg-white rounded-lg mx-6 py-5">
+        <TouchableOpacity className="bg-white rounded-lg mx-6 py-5" onPress={() => {router.push('/clinic/CreateClinicSchedule')}}>
           <Text className="pl-3 font-semibold text-base">
-            Choices Pregnancy Center
+            Press here to add new schedule
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <Text className="font-bold text-base py-4 pl-6 ">
         Clinic Appointments for this month

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+
+import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking } from 'react-native';
+import React, { useEffect } from 'react';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -60,6 +61,10 @@ const samplehome = () => {
       // Navigate to Profile Screen
       router.push('/main/profile'); // Update this to the correct path for your profile screen
   };
+
+    const openDialer = () => {
+      Linking.openURL('tel:+112');
+    };
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16 }} style={styles.container}>
@@ -240,7 +245,7 @@ const samplehome = () => {
                 </TouchableOpacity>
 
                 {/* Card 3  */}
-                <TouchableOpacity onPress={handleTrackerNavigation} style={{ flex: 1, marginLeft: 10 }}>
+                <TouchableOpacity onPress={openDialer} style={{ flex: 1, marginLeft: 10 }}>
                     <ImageBackground
                         source={require('../../assets/images/home/clinic3.png')}
                         style={{

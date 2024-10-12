@@ -115,7 +115,7 @@ const UpdateClinicSchedule = () => {
                             onValueChange={(itemValue) => setClinic(itemValue)}
                         >
                             {clinics.map((item) => (
-                                <Picker.Item label={item.clinicTitle} value={item}/>
+                                <Picker.Item key={item.id} label={item.clinicTitle} value={item}/>
                             ))}
                         </Picker>
                     </View>
