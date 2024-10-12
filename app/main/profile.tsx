@@ -21,6 +21,7 @@ const Profile = () => {
         const fetchUserProfile = async () => {
             try {
                 const profile = await AsyncStorage.getItem('profile');
+                console.log(profile)
                 if (profile) {
                     const userData = JSON.parse(profile);
                     console.log( userData)

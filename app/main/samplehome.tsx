@@ -160,7 +160,7 @@ const samplehome = () => {
                         Track Your 
                         </Text>
                         <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 , }}>
-                        Daily Habits
+                        Daily Health
                         </Text>
                         <TouchableOpacity style={{ backgroundColor: '#5C0D0D', padding: 8, width: '100%', marginTop: 10, borderRadius: 5 }}>
                           <Link href='/' style={{ width: '100%' }}> 
@@ -253,7 +253,7 @@ const samplehome = () => {
                       Habit tracker
                     </Text>
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
-                        Do yoga meditation and have track of my habit you want
+                        Dtrack any habit you want
                     </Text>
                     <TouchableOpacity style={{ backgroundColor: '#1C476F', padding: 8, borderRadius: 5 , width: '40%'}}>
                         <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>Check Now</Text>
