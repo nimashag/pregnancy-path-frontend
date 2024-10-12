@@ -23,7 +23,11 @@ const samplehome = () => {
 
     const handleGuideNavigation = () => {
         // Navigate to Pregnancy Guide Screen
-        router.push('/tracker/HealthTracker');
+        router.push('/tracker/HabitTracker');
+    };
+    const handleGMoodNavigation = () => {
+        // Navigate to Pregnancy Guide Screen
+        router.push('/moodTracker/Moods');
     };
 
     const handleProfileNavigation = () => {
@@ -246,10 +250,10 @@ const samplehome = () => {
                     resizeMode="cover"
                 >
                     <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
-                      Parental Appoinments
+                      Habit tracker
                     </Text>
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
-                        Navigate your pregnancy with ease using our comprehensive guide.
+                        Do yoga meditation and have track of my habit you want
                     </Text>
                     <TouchableOpacity style={{ backgroundColor: '#1C476F', padding: 8, borderRadius: 5 , width: '40%'}}>
                         <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>Check Now</Text>
@@ -257,7 +261,7 @@ const samplehome = () => {
                 </ImageBackground>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleGuideNavigation} style={{ marginBottom: 20 }}>
+            <TouchableOpacity onPress={handleGMoodNavigation} style={{ marginBottom: 20 }}>
                 <ImageBackground
                     source={require('../../assets/images/blog1.png')}
                     style={{
@@ -270,10 +274,10 @@ const samplehome = () => {
                     resizeMode="cover"
                 >
                     <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
-                        Pregnancy Guide
+                        Mood Tracker
                     </Text>
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
-                        Navigate your pregnancy with ease using our comprehensive guide.
+                        Have Track on your mood swing.
                     </Text>
                     <TouchableOpacity style={{ backgroundColor: '#641E1F', padding: 8, borderRadius: 5 , width: '40%'}}>
                         <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center'}}>Check Now</Text>
