@@ -17,7 +17,7 @@ export default function Login() {
             return;
         }
         try {
-            const response = await fetch(`${config.backend_url}/api/login`, {
+            const response = await fetch('http://192.168.43.33:3000/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -27,6 +27,8 @@ export default function Login() {
             const data = await response.json();
 
             const profile = JSON.stringify(data);
+            console.log('fuck',profile)
+            console.log('bithc', data)
             await AsyncStorage.setItem('profile', profile);
             router.replace("/main/samplehome");
         } catch (error) {
