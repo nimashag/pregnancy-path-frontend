@@ -32,7 +32,6 @@ export default function RootLayout() {
     <ThemeProvider value={DefaultTheme}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="main/home" options={{ headerShown: false }} />
         <Stack.Screen name="tracker/HealthTracker"  options={{headerShown: false}}/>
         <Stack.Screen name="+not-found" />
 
