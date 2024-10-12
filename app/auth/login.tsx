@@ -4,6 +4,7 @@ import { ImageBackground, TextInput, TouchableOpacity, Text, View, ScrollView, A
 import { Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import config from "../../constants/config";
 
 export default function Login() {
     const router = useRouter();
@@ -15,7 +16,6 @@ export default function Login() {
             Alert.alert("Error", "Please enter both email and password.");
             return;
         }
-
         try {
             const response = await fetch('http://192.168.43.33:3000/api/auth/login', {
                 method: 'POST',
@@ -24,7 +24,6 @@ export default function Login() {
                 },
                 body: JSON.stringify({ email, password }),
             });
-
             const data = await response.json();
 
             const profile = JSON.stringify(data);
