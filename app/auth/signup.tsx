@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { ImageBackground, TextInput, TouchableOpacity, Text, View, ScrollView } from "react-native";
+import { ImageBackground, TextInput, TouchableOpacity, Text, View, ScrollView, Alert } from "react-native";
 import { Ionicons } from '@expo/vector-icons'; // Import icon library
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Signup() {
     const router = useRouter();
@@ -10,10 +11,34 @@ export default function Signup() {
     const [password, setPassword] = useState("");
 
     const handleSignup = async () => {
-        // Implement your signup logic here
-        console.log("Signing up with", name, email, password);
-        // On successful signup, you might want to navigate to the login page
-        // router.replace("/auth/login");
+        // Validate input fields
+        if (!name || !email || !password) {
+            Alert.alert("Error", "Please fill in all fields.");
+            return;
+        }
+
+        try {
+            const response = await fetch('http://192.168.43.33:3000/api/auth/signup', { // Replace with your actual endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            const data = await response.json();
+            console.log('shakaboooom',data)
+
+            const profile = JSON.stringify(data)
+
+            await AsyncStorage.setItem('profile', profile);
+
+            // Navigate to the login page
+            router.replace("/auth/login");
+        } catch (error) {
+            console.error("Signup error:", error);
+            Alert.alert("Error", "An error occurred while signing up. Please try again.");
+        }
     };
 
     const handleLoginRoute = () => {

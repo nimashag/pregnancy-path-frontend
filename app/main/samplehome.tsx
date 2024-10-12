@@ -1,8 +1,10 @@
-import React from 'react';
+
 import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking } from 'react-native';
+import React, { useEffect } from 'react';
 import { Link, useRouter } from 'expo-router';
 
 const samplehome = () => {
+  
     const router = useRouter();
 
     const handleVacciNavigation = () => {
@@ -17,13 +19,22 @@ const samplehome = () => {
 
     const handleTrackerNavigation = () => {
         // Navigate to Tracker Screen
-        router.push('/_sitemap');
+        router.push('/tracker/HealthTracker');
     };
 
     const handleGuideNavigation = () => {
         // Navigate to Pregnancy Guide Screen
-        router.push('/_sitemap');
+        router.push('/tracker/HabitTracker');
     };
+    const handleGMoodNavigation = () => {
+        // Navigate to Pregnancy Guide Screen
+        router.push('/moodTracker/Moods');
+    };
+
+    const handleProfileNavigation = () => {
+      // Navigate to Profile Screen
+      router.push('/main/profile'); // Update this to the correct path for your profile screen
+  };
 
     const openDialer = () => {
       Linking.openURL('tel:+112');
@@ -35,14 +46,17 @@ const samplehome = () => {
       <View style={styles.header}>
       <View style={styles.textContainer}>
         <Text style={styles.welcomeText}>Welcome</Text>
-        <Text style={styles.userName}>Jennifer</Text>
+        <Text style={styles.userName}>user</Text>
       </View>
       <View style={styles.iconContainer}>
         <Link href='/notification/NotificationPage' >
         <Image source={require('../../assets/images/home/notificationimg.png')} style={styles.notificationIcon} />
         </Link>
-        <Image source={require('../../assets/images/home/userhomeimg.png')} style={styles.profileIcon} />
-      </View>
+        <TouchableOpacity onPress={handleProfileNavigation}>
+        <Image  source={require('../../assets/images/home/userhomeimg.png')} style={styles.profileIcon} />
+        </TouchableOpacity>
+        </View>
+        
     </View>
 
 
@@ -241,10 +255,10 @@ const samplehome = () => {
                     resizeMode="cover"
                 >
                     <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
-                      Parental Appoinments
+                      Habit tracker
                     </Text>
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
-                        Navigate your pregnancy with ease using our comprehensive guide.
+                        Do yoga meditation and have track of my habit you want
                     </Text>
                     <TouchableOpacity style={{ backgroundColor: '#1C476F', padding: 8, borderRadius: 5 , width: '40%'}}>
                         <Text style={{ color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>Check Now</Text>
@@ -252,7 +266,7 @@ const samplehome = () => {
                 </ImageBackground>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleGuideNavigation} style={{ marginBottom: 20 }}>
+            <TouchableOpacity onPress={handleGMoodNavigation} style={{ marginBottom: 20 }}>
                 <ImageBackground
                     source={require('../../assets/images/blog1.png')}
                     style={{
@@ -265,10 +279,10 @@ const samplehome = () => {
                     resizeMode="cover"
                 >
                     <Text style={{ color: '#000000', fontWeight: 'bold', fontSize: 16 }}>
-                        Pregnancy Guide
+                        Mood Tracker
                     </Text>
                     <Text style={{ color: '#ffffff', fontSize: 14, marginBottom: 10 }}>
-                        Navigate your pregnancy with ease using our comprehensive guide.
+                        Have Track on your mood swing.
                     </Text>
                     <TouchableOpacity style={{ backgroundColor: '#641E1F', padding: 8, borderRadius: 5 , width: '40%'}}>
                         <Text style={{ color: '#fff', fontWeight: 'bold' , textAlign: 'center'}}>Check Now</Text>

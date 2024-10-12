@@ -15,6 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { ProgressBar } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons'; // For baby icon
 import moment from 'moment'; // For date handling
+import BackButton from '@/utils/backButtin';
 
 const healthHabits = {
   1: [
@@ -277,6 +278,7 @@ const HealthTracker = () => {
 
   return (
     <ScrollView className="p-4 mt-6 bg-gray-100">
+        <BackButton />
       {userFirstTime ? (
         <View className="flex-1 justify-center items-center pt-6 bg-gray-100">
           <View className="bg-white p-6 pt-0 rounded-lg shadow-lg w-11/12 max-w-md">

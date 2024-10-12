@@ -44,13 +44,13 @@ const JournalScreen = () => {
       setCurrentIndex(nextIndex);
 
       // Calculate the Y position to scroll to (height of each journal entry)
-      const position = nextIndex * (SCREEN_HEIGHT * 0.7); // Adjust height if necessary
+      const position = nextIndex * (SCREEN_HEIGHT * 0.5); // Adjust height if necessary
 
       scrollViewRef.current?.scrollTo({
         y: position,
         animated: true,
       });
-    }, 3000); // Change slide every 3 seconds
+    }, 2000); // Change slide every 3 seconds
 
     return () => clearInterval(interval); // Cleanup interval on unmount
   }, [currentIndex, journalEntries]);

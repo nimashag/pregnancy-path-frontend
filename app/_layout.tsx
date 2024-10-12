@@ -31,21 +31,22 @@ export default function RootLayout() {
 
     <ThemeProvider value={DefaultTheme}>
       <Stack>
-        <Stack.Screen name="/index" options={{ headerShown: false }} />
-        <Stack.Screen name="main/home" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="tracker/HealthTracker"  options={{headerShown: false}}/>
-        <Stack.Screen name="tracker/HabitTracker" options={{headerShown: false}}/>
         <Stack.Screen name="+not-found" />
 
         {/* Startup Routes */}
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
         <Stack.Screen name="moodTracker/Moods" options={{ headerShown: false }} />
         <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
+        <Stack.Screen name="main/profile" options={{ headerShown: false }} />
 
         {/* Home Routes */}
         <Stack.Screen name="main/samplehome" options={{ headerShown: false }}/>
 
         {/* Journal Routes */}
+        
+        <Stack.Screen name="tracker/HabitTracker" options={{headerShown: false}}/>
         <Stack.Screen name="journal/creatememory" options={{ headerShown: false }} />
         <Stack.Screen name="journal/dailyjournal" options={{ headerShown: false }} />
         <Stack.Screen name="journal/updatememory" options={{ headerShown: false }} />
@@ -56,8 +57,8 @@ export default function RootLayout() {
         <Stack.Screen name="vaccination/vacciguide" options={{ headerShown: false }}/>
         <Stack.Screen name="vaccination/vaccimain" options={{ headerShown: false }}/>
         <Stack.Screen name="vaccination/vaccilog" options={{ headerShown: false }}/>
-        <Stack.Screen name="vaccination/createvaccischedule" options={{ headerShown: false }}/>
-        <Stack.Screen name="vaccination/viewvaccischedule" options={{ headerShown: false }}/>
+        <Stack.Screen name="vaccination/createvaccineschedule" options={{ headerShown: false }}/>
+        <Stack.Screen name="vaccination/viewvaccineschedule" options={{ headerShown: false }}/>
         <Stack.Screen name="vaccination/vaccimonthtracker" options={{ headerShown: false }}/>
 
         {/* Vaccination Routes */}
