@@ -1,6 +1,6 @@
 
 import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
