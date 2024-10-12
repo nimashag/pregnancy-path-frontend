@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 
 const samplehome = () => {
@@ -23,6 +23,10 @@ const samplehome = () => {
     const handleGuideNavigation = () => {
         // Navigate to Pregnancy Guide Screen
         router.push('/_sitemap');
+    };
+
+    const openDialer = () => {
+      Linking.openURL('tel:+112');
     };
 
   return (
@@ -201,7 +205,7 @@ const samplehome = () => {
                 </TouchableOpacity>
 
                 {/* Card 3  */}
-                <TouchableOpacity onPress={handleTrackerNavigation} style={{ flex: 1, marginLeft: 10 }}>
+                <TouchableOpacity onPress={openDialer} style={{ flex: 1, marginLeft: 10 }}>
                     <ImageBackground
                         source={require('../../assets/images/home/clinic3.png')}
                         style={{
