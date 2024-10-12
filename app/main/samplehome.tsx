@@ -1,8 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, Image, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { Link, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const samplehome = () => {
+  const [UserName, setUserName] = useState('')
+  const [profile, setProfileImage] = useState('')
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const profile = await AsyncStorage.getItem("profile");
+        const imageUri = await AsyncStorage.getItem("profileImage");
+
+        if (profile) {
+          const userData = JSON.parse(profile);
+          setUserName(userData.name || "");
+        }
+
+        console.log('image', imageUri)
+        if (imageUri) {
+          setProfileImage(imageUri); // Set the image URI from AsyncStorage
+        }
+      } catch (error) {
+        console.error("Error retrieving user profile or image:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
   
     const router = useRouter();
 
@@ -41,14 +67,14 @@ const samplehome = () => {
       <View style={styles.header}>
       <View style={styles.textContainer}>
         <Text style={styles.welcomeText}>Welcome</Text>
-        <Text style={styles.userName}>user</Text>
+        <Text style={styles.userName}>{UserName}</Text>
       </View>
       <View style={styles.iconContainer}>
         <Link href='/notification/NotificationPage' >
         <Image source={require('../../assets/images/home/notificationimg.png')} style={styles.notificationIcon} />
         </Link>
         <TouchableOpacity onPress={handleProfileNavigation}>
-        <Image  source={require('../../assets/images/home/userhomeimg.png')} style={styles.profileIcon} />
+        <Image  source={require('../../assets/images/home/userhomeimg.png')} style={styles.profileIcon} width={50} height={50}/>
         </TouchableOpacity>
         </View>
         
